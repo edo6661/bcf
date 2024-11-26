@@ -48,7 +48,13 @@ fun dropdownItemsPeserta(
       },
       route = Screen.Peserta.DataPeserta.route
     ),
-
+    DropdownItem(
+      text = "Penilaian Peserta",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Peserta.PenilaianPeserta.route)
+      },
+      route = Screen.Peserta.PenilaianPeserta.route
+    ),
     DropdownItem(
       text = "Kelompok Mentoring",
       onClick = {
@@ -62,6 +68,20 @@ fun dropdownItemsPeserta(
         navigateAndCloseSideNav(Screen.Peserta.PengumumanPeserta.route)
       },
       route = Screen.Peserta.PengumumanPeserta.route
+    ),
+    DropdownItem(
+      text = "Feedback Peserta",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Peserta.FeedbackPeserta.route)
+      },
+      route = Screen.Peserta.FeedbackPeserta.route
+    ),
+    DropdownItem(
+      text = "Form Umpan Balik Mentor",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Peserta.FormFeedbackMentor.route)
+      },
+      route = Screen.Peserta.FormFeedbackMentor.route
     ),
 
     DropdownItem(
@@ -77,13 +97,6 @@ fun dropdownItemsPeserta(
         navigateAndCloseSideNav(Screen.Peserta.WorksheetPeserta.route)
       },
       route = Screen.Peserta.WorksheetPeserta.route
-    ),
-    DropdownItem(
-      text = "Penilaian Peserta",
-      onClick = {
-        navigateAndCloseSideNav(Screen.Peserta.PenilaianPeserta.route)
-      },
-      route = Screen.Peserta.PenilaianPeserta.route
     ),
   )
 }
@@ -105,6 +118,13 @@ fun dropdownItemsMentor(
         Log.d("SideNav", "Umpan Balik Mentor clicked")
       },
       route = null
+    ),
+    DropdownItem(
+      text = "Form Umpan Balik Peserta",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Mentor.FormFeedbackPeserta.route)
+      },
+      route = Screen.Mentor.FormFeedbackPeserta.route
     ),
     DropdownItem(
       text = "Pitchdeck",
@@ -133,14 +153,7 @@ fun dropdownItemsMentor(
         navigateAndCloseSideNav(Screen.Mentor.PenilaianPeserta.route)
       },
       route = Screen.Mentor.PenilaianPeserta.route
-    ),
-    DropdownItem(
-      text = "Feedback Peserta",
-      onClick = {
-        navigateAndCloseSideNav(Screen.Mentor.FeedbackPeserta.route)
-      },
-      route = Screen.Mentor.FeedbackPeserta.route
-    ),
+    )
   )
 }
 
@@ -170,18 +183,11 @@ fun dropdownItemsTugas(
       route = null
     ),
     DropdownItem(
-      text = "Lembar Kerja",
-      onClick = {
-        Log.d("SideNav", "Lembar Kerja clicked")
-      },
-      route = null
-    ),
-    DropdownItem(
       text = "Pitch Deck",
       onClick = {
-        Log.d("SideNav", "Pitch Deck clicked")
+        navigateAndCloseSideNav(Screen.Tugas.PitchDeck.route)
       },
-      route = null
+      route = Screen.Tugas.PitchDeck.route
     ),
   )
 }
@@ -193,16 +199,25 @@ fun dropdownItemsKegiatan(
     DropdownItem(
       text = "Jadwal Kegiatan",
       onClick = {
-        Log.d("SideNav", "Jadwal Kegiatan clicked")
+        Log.d("SideNav", "Jadwal clicked")
+        navigateAndCloseSideNav(Screen.Kegiatan.JadwalBulanPeserta.route)
       },
-      route = null
+      route = Screen.Kegiatan.JadwalBulanPeserta.route
     ),
+    DropdownItem(
+      text = "Jadwal Kegiatan (Mentor)",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Kegiatan.JadwalBulanMentor.route)
+      },
+      route = Screen.Kegiatan.UmpanBalikKegiatan.route
+    ),
+
     DropdownItem(
       text = "Umpan Balik Kegiatan",
       onClick = {
-        Log.d("SideNav", "Umpan Balik Kegiatan clicked")
+        navigateAndCloseSideNav(Screen.Kegiatan.UmpanBalikKegiatan.route)
       },
-      route = null
+      route = Screen.Kegiatan.UmpanBalikKegiatan.route
     )
   )
 }
