@@ -45,7 +45,7 @@ fun NavGraphBuilder.mentorNavGraph(
       )
     }
     composable(
-      route = Screen.Mentor.FeedbackPeserta.route
+      route = Screen.Mentor.FormFeedbackPeserta.route
     ) {
       FeedbackPesertaScreen(
         modifier = modifier

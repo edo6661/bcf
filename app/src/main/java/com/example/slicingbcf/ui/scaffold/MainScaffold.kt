@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
@@ -12,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -52,6 +54,9 @@ fun MainScaffold(
   val onNavigateBack = {
     navController.popBackStack()
   }
+  val onNavigateProfile = {
+    navController.navigateSingleTop(Screen.ProfilPeserta.route)
+  }
   Box(
     modifier = Modifier.fillMaxSize()
 
@@ -63,7 +68,8 @@ fun MainScaffold(
             onMenuClick = {
               isSideNavVisible = ! isSideNavVisible
             },
-            onNavigateHome = onNavigateHome
+            onNavigateHome = onNavigateHome,
+            onAvatarClick = onNavigateProfile,
           )
 
           config.showBackNav -> BackNav(
@@ -107,7 +113,8 @@ fun MainScaffold(
 @Composable
 fun PrimaryNav(
   onMenuClick : () -> Unit,
-  onNavigateHome : () -> Unit
+  onNavigateHome : () -> Unit,
+  onAvatarClick : () -> Unit,
 ) {
   TopAppBar(
     colors = TopAppBarDefaults.topAppBarColors(
@@ -133,6 +140,18 @@ fun PrimaryNav(
       )
     },
     actions = {
+      IconButton(
+        onClick = onAvatarClick
+      ){
+        Image(
+          painter = painterResource(id = R.drawable.avatar_sampul),
+          contentDescription = "Profile",
+          contentScale = ContentScale.Crop,
+          modifier = Modifier
+            .size(35.dp)
+            .clip(CircleShape)
+        )
+      }
       IconButton(
         onClick = onMenuClick
       ) {

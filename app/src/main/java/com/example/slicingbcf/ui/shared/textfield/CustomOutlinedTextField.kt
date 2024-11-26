@@ -23,7 +23,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.slicingbcf.constant.ColorPalette
@@ -264,5 +266,119 @@ fun CustomClickableTextField(
         }
       }
     }
+  }
+}
+
+@Composable
+fun CustomOutlinedTextAsterisk(
+  label: String,
+  value: TextFieldValue,
+  placeholder: String,
+  onValueChange: (TextFieldValue) -> Unit,
+  modifier: Modifier = Modifier
+) {
+  Box(
+    modifier = modifier
+      .padding(top = 8.dp)
+  ) {
+    OutlinedTextField(
+      value = value,
+      onValueChange = onValueChange,
+      placeholder = {
+        Text(
+          text = placeholder,
+          style = StyledText.MobileSmallRegular,
+          color = ColorPalette.Monochrome400
+        )
+      },
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 8.dp)
+        .height(56.dp),
+      shape = RoundedCornerShape(50),
+      colors = TextFieldDefaults.colors(
+        unfocusedContainerColor = Color.Transparent,
+        focusedContainerColor = Color.Transparent,
+        unfocusedIndicatorColor = ColorPalette.Monochrome400,
+        focusedIndicatorColor = ColorPalette.PrimaryColor700
+      ),
+      singleLine = true
+    )
+    Box(
+      modifier = Modifier
+        .padding(start = 20.dp)
+        .offset(y = (-3).dp)
+        .background(Color.White)
+    ) {
+      Row{
+        Text(
+          text = "$label",
+          style = StyledText.MobileBaseSemibold,
+          color = ColorPalette.PrimaryColor700,
+        )
+        Text(
+          text = "*",
+          style = StyledText.MobileBaseSemibold,
+          color = ColorPalette.Error,
+        )
+      }
+    }
+  }
+}
+
+@Composable
+fun TextFieldLong(
+  label: String,
+  placeholder: String,
+  value: TextFieldValue,
+  onValueChange: (TextFieldValue) -> Unit
+) {
+  Column(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(vertical = 8.dp),
+    verticalArrangement = Arrangement.spacedBy(8.dp)
+  ) {
+    Box(
+      modifier = Modifier
+        .offset(y = (-3).dp)
+        .background(Color.White)
+    ) {
+      Row{
+        Text(
+          text = label,
+          style = StyledText.MobileBaseSemibold,
+          color = ColorPalette.PrimaryColor700,
+          textAlign = TextAlign.Justify
+        )
+        Text(
+          text = "*",
+          style = StyledText.MobileBaseSemibold,
+          color = ColorPalette.Error,
+        )
+      }
+    }
+
+    OutlinedTextField(
+      value = value,
+      onValueChange = onValueChange,
+      placeholder = {
+        Text(
+          text = placeholder,
+          style = StyledText.MobileSmallRegular,
+          color = ColorPalette.Monochrome400
+        )
+      },
+      modifier = Modifier
+        .fillMaxWidth()
+        .height(120.dp),
+      shape = RoundedCornerShape(8.dp),
+      colors = TextFieldDefaults.colors(
+        unfocusedContainerColor = Color.Transparent,
+        focusedContainerColor = Color.Transparent,
+        unfocusedIndicatorColor = ColorPalette.Monochrome400,
+        focusedIndicatorColor = ColorPalette.PrimaryColor700
+      )
+    )
   }
 }

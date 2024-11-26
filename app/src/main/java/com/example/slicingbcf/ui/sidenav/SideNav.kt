@@ -347,13 +347,13 @@ private fun SideNavDropdownGuest(
     ),
     isActiveRoute = isActiveRoute
   )
-  SideNavDropdown(
-    "Kegiatan",
-    onClickDropdown = {
-//      navigateAndCloseSideNav(Screen.Kegiatan.route)
-    },
-    isActiveRoute = isActiveRoute
-  )
+//  SideNavDropdown(
+//    "Kegiatan",
+//    onClickDropdown = {
+////      navigateAndCloseSideNav(Screen.Kegiatan.route)
+//    },
+//    isActiveRoute = isActiveRoute
+//  )
   SideNavDropdown(
     "Mentor",
     items = dropdownItemsMentor(
@@ -376,7 +376,6 @@ private fun SideNavDropdownGuest(
     ),
     isActiveRoute = isActiveRoute
   )
-
 
   SideNavDropdown(
     "Kegiatan",
