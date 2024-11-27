@@ -1,16 +1,23 @@
 package com.example.slicingbcf.ui.navigation
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.slicingbcf.implementation.LandingPageScreen
+import com.example.slicingbcf.implementation.peserta.pengumuman_peserta.DetailPengumumanPesertaScreen
+import com.example.slicingbcf.implementation.peserta.pengumuman_peserta.PengumumanPesertaScreen
+import com.example.slicingbcf.implementation.peserta.profil.profil_lembaga.ProfilLembagaScreen
+import com.example.slicingbcf.implementation.peserta.profil.profil_peserta.ProfilPesertaScreen
 
 @Composable
 fun NavGraph(
   navController : NavHostController,
-  startDestination : String = "auth",
+  startDestination : String = Screen.Home.route,
   modifier : Modifier,
 ) {
   NavHost(navController = navController, startDestination = startDestination) {
@@ -49,5 +56,28 @@ fun NavGraph(
       navController = navController
     )
 
+    composable(Screen.Pengumuman.route) {
+      PengumumanPesertaScreen(
+        modifier = modifier,
+      )
+    }
+    composable(
+      route = "pengumuman/{id}",
+      arguments = listOf(navArgument("id") { type = NavType.StringType })
+    ) { backStackEntry ->
+      val id = backStackEntry.arguments?.getString("id") ?: ""
+      if (id.isEmpty()) throw IllegalStateException("id must not be empty")
+
+      DetailPengumumanPesertaScreen(
+        modifier = modifier.padding(
+        ), id = id
+      )
+    }
+
+    composable(Screen.ProfilPeserta.route) {
+      ProfilLembagaScreen(
+        modifier = modifier,
+      )
+    }
   }
 }

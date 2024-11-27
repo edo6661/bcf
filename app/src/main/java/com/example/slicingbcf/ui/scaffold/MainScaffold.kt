@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -54,9 +55,16 @@ fun MainScaffold(
   val onNavigateBack = {
     navController.popBackStack()
   }
+
   val onNavigateProfile = {
+    // TODO navigate profile mentor/peserta
     navController.navigateSingleTop(Screen.ProfilPeserta.route)
   }
+
+  val onNavigatePengumuman = {
+    navController.navigateSingleTop(Screen.Pengumuman.route)
+  }
+
   Box(
     modifier = Modifier.fillMaxSize()
 
@@ -70,6 +78,7 @@ fun MainScaffold(
             },
             onNavigateHome = onNavigateHome,
             onAvatarClick = onNavigateProfile,
+            onAnnouncementClick = onNavigatePengumuman
           )
 
           config.showBackNav -> BackNav(
@@ -103,8 +112,6 @@ fun MainScaffold(
         isActiveRoute = isActiveRoute
       )
     }
-
-
   }
 }
 
@@ -115,6 +122,7 @@ fun PrimaryNav(
   onMenuClick : () -> Unit,
   onNavigateHome : () -> Unit,
   onAvatarClick : () -> Unit,
+  onAnnouncementClick : () -> Unit,
 ) {
   TopAppBar(
     colors = TopAppBarDefaults.topAppBarColors(
@@ -140,6 +148,16 @@ fun PrimaryNav(
       )
     },
     actions = {
+
+      // TODO IF GUEST:xxxx
+      IconButton(
+        onClick = onAnnouncementClick
+      ){
+        Icon(
+          imageVector = Icons.Default.Notifications,
+          contentDescription = "Announcement"
+        )
+      }
       IconButton(
         onClick = onAvatarClick
       ){
@@ -152,6 +170,7 @@ fun PrimaryNav(
             .clip(CircleShape)
         )
       }
+
       IconButton(
         onClick = onMenuClick
       ) {

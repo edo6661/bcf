@@ -366,11 +366,11 @@ fun dropdownItemsMentor_Mentor(
 ) : List<DropdownItem> {
   return listOf(
     DropdownItem(
-      text = "Kelompok Mentor",
+      text = "Kelompok Mentoring",
       onClick = {
-        Log.d("SideNav", "Kelompok Mentor clicked")
+        navigateAndCloseSideNav(Screen.Peserta.KelompokMentoring.route)
       },
-      route = null
+      route = Screen.Peserta.KelompokMentoring.route
     ),
     DropdownItem(
       text = "Umpan Balik Mentor",
