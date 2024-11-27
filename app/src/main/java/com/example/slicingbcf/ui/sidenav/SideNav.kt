@@ -171,10 +171,20 @@ private fun BottomSideNav(
           navigateAndCloseSideNav(Screen.Auth.Registrasi.route)
         }
       )
-      SideNavDropdownGuest(
+
+      // TODO ubah sidenav versi mentor dan peserta, udah login blm
+//      SideNavDropdownPeserta(
+//        navigateAndCloseSideNav,
+//        isActiveRoute
+//      )
+      SideNavDropdownMentor(
         navigateAndCloseSideNav,
         isActiveRoute
       )
+//      SideNavDropdownGuest(
+//        navigateAndCloseSideNav,
+//        isActiveRoute
+//      )
     }
 
 
@@ -214,7 +224,6 @@ private fun BottomSideNav(
       }
     )
   }
-
 }
 
 
@@ -347,23 +356,16 @@ private fun SideNavDropdownGuest(
     ),
     isActiveRoute = isActiveRoute
   )
-//  SideNavDropdown(
-//    "Kegiatan",
-//    onClickDropdown = {
-////      navigateAndCloseSideNav(Screen.Kegiatan.route)
-//    },
-//    isActiveRoute = isActiveRoute
-//  )
   SideNavDropdown(
     "Mentor",
-    items = dropdownItemsMentor(
+    items = dropdownItemsMentor_Guest(
       navigateAndCloseSideNav
     ),
     isActiveRoute = isActiveRoute
   )
   SideNavDropdown(
     "Tugas",
-    items = dropdownItemsTugas(
+    items = dropdownItemsTugas_Guest(
       navigateAndCloseSideNav
     ),
     isActiveRoute = isActiveRoute
@@ -371,7 +373,7 @@ private fun SideNavDropdownGuest(
 
   SideNavDropdown(
     "Peserta",
-    items = dropdownItemsPeserta(
+    items = dropdownItemsPeserta_Guest(
       navigateAndCloseSideNav
     ),
     isActiveRoute = isActiveRoute
@@ -379,10 +381,94 @@ private fun SideNavDropdownGuest(
 
   SideNavDropdown(
     "Kegiatan",
-    items = dropdownItemsKegiatan(
+    items = dropdownItemsKegiatan_Guest(
       navigateAndCloseSideNav
     ),
     isActiveRoute = isActiveRoute
   )
 }
 
+
+@Composable
+private fun SideNavDropdownMentor(
+  navigateAndCloseSideNav : (String) -> Unit,
+  isActiveRoute : (String) -> Boolean
+) {
+  SideNavDropdown(
+    "Registrasi",
+    items = dropdownItemsPendaftaran(
+      navigateAndCloseSideNav
+    ),
+    isActiveRoute = isActiveRoute
+  )
+  SideNavDropdown(
+    "Peserta",
+    items = dropdownItemsPeserta_Mentor(
+      navigateAndCloseSideNav
+    ),
+    isActiveRoute = isActiveRoute
+  )
+  SideNavDropdown(
+    "Mentor",
+    items = dropdownItemsMentor_Mentor(
+      navigateAndCloseSideNav
+    ),
+    isActiveRoute = isActiveRoute
+  )
+  SideNavDropdown(
+    "Tugas",
+    items = dropdownItemsTugas_Mentor(
+      navigateAndCloseSideNav
+    ),
+    isActiveRoute = isActiveRoute
+  )
+  SideNavDropdown(
+    "Kegiatan",
+    items = dropdownItemsKegiatan_Mentor(
+      navigateAndCloseSideNav
+    ),
+    isActiveRoute = isActiveRoute
+  )
+}
+
+@Composable
+private fun SideNavDropdownPeserta(
+  navigateAndCloseSideNav : (String) -> Unit,
+  isActiveRoute : (String) -> Boolean
+) {
+  SideNavDropdown(
+    "Registrasi",
+    items = dropdownItemsPendaftaran(
+      navigateAndCloseSideNav
+    ),
+    isActiveRoute = isActiveRoute
+  )
+  SideNavDropdown(
+    "Peserta",
+    items = dropdownItemsPeserta_Peserta(
+      navigateAndCloseSideNav
+    ),
+    isActiveRoute = isActiveRoute
+  )
+  SideNavDropdown(
+    "Mentor",
+    items = dropdownItemsMentor_Peserta(
+      navigateAndCloseSideNav
+    ),
+    isActiveRoute = isActiveRoute
+  )
+  SideNavDropdown(
+    "Tugas",
+    items = dropdownItemsTugas_Peserta(
+      navigateAndCloseSideNav
+    ),
+    isActiveRoute = isActiveRoute
+  )
+  SideNavDropdown(
+    "Kegiatan",
+    items = dropdownItemsKegiatan_Peserta(
+      navigateAndCloseSideNav
+    ),
+    isActiveRoute = isActiveRoute
+  )
+}
