@@ -22,12 +22,8 @@ sealed class Screen(val route : String) {
     data class DetailPusatInformasi(val id : String) : Mentor("pusat-informasi/$id")
     // form feedback mentor
     object FormFeedbackMentor : Peserta("form-mentor")
-    data class FormFeedbackMentor2(val id : String) : Mentor("form-mentor2/$id")
-    data class FormFeedbackMentor3(val id : String) : Mentor("form-mentor3/$id")
-    data class FormFeedbackMentor4(val id : String) : Mentor("form-mentor4/$id")
     // feedback peserta
     object FeedbackPeserta: Peserta("feedback-peserta")
-
 
     object PenilaianPeserta : Peserta("penilaian-peserta")
 

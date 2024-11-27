@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
-import com.example.slicingbcf.implementation.peserta.form_feedback_mentor.RatingSections
+import com.example.slicingbcf.implementation.peserta.form_feedback_mentor.RatingSection
 import com.example.slicingbcf.ui.shared.dropdown.CustomDropdownMenuAsterisk
 import com.example.slicingbcf.ui.shared.dropdown.DropdownText
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextAsterisk
@@ -158,13 +158,13 @@ fun TopSection(
         )
     }
 
-    RatingSections(
+    RatingSection(
         title = "Pemateri 1",
         rating = ratingMateriPemateri1,
         onRatingSelected = onRatingMateriPemateri1Change,
     )
 
-    RatingSections(
+    RatingSection(
         title = "Pemateri 2",
         rating = ratingMateriPemateri2,
         onRatingSelected = onRatingMateriPemateri2Change,
@@ -183,13 +183,13 @@ fun TopSection(
         )
     }
 
-    RatingSections(
+    RatingSection(
         title = "Pemateri 1",
         rating = ratingWaktuPemateri1,
         onRatingSelected = onRatingWaktuPemateri1Change,
     )
 
-    RatingSections(
+    RatingSection(
         title = "Pemateri 2",
         rating = ratingWaktuPemateri2,
         onRatingSelected = onRatingWaktuPemateri2Change,
@@ -209,13 +209,13 @@ fun TopSection(
         )
     }
 
-    RatingSections(
+    RatingSection(
         title = "Pemateri 1",
         rating = ratingJawabanPemateri1,
         onRatingSelected = onRatingJawabanPemateri1Change,
     )
 
-    RatingSections(
+    RatingSection(
         title = "Pemateri 2",
         rating = ratingJawabanPemateri2,
         onRatingSelected = onRatingJawabanPemateri2Change,
@@ -235,13 +235,13 @@ fun TopSection(
         )
     }
 
-    RatingSections(
+    RatingSection(
         title = "Pemateri 1",
         rating = ratingMetodePemateri1,
         onRatingSelected = onRatingMetodePemateri1Change,
     )
 
-    RatingSections(
+    RatingSection(
         title = "Pemateri 2",
         rating = ratingMetodePemateri2,
         onRatingSelected = onRatingMetodePemateri2Change,
