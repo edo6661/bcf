@@ -30,7 +30,8 @@ fun dropdownItemsPendaftaran(
   )
 }
 
-fun dropdownItemsPeserta(
+// ! ROLE GUEST
+fun dropdownItemsPeserta_Guest(
   navigateAndCloseSideNav : (String) -> Unit
 ) : List<DropdownItem> {
   return listOf(
@@ -101,7 +102,7 @@ fun dropdownItemsPeserta(
   )
 }
 
-fun dropdownItemsMentor(
+fun dropdownItemsMentor_Guest(
   navigateAndCloseSideNav : (String) -> Unit
 ) : List<DropdownItem> {
   return listOf(
@@ -157,7 +158,7 @@ fun dropdownItemsMentor(
   )
 }
 
-fun dropdownItemsTugas(
+fun dropdownItemsTugas_Guest(
   navigateAndCloseSideNav : (String) -> Unit
 ) : List<DropdownItem> {
   return listOf(
@@ -192,7 +193,7 @@ fun dropdownItemsTugas(
   )
 }
 
-fun dropdownItemsKegiatan(
+fun dropdownItemsKegiatan_Guest(
   navigateAndCloseSideNav : (String) -> Unit
 ) : List<DropdownItem> {
   return listOf(
@@ -216,6 +217,214 @@ fun dropdownItemsKegiatan(
       text = "Umpan Balik Kegiatan",
       onClick = {
         navigateAndCloseSideNav(Screen.Kegiatan.UmpanBalikKegiatan.route)
+      },
+      route = Screen.Kegiatan.UmpanBalikKegiatan.route
+    )
+  )
+}
+
+
+// ! DROPDOWN ROLE PESERTA
+fun dropdownItemsPeserta_Peserta(
+  navigateAndCloseSideNav : (String) -> Unit
+) : List<DropdownItem> {
+  return listOf(
+    DropdownItem(
+      text = "Data Peserta",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Peserta.DataPeserta.route)
+      },
+      route = Screen.Peserta.DataPeserta.route
+    ),
+    DropdownItem(
+      text = "Umpan Balik Peserta",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Peserta.FeedbackPeserta.route)
+      },
+      route = Screen.Peserta.FeedbackPeserta.route
+    ),
+    DropdownItem(
+      text = "Penilaian Peserta",
+      onClick = {
+        Log.d("SideNav", "Penilaian Peserta clicked")
+      },
+      route = null
+    )
+  )
+}
+
+fun dropdownItemsMentor_Peserta(
+  navigateAndCloseSideNav : (String) -> Unit
+) : List<DropdownItem> {
+  return listOf(
+    DropdownItem(
+      text = "Kelompok Mentoring",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Peserta.KelompokMentoring.route)
+      },
+      route = Screen.Peserta.KelompokMentoring.route
+    ),
+    DropdownItem(
+      text = "Umpan Balik Mentor",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Peserta.FormFeedbackMentor.route)
+      },
+      route = Screen.Peserta.FormFeedbackMentor.route
+    )
+  )
+}
+
+fun dropdownItemsTugas_Peserta(
+  navigateAndCloseSideNav : (String) -> Unit
+) : List<DropdownItem> {
+  return listOf(
+    DropdownItem(
+      text = "Modul",
+      onClick = {
+        Log.d("SideNav", "Modul clicked")
+      },
+      route = null
+    ),
+    DropdownItem(
+      text = "Laporan",
+      onClick = {
+        Log.d("SideNav", "Laporan clicked")
+      },
+      route = null
+    ),
+    DropdownItem(
+      text = "Lembar Kerja",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Peserta.WorksheetPeserta.route)
+      },
+      route = Screen.Peserta.WorksheetPeserta.route
+    ),
+    DropdownItem(
+      text = "Pitch Deck",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Tugas.PitchDeck.route)
+      },
+      route = Screen.Tugas.PitchDeck.route
+    ),
+  )
+}
+
+fun dropdownItemsKegiatan_Peserta(
+  navigateAndCloseSideNav : (String) -> Unit
+) : List<DropdownItem> {
+  return listOf(
+    DropdownItem(
+      text = "Jadwal Kegiatan",
+      onClick = {
+        Log.d("SideNav", "Jadwal clicked")
+        navigateAndCloseSideNav(Screen.Kegiatan.JadwalBulanPeserta.route)
+      },
+      route = Screen.Kegiatan.JadwalBulanPeserta.route
+    ),
+    DropdownItem(
+      text = "Umpan Balik Kegiatan",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Kegiatan.UmpanBalikKegiatan.route)
+      },
+      route = Screen.Kegiatan.UmpanBalikKegiatan.route
+    )
+  )
+}
+
+
+// ! DROPDOWN ROLE MENTOR
+fun dropdownItemsPeserta_Mentor(
+  navigateAndCloseSideNav : (String) -> Unit
+) : List<DropdownItem> {
+  return listOf(
+    DropdownItem(
+      text = "Data Peserta",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Mentor.DataPeserta.route)
+      },
+      route = Screen.Mentor.DataPeserta.route
+    ),
+    DropdownItem(
+      text = "Umpan Balik Peserta",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Mentor.FormFeedbackPeserta.route)
+      },
+      route = Screen.Mentor.FormFeedbackPeserta.route
+    ),
+    DropdownItem(
+      text = "Penilaian Peserta",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Mentor.PenilaianPeserta.route)
+      },
+      route = Screen.Mentor.PenilaianPeserta.route
+    )
+  )
+}
+
+fun dropdownItemsMentor_Mentor(
+  navigateAndCloseSideNav : (String) -> Unit
+) : List<DropdownItem> {
+  return listOf(
+    DropdownItem(
+      text = "Kelompok Mentoring",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Peserta.KelompokMentoring.route)
+      },
+      route = Screen.Peserta.KelompokMentoring.route
+    ),
+    DropdownItem(
+      text = "Umpan Balik Mentor",
+      onClick = {
+        Log.d("SideNav", "Umpan Balik Mentor clicked")
+      },
+      route = null
+    ),
+  )
+}
+
+fun dropdownItemsTugas_Mentor(
+  navigateAndCloseSideNav : (String) -> Unit
+) : List<DropdownItem> {
+  return listOf(
+    DropdownItem(
+      text = "Modul",
+      onClick = {
+        Log.d("SideNav", "Modul clicked")
+      },
+      route = null
+    ),
+    DropdownItem(
+      text = "Laporan",
+      onClick = {
+        Log.d("SideNav", "Laporan clicked")
+      },
+      route = null
+    ),
+    DropdownItem(
+      text = "Lembar Kerja",
+      onClick = {
+        Log.d("SideNavMentor", "Lembar Kerja clicked")
+      },
+      route = null
+    ),
+    DropdownItem(
+      text = "Pitch Deck",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Mentor.Pitchdeck.route)
+      },
+      route = Screen.Mentor.Pitchdeck.route
+    ),
+  )
+}
+
+fun dropdownItemsKegiatan_Mentor(
+  navigateAndCloseSideNav : (String) -> Unit
+) : List<DropdownItem> {
+  return listOf(
+    DropdownItem(
+      text = "Jadwal Kegiatan",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Kegiatan.JadwalBulanMentor.route)
       },
       route = Screen.Kegiatan.UmpanBalikKegiatan.route
     )
