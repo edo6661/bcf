@@ -20,7 +20,8 @@ data class ProfilLembaga(
     val programProposalPdf: String,
     val backgroundImageUrl: String,
     val profileImageUrl: String,
-    val wilayahJangkauan: List<WilayahJangkauan>
+    val wilayahJangkauan: List<WilayahJangkauan>,
+    val keteranganLolos: String
 )
 
 val profilLembaga = listOf(
@@ -40,7 +41,8 @@ val profilLembaga = listOf(
         wilayahJangkauan = listOf(
             WilayahJangkauan(1, "DKI Jakarta", 5000, "https://example.com/rincian1.pdf"),
             WilayahJangkauan(2, "Jawa Barat", 2700, "https://example.com/rincian2.pdf")
-        )
+        ),
+        keteranganLolos = "TIDAK LOLOS"
     )
 )
 

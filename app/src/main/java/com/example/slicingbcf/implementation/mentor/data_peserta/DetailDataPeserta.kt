@@ -1,4 +1,4 @@
-package com.example.slicingbcf.implementation.peserta.profil.profil_lembaga
+package com.example.slicingbcf.implementation.mentor.data_peserta
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -40,7 +40,7 @@ import androidx.compose.runtime.setValue
 
 @Preview(showSystemUi = true)
 @Composable
-fun ProfilLembagaScreen(
+fun DetailDataPesertaScreen(
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -111,6 +111,27 @@ fun TopSection(profile: ProfilLembaga) {
             .height(60.dp)
         )
 
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = if (profile.keteranganLolos == "LOLOS") ColorPalette.Success else Color(0x0FF44336),
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .padding(vertical = 8.dp)
+        ) {
+            Text(
+                text = profile.keteranganLolos,
+                color = if (profile.keteranganLolos == "LOLOS") ColorPalette.Success600 else Color(0xFFF44336),
+                style = StyledText.MobileBaseSemibold,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+
+        Spacer(modifier = Modifier
+            .height(16.dp)
+        )
+
         ProfileInfoRow("Nama Lembaga", profile.name)
         ProfileInfoRow("Email Lembaga", profile.email)
         ProfileInfoRow("Alamat", profile.address)
@@ -119,6 +140,7 @@ fun TopSection(profile: ProfilLembaga) {
         ProfileInfoRow("Fokus Isu", profile.focusIssue)
 
         Spacer(modifier = Modifier.height(16.dp))
+
 
         HorizontalDivider(
             color = Color.LightGray,
@@ -161,7 +183,7 @@ fun BottomSection(profile: ProfilLembaga) {
             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
         )
 
-        HeaderRow(wilayah_headers)
+        HeaderRowDataPeserta(wilayah_headers)
 
         profile.wilayahJangkauan.forEach { wilayah ->
             WilayahRow(item = wilayah)
@@ -268,7 +290,7 @@ fun PdfLinkRow(label: String, pdfUrl: String) {
 }
 
 @Composable
-fun HeaderRow(headers: List<Header>) {
+fun HeaderRowDataPeserta(headers: List<Header>) {
     Row(
         modifier = Modifier
             .background(
@@ -328,7 +350,7 @@ fun WilayahRow(item: WilayahJangkauan) {
         TableCell(text = item.penerimaManfaat.toString(), weight = 1.3f)
         TableCell(
             text = "",
-            weight = 0.5f
+            weight = 1.2f
         ) {
             Icon(
                 imageVector = Icons.Default.OpenInNew,
@@ -343,15 +365,10 @@ fun WilayahRow(item: WilayahJangkauan) {
     }
 }
 
-data class Header(
-    val name: String,
-    val weight: Float
-)
-
 val wilayah_headers = listOf(
     Header("No.", 0.5f),
     Header("Provinsi", 0.7f),
     Header("Penerima Manfaat", 1.3f),
-    Header("Rincian", 0.5f)
+    Header("Rincian", 1.2f)
 )
 
