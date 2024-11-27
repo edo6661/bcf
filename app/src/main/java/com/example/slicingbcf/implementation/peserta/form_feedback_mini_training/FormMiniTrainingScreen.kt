@@ -104,52 +104,59 @@ fun TopSection(
     var kritikSaran by remember { mutableStateOf(TextFieldValue("")) }
     var expandedHariKegiatan by remember { mutableStateOf(false) }
 
+    Text(
+        text = "Umpan Balik Mini Training",
+        style = StyledText.MobileLargeSemibold,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
+    )
+
+    CustomDropdownMenuAsterisk(
+        label = "Hari Kegiatan Mentoring",
+        value = hariKegiatan,
+        placeholder = "Pilih Hari",
+        onValueChange = hariKegiatanOnValueChange,
+        expanded = expandedHariKegiatan,
+        onChangeExpanded = { expandedHariKegiatan = it },
+        dropdownItems = listOf("Mini Training hari ke-1", "Mini Training hari ke-2", "Mini Training hari ke-3")
+    )
+
+    CustomOutlinedTextAsterisk(
+        label = "Nama Pemateri 1",
+        value = speaker1Name,
+        placeholder = "Masukkan nama pemateri",
+        onValueChange = { speaker1Name = it }
+    )
+
+    CustomOutlinedTextAsterisk(
+        label = "Nama Pemateri 2",
+        value = speaker2Name,
+        placeholder = "Masukkan nama pemateri",
+        onValueChange = { speaker2Name = it }
+    )
+    CustomOutlinedTextAsterisk(
+        label = "Tanggal Kegiatan",
+        value = eventDate,
+        placeholder = "DD/MM/YYYY",
+        onValueChange = { eventDate = it }
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Row(
+    ) {
         Text(
-            text = "Umpan Balik Mini Training",
-            style = StyledText.MobileLargeSemibold,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
+            text = "*",
+            style = StyledText.MobileBaseSemibold,
+            color = ColorPalette.Error,
         )
-
-        CustomDropdownMenuAsterisk(
-            label = "Hari Kegiatan Mentoring",
-            value = hariKegiatan,
-            placeholder = "Pilih Hari",
-            onValueChange = hariKegiatanOnValueChange,
-            expanded = expandedHariKegiatan,
-            onChangeExpanded = { expandedHariKegiatan = it },
-            dropdownItems = listOf("Mini Training hari ke-1", "Mini Training hari ke-2", "Mini Training hari ke-3")
-        )
-
-        CustomOutlinedTextAsterisk(
-            label = "Nama Pemateri 1",
-            value = speaker1Name,
-            placeholder = "Masukkan nama pemateri",
-            onValueChange = { speaker1Name = it }
-        )
-
-        CustomOutlinedTextAsterisk(
-            label = "Nama Pemateri 2",
-            value = speaker2Name,
-            placeholder = "Masukkan nama pemateri",
-            onValueChange = { speaker2Name = it }
-        )
-
-        CustomOutlinedTextAsterisk(
-            label = "Tanggal Kegiatan",
-            value = eventDate,
-            placeholder = "DD/MM/YYYY",
-            onValueChange = { eventDate = it }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         Text(
             text = "Apakah materi yang disampaikan pembicara mudah dipahami?",
             style = StyledText.MobileBaseSemibold,
             color = ColorPalette.PrimaryColor700,
             textAlign = TextAlign.Justify,
         )
+    }
 
     RatingSections(
         title = "Pemateri 1",
@@ -162,13 +169,19 @@ fun TopSection(
         rating = ratingMateriPemateri2,
         onRatingSelected = onRatingMateriPemateri2Change,
     )
-
-    Text(
-        text = "Apakah pembicara mampu mengatur waktu dengan baik?",
-        style = StyledText.MobileBaseSemibold,
-        color = ColorPalette.PrimaryColor700,
-        textAlign = TextAlign.Justify,
+    Row {
+        Text(
+            text = "*",
+            style = StyledText.MobileBaseSemibold,
+            color = ColorPalette.Error,
         )
+        Text(
+            text = "Apakah pembicara mampu mengatur waktu dengan baik?",
+            style = StyledText.MobileBaseSemibold,
+            color = ColorPalette.PrimaryColor700,
+            textAlign = TextAlign.Justify,
+        )
+    }
 
     RatingSections(
         title = "Pemateri 1",
@@ -182,12 +195,19 @@ fun TopSection(
         onRatingSelected = onRatingWaktuPemateri2Change,
     )
 
+    Row {
+        Text(
+            text = "*",
+            style = StyledText.MobileBaseSemibold,
+            color = ColorPalette.Error,
+        )
         Text(
             text = "Apakah pembicara memberikan jawaban yang memuaskan atas pertanyaan peserta?",
             style = StyledText.MobileBaseSemibold,
             color = ColorPalette.PrimaryColor700,
             textAlign = TextAlign.Justify,
         )
+    }
 
     RatingSections(
         title = "Pemateri 1",
@@ -201,13 +221,19 @@ fun TopSection(
         onRatingSelected = onRatingJawabanPemateri2Change,
     )
 
-
-    Text(
+    Row {
+        Text(
+            text = "*",
+            style = StyledText.MobileBaseSemibold,
+            color = ColorPalette.Error,
+        )
+        Text(
             text = "Apakah pembicara menggunakan metode yang interaktif?",
             style = StyledText.MobileBaseSemibold,
             color = ColorPalette.PrimaryColor700,
             textAlign = TextAlign.Justify,
         )
+    }
 
     RatingSections(
         title = "Pemateri 1",
@@ -221,34 +247,33 @@ fun TopSection(
         onRatingSelected = onRatingMetodePemateri2Change,
     )
 
-        TextFieldLong(
-            label = "Silakan berikan kritik dan saran Anda mengenai kualitas sesi Mini Training secara keseluruhan",
-            placeholder = "Tuliskan kritik dan saran setelah mengikuti kegiatan Mini Training hari ini!",
-            value = kritikSaran,
-            onValueChange = { kritikSaran = it }
+    TextFieldLong(
+        label = "Silakan berikan kritik dan saran Anda mengenai kualitas sesi Mini Training secara keseluruhan",
+        placeholder = "Tuliskan kritik dan saran setelah mengikuti kegiatan Mini Training hari ini!",
+        value = kritikSaran,
+        onValueChange = { kritikSaran = it }
+    )
+
+    Spacer(modifier = Modifier.height(24.dp))
+
+    Button(
+        onClick = {
+            onSaveFeedback(
+                hariKegiatan,
+                speaker1Name.text,
+                speaker2Name.text,
+                kritikSaran.text,
+                eventDate.text
+            ) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        shape = RoundedCornerShape(50),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = ColorPalette.PrimaryColor700,
+            contentColor = Color.White
         )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = {
-                onSaveFeedback(
-                    hariKegiatan,
-                    speaker1Name.text,
-                    speaker2Name.text,
-                    kritikSaran.text,
-                    eventDate.text
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            shape = RoundedCornerShape(50),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = ColorPalette.PrimaryColor700,
-                contentColor = Color.White
-            )
-        ) {
-            Text("Simpan", style = StyledText.MobileBaseSemibold)
-        }
+    ) {
+        Text("Simpan", style = StyledText.MobileBaseSemibold)
+    }
 }
