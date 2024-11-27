@@ -158,7 +158,6 @@ fun firstScreen(
 
         ) {
         TopSectionFirstScreen(
-            capaianMentoring = capaianMentoring,
             capaianMentoringOnValueChange = { newValue -> capaianMentoring = newValue },
             )
         BottomSectionFirstScreen()
@@ -177,7 +176,6 @@ fun secondScreen(
 
         ) {
         TopSectionSecondScreen(
-            capaianMentoring = capaianMentoring,
             capaianMentoringOnValueChange = { newValue -> capaianMentoring = newValue },
         )
         BottomSectionSecondScreen()
@@ -186,7 +184,6 @@ fun secondScreen(
 
 @Composable
 fun TopSectionFirstScreen(
-    capaianMentoring : String,
     capaianMentoringOnValueChange : (String) -> Unit,
 ) {
     var capaianMentoring by remember { mutableStateOf("") }
@@ -224,7 +221,6 @@ fun TopSectionFirstScreen(
             )
         }
 
-        // Data peserta
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -270,22 +266,22 @@ fun TopSectionFirstScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = ": $mentorNameCluster" /* TODO bind database entity nama mentor*/,
+                        text = ": $mentorNameCluster" ,
                         style = StyledText.MobileSmallRegular,
                         textAlign = TextAlign.Left,
                     )
                     Text(
-                        text = ": $mentoringTypeCluster" /* TODO bind database entity tipe mentoring*/,
+                        text = ": $mentoringTypeCluster" ,
                         style = StyledText.MobileSmallRegular,
                         textAlign = TextAlign.Left,
                     )
                     Text(
-                        text = ": $batchCluster" /* TODO bind database entity Batch*/,
+                        text = ": $batchCluster",
                         style = StyledText.MobileSmallRegular,
                         textAlign = TextAlign.Left,
                     )
                     Text(
-                        text = ": $capaianProgramCluster" /* TODO bind database entity Capaian Program*/,
+                        text = ": $capaianProgramCluster",
                         style = StyledText.MobileSmallRegular,
                         textAlign = TextAlign.Left,
                     )
@@ -409,7 +405,6 @@ fun BottomSectionFirstScreen() {
 
 @Composable
 fun TopSectionSecondScreen(
-    capaianMentoring : String,
     capaianMentoringOnValueChange : (String) -> Unit,
 ) {
     var capaianMentoring by remember { mutableStateOf("") }
@@ -447,7 +442,6 @@ fun TopSectionSecondScreen(
             )
         }
 
-        // Data peserta
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -493,22 +487,22 @@ fun TopSectionSecondScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = ": $mentorNameDesain" /* TODO bind database entity nama mentor*/,
+                        text = ": $mentorNameDesain",
                         style = StyledText.MobileSmallRegular,
                         textAlign = TextAlign.Left,
                     )
                     Text(
-                        text = ": $mentoringTypeDesain" /* TODO bind database entity tipe mentoring*/,
+                        text = ": $mentoringTypeDesain" ,
                         style = StyledText.MobileSmallRegular,
                         textAlign = TextAlign.Left,
                     )
                     Text(
-                        text = ": $batchDesain" /* TODO bind database entity Batch*/,
+                        text = ": $batchDesain",
                         style = StyledText.MobileSmallRegular,
                         textAlign = TextAlign.Left,
                     )
                     Text(
-                        text = ": $capaianProgramDesain" /* TODO bind database entity Capaian Program*/,
+                        text = ": $capaianProgramDesain",
                         style = StyledText.MobileSmallRegular,
                         textAlign = TextAlign.Left,
                     )
@@ -848,8 +842,6 @@ fun DokumentasiMentoringSection() {
         }
     }
 }
-
-
 
 data class Header(
     val name : String,
