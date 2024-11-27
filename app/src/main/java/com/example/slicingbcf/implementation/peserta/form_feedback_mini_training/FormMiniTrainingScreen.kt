@@ -32,6 +32,15 @@ fun FormMiniTrainingScreen(
     modifier: Modifier = Modifier,
 ){
     var hariKegiatan by remember { mutableStateOf("") }
+    var ratingMateriPemateri1 by remember { mutableStateOf(0) }
+    var ratingMateriPemateri2 by remember { mutableStateOf(0) }
+    var ratingWaktuPemateri1 by remember { mutableStateOf(0) }
+    var ratingWaktuPemateri2 by remember { mutableStateOf(0) }
+    var ratingJawabanPemateri1 by remember { mutableStateOf(0) }
+    var ratingJawabanPemateri2 by remember { mutableStateOf(0) }
+    var ratingMetodePemateri1 by remember { mutableStateOf(0) }
+    var ratingMetodePemateri2 by remember { mutableStateOf(0) }
+
     Column(
         modifier = modifier
             .padding(16.dp)
@@ -44,9 +53,23 @@ fun FormMiniTrainingScreen(
                 // TODO simpan data
             },
             hariKegiatan = hariKegiatan,
-            hariKegiatanOnValueChange = { newValue ->
-                hariKegiatan = newValue
-            }
+            hariKegiatanOnValueChange = { newValue -> hariKegiatan = newValue },
+            ratingMateriPemateri1 = ratingMateriPemateri1,
+            onRatingMateriPemateri1Change = {ratingMateriPemateri1 = it},
+            ratingMateriPemateri2 = ratingMateriPemateri2,
+            onRatingMateriPemateri2Change = {ratingMateriPemateri2 = it},
+            ratingWaktuPemateri1 = ratingWaktuPemateri1,
+            onRatingWaktuPemateri1Change = {ratingWaktuPemateri1 = it},
+            ratingWaktuPemateri2 = ratingWaktuPemateri2,
+            onRatingWaktuPemateri2Change = {ratingWaktuPemateri2 = it},
+            ratingJawabanPemateri1 = ratingJawabanPemateri1,
+            onRatingJawabanPemateri1Change = {ratingJawabanPemateri1 = it},
+            ratingJawabanPemateri2 = ratingJawabanPemateri2,
+            onRatingJawabanPemateri2Change = {ratingJawabanPemateri2 = it},
+            ratingMetodePemateri1 = ratingMetodePemateri1,
+            onRatingMetodePemateri1Change = {ratingMetodePemateri1 = it},
+            ratingMetodePemateri2 = ratingMetodePemateri2,
+            onRatingMetodePemateri2Change = {ratingMetodePemateri2 = it},
         )
     }
 }
@@ -55,7 +78,24 @@ fun FormMiniTrainingScreen(
 fun TopSection(
     onSaveFeedback: (String, String, String, String, String) -> Unit = { _, _, _, _, _ -> },
     hariKegiatan : String,
-    hariKegiatanOnValueChange : (String) -> Unit
+    hariKegiatanOnValueChange : (String) -> Unit,
+
+    onRatingMateriPemateri1Change: (Int) -> Unit,
+    ratingMateriPemateri1: Int,
+    onRatingMateriPemateri2Change: (Int) -> Unit,
+    ratingMateriPemateri2: Int,
+    onRatingWaktuPemateri1Change: (Int) -> Unit,
+    ratingWaktuPemateri1: Int,
+    onRatingWaktuPemateri2Change: (Int) -> Unit,
+    ratingWaktuPemateri2: Int,
+    onRatingJawabanPemateri1Change: (Int) -> Unit,
+    ratingJawabanPemateri1: Int,
+    onRatingJawabanPemateri2Change: (Int) -> Unit,
+    ratingJawabanPemateri2: Int,
+    onRatingMetodePemateri1Change: (Int) -> Unit,
+    ratingMetodePemateri1: Int,
+    onRatingMetodePemateri2Change: (Int) -> Unit,
+    ratingMetodePemateri2: Int,
 ) {
     var hariKegiatan by remember { mutableStateOf("") }
     var speaker1Name by remember { mutableStateOf(TextFieldValue("")) }
@@ -111,24 +151,36 @@ fun TopSection(
             textAlign = TextAlign.Justify,
         )
 
-        (1..2).forEach { speakerNumber ->
-            FeedbackEvaluationSection(
-                speakerLabel = "Pemateri $speakerNumber",
-            )
-        }
+    RatingSections(
+        title = "Pemateri 1",
+        rating = ratingMateriPemateri1,
+        onRatingSelected = onRatingMateriPemateri1Change,
+    )
 
-        Text(
-            text = "Apakah pembicara mampu mengatur waktu dengan baik?",
-            style = StyledText.MobileBaseSemibold,
-            color = ColorPalette.PrimaryColor700,
-            textAlign = TextAlign.Justify,
+    RatingSections(
+        title = "Pemateri 2",
+        rating = ratingMateriPemateri2,
+        onRatingSelected = onRatingMateriPemateri2Change,
+    )
+
+    Text(
+        text = "Apakah pembicara mampu mengatur waktu dengan baik?",
+        style = StyledText.MobileBaseSemibold,
+        color = ColorPalette.PrimaryColor700,
+        textAlign = TextAlign.Justify,
         )
 
-        (1..2).forEach { speakerNumber ->
-            FeedbackEvaluationSection(
-                speakerLabel = "Pemateri $speakerNumber",
-            )
-        }
+    RatingSections(
+        title = "Pemateri 1",
+        rating = ratingWaktuPemateri1,
+        onRatingSelected = onRatingWaktuPemateri1Change,
+    )
+
+    RatingSections(
+        title = "Pemateri 2",
+        rating = ratingWaktuPemateri2,
+        onRatingSelected = onRatingWaktuPemateri2Change,
+    )
 
         Text(
             text = "Apakah pembicara memberikan jawaban yang memuaskan atas pertanyaan peserta?",
@@ -137,24 +189,37 @@ fun TopSection(
             textAlign = TextAlign.Justify,
         )
 
-        (1..2).forEach { speakerNumber ->
-            FeedbackEvaluationSection(
-                speakerLabel = "Pemateri $speakerNumber",
-            )
-        }
+    RatingSections(
+        title = "Pemateri 1",
+        rating = ratingJawabanPemateri1,
+        onRatingSelected = onRatingJawabanPemateri1Change,
+    )
 
-        Text(
+    RatingSections(
+        title = "Pemateri 2",
+        rating = ratingJawabanPemateri2,
+        onRatingSelected = onRatingJawabanPemateri2Change,
+    )
+
+
+    Text(
             text = "Apakah pembicara menggunakan metode yang interaktif?",
             style = StyledText.MobileBaseSemibold,
             color = ColorPalette.PrimaryColor700,
             textAlign = TextAlign.Justify,
         )
 
-        (1..2).forEach { speakerNumber ->
-            FeedbackEvaluationSection(
-                speakerLabel = "Pemateri $speakerNumber",
-            )
-        }
+    RatingSections(
+        title = "Pemateri 1",
+        rating = ratingMetodePemateri1,
+        onRatingSelected = onRatingMetodePemateri1Change,
+    )
+
+    RatingSections(
+        title = "Pemateri 2",
+        rating = ratingMetodePemateri2,
+        onRatingSelected = onRatingMetodePemateri2Change,
+    )
 
         TextFieldLong(
             label = "Silakan berikan kritik dan saran Anda mengenai kualitas sesi Mini Training secara keseluruhan",
@@ -186,25 +251,4 @@ fun TopSection(
         ) {
             Text("Simpan", style = StyledText.MobileBaseSemibold)
         }
-}
-
-@Composable
-fun FeedbackEvaluationSection(
-    speakerLabel: String
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        val labelPemateri = listOf(
-            speakerLabel
-        )
-
-        labelPemateri.forEach { question ->
-            RatingSections(
-                title = question,
-                rating = 0,
-                onRatingSelected = { /* TODO: Handle rating */ }
-            )
-        }
-    }
 }

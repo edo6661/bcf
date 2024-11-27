@@ -102,6 +102,5 @@ fun scaffoldConfig(currentRoute : String?)
     }
 
     else                             -> ScaffoldConfig()
-
   }
 }
