@@ -91,3 +91,25 @@ val profilPeserta = listOf(
         )
     )
 )
+
+data class MentoringPeserta(
+    val mentorName: String,
+    val mentoringType: String,
+    val batch: Int,
+    val capaianProgram: String
+)
+
+val mentoringPeserta = listOf(
+    MentoringPeserta(
+        mentorName = "Dodit Saputra",
+        mentoringType = "Cluster",
+        batch = 5,
+        capaianProgram = "Februari 2023"
+    ),
+    MentoringPeserta(
+        mentorName = "Dodit Saputra",
+        mentoringType = "Desain Program",
+        batch = 5,
+        capaianProgram = "Februari 2023"
+    ),
+)
