@@ -24,14 +24,23 @@ import com.example.slicingbcf.ui.shared.dropdown.CustomDropdownMenuAsterisk
 import com.example.slicingbcf.ui.shared.dropdown.DropdownText
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextAsterisk
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdown
+import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdownDate
+import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdownDateAsterisk
 import com.example.slicingbcf.ui.shared.textfield.TextFieldLong
+import com.example.slicingbcf.util.convertMillisToDate
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun FormMiniTrainingScreen(
     modifier: Modifier = Modifier,
 ){
     var hariKegiatan by remember { mutableStateOf("") }
+//    var selectedDate by remember { mutableStateOf("") }
+    val datePickerState = rememberDatePickerState()
+    var expandedDate by remember { mutableStateOf(false) }
+    val selectedDate = datePickerState.selectedDateMillis?.let { convertMillisToDate(it) } ?: ""
+
     var ratingMateriPemateri1 by remember { mutableStateOf(0) }
     var ratingMateriPemateri2 by remember { mutableStateOf(0) }
     var ratingWaktuPemateri1 by remember { mutableStateOf(0) }
@@ -54,6 +63,10 @@ fun FormMiniTrainingScreen(
             },
             hariKegiatan = hariKegiatan,
             hariKegiatanOnValueChange = { newValue -> hariKegiatan = newValue },
+            selectedDate = selectedDate,
+            expandedDate = expandedDate,
+            datePickerState = datePickerState,
+            onExpandedDateChange = { expandedDate = it },
             ratingMateriPemateri1 = ratingMateriPemateri1,
             onRatingMateriPemateri1Change = {ratingMateriPemateri1 = it},
             ratingMateriPemateri2 = ratingMateriPemateri2,
@@ -74,11 +87,17 @@ fun FormMiniTrainingScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopSection(
     onSaveFeedback: (String, String, String, String, String) -> Unit = { _, _, _, _, _ -> },
     hariKegiatan : String,
     hariKegiatanOnValueChange : (String) -> Unit,
+
+    selectedDate : String,
+    datePickerState : DatePickerState,
+    expandedDate : Boolean,
+    onExpandedDateChange : (Boolean) -> Unit,
 
     onRatingMateriPemateri1Change: (Int) -> Unit,
     ratingMateriPemateri1: Int,
@@ -134,11 +153,18 @@ fun TopSection(
         placeholder = "Masukkan nama pemateri",
         onValueChange = { speaker2Name = it }
     )
-    CustomOutlinedTextAsterisk(
+
+    CustomOutlinedTextFieldDropdownDateAsterisk(
         label = "Tanggal Kegiatan",
-        value = eventDate,
+        value = selectedDate,
         placeholder = "DD/MM/YYYY",
-        onValueChange = { eventDate = it }
+        modifier = Modifier.fillMaxWidth(),
+        labelDefaultColor = ColorPalette.Monochrome400,
+        datePickerState = datePickerState,
+        expanded = expandedDate,
+        onChangeExpanded = {
+            onExpandedDateChange(it)
+        }
     )
 
     Spacer(modifier = Modifier.height(16.dp))

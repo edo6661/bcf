@@ -173,14 +173,14 @@ private fun BottomSideNav(
       )
 
       // TODO ubah sidenav versi mentor dan peserta, udah login blm
-      SideNavDropdownPeserta(
-        navigateAndCloseSideNav,
-        isActiveRoute
-      )
-//      SideNavDropdownMentor(
+//      SideNavDropdownPeserta(
 //        navigateAndCloseSideNav,
 //        isActiveRoute
 //      )
+      SideNavDropdownMentor(
+        navigateAndCloseSideNav,
+        isActiveRoute
+      )
 //      SideNavDropdownGuest(
 //        navigateAndCloseSideNav,
 //        isActiveRoute
