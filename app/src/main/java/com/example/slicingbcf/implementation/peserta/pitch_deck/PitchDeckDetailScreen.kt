@@ -2,6 +2,7 @@ package com.example.slicingbcf.implementation.peserta.pitch_deck
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -135,23 +136,55 @@ fun TopSection(
         singleLine = true
     )
 
-    Spacer(modifier = Modifier.height(16.dp))
+//    Spacer(modifier = Modifier.height(16.dp))
 
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.CenterEnd
+    Text(
+        text = """
+            • Silakan ubah submisi tugas apabila terdapat kesalahan, pastikan mengumpulkan sebelum Batas Submisi Tugas.
+            • Waktu submisi yang tercatat adalah waktu submisi terakhir diubah.
+            • Waktu submisi terakhir diubah yang terlambat dikumpulkan akan mendapatkan pengurangan nilai.
+        """.trimIndent(),
+        style = StyledText.MobileSmallRegular,
+        color = ColorPalette.PrimaryColor700,
+        modifier = Modifier.padding(bottom = 16.dp)
+    )
+
+    Row(
+        modifier = Modifier
+            .width(250.dp)
+            .height(40.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Button(
-            onClick = { },/*TODO logic on click*/
-//        modifier = Modifier.weight(1f),
+            onClick = { /* TODO: logic on click */ },
             shape = MaterialTheme.shapes.extraLarge,
             colors = ButtonDefaults.buttonColors(
                 containerColor = ColorPalette.PrimaryColor700,
                 contentColor = Color.White
+            ),
+            modifier = Modifier
+                .height(48.dp)
+                .fillMaxWidth(0.5f)
+        ) {
+            Text(text = "Simpan", style = StyledText.MobileBaseSemibold)
+        }
+
+        OutlinedButton(
+            onClick = {},
+            modifier = Modifier
+                .weight(1f)
+                .height(40.dp),
+            shape = MaterialTheme.shapes.extraLarge,
+            border = BorderStroke(1.dp, ColorPalette.PrimaryColor700),
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = Color.Transparent,
+                contentColor = ColorPalette.PrimaryColor700
             )
         ) {
-            Text(text = "Submit Tugas", style = StyledText.MobileBaseSemibold)
+            Text(text = "Batal", style = StyledText.MobileBaseSemibold)
         }
+
     }
 }
 
