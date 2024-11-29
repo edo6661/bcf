@@ -167,8 +167,6 @@ fun TopSection(
         }
     )
 
-    Spacer(modifier = Modifier.height(16.dp))
-
     Row(
     ) {
         Text(
