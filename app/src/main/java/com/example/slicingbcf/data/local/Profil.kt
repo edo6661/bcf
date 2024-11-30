@@ -42,7 +42,7 @@ val profilLembaga = listOf(
             WilayahJangkauan(1, "DKI Jakarta", 5000, "https://example.com/rincian1.pdf"),
             WilayahJangkauan(2, "Jawa Barat", 2700, "https://example.com/rincian2.pdf")
         ),
-        keteranganLolos = "TIDAK LOLOS"
+        keteranganLolos = "LOLOS"
     )
 )
 
