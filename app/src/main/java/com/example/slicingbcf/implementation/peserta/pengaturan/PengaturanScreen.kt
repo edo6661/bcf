@@ -1,18 +1,22 @@
 package com.example.slicingbcf.implementation.peserta.pengaturan
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
 import com.example.slicingbcf.ui.shared.PrimaryButton
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
 
@@ -54,6 +58,7 @@ private fun Forms() {
   val isPasswordVisible = remember { mutableStateOf(false) }
   val isNewPasswordVisible = remember { mutableStateOf(false) }
   val isConfirmationPasswordVisible = remember { mutableStateOf(false) }
+  var isLoading by remember { mutableStateOf(false) }
 
   TextFieldWithTitle(
     title = "Kata Sandi Lama",
@@ -84,10 +89,19 @@ private fun Forms() {
   PrimaryButton(
     text = "Ubah Kata Sandi",
     style = StyledText.MobileSmallMedium,
+    onClick = {isLoading = true},
     modifier = Modifier
       .fillMaxWidth(),
     textColor = ColorPalette.OnPrimary
   )
+  if(isLoading){
+    SubmitLoadingIndicatorDouble(
+      isLoading = isLoading,
+      title = "Mengubah Kata Sandi Baru Anda...",
+      onAnimationFinished = {isLoading = false},
+      titleBerhasil = "Kata Sandi Berhasil Diubah!",
+    )
+  }
 
 }
 
