@@ -1133,7 +1133,9 @@ fun RowRadioButton(
   ) {
     RadioButton(
       selected = selected,
-      onClick = { },
+      onClick = {
+        onClick()
+      },
       colors = RadioButtonDefaults.colors(
         selectedColor = ColorPalette.PrimaryColor700,
         unselectedColor = ColorPalette.Monochrome400
@@ -1169,7 +1171,9 @@ fun RowCheckboxButton(
     ) {
       Checkbox(
         checked = checked,
-        onCheckedChange = { },
+        onCheckedChange = {
+          onCheckedChange()
+        },
         colors = CheckboxDefaults.colors(
           checkedColor = ColorPalette.PrimaryColor700,
           uncheckedColor = ColorPalette.Monochrome400
