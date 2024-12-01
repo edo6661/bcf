@@ -40,6 +40,12 @@ fun scaffoldConfig(currentRoute : String?)
         showBackNav = true,
       )
     }
+    "penilaian-peserta-mentor/{id}"         -> {
+      ScaffoldConfig(
+        showMainNav = false,
+        showBackNav = true,
+      )
+    }
 
     "pitchdeck/{id}"                 -> {
       ScaffoldConfig(
@@ -49,6 +55,20 @@ fun scaffoldConfig(currentRoute : String?)
     }
 
     "pitchdeck/{id}/more"            -> {
+      ScaffoldConfig(
+        showMainNav = false,
+        showBackNav = true,
+      )
+    }
+
+    "pitchdeck-mentor/{id}"                 -> {
+      ScaffoldConfig(
+        showMainNav = false,
+        showBackNav = true,
+      )
+    }
+
+    "pitchdeck-mentor/{id}/more"            -> {
       ScaffoldConfig(
         showMainNav = false,
         showBackNav = true,
@@ -100,6 +120,40 @@ fun scaffoldConfig(currentRoute : String?)
         showBackNav = true,
       )
     }
+
+    "pengumuman-mentor/{id}"               -> ScaffoldConfig(
+      showMainNav = false,
+      showBackNav = true,
+    )
+
+
+    "data-peserta-mentor/{id}"             -> {
+      ScaffoldConfig(
+        showMainNav = false,
+        showBackNav = true,
+      )
+    }
+
+    Screen.Peserta.SearchPusatInformasi.route        -> {
+      ScaffoldConfig(
+        showMainNav = false,
+        showBackNav = true,
+      )
+    }
+
+
+    "form-monthly-report/{id}"             -> {
+      ScaffoldConfig(
+        showMainNav = false,
+        showBackNav = true,
+      )
+    }
+
+    Screen.Mentor.SearchForumDiskusi.route -> ScaffoldConfig(
+      showMainNav = false,
+      showBackNav = true,
+    )
+
 
     else                             -> ScaffoldConfig()
   }

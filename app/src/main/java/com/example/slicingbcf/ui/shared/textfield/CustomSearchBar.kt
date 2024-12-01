@@ -1,6 +1,8 @@
 package com.example.slicingbcf.ui.shared.textfield
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,17 +21,18 @@ import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 
-
 @Composable
 fun SearchBarCustom(
   onSearch : (String) -> Unit,
+  query : String? = null,
   modifier : Modifier = Modifier,
   textStyle : TextStyle = StyledText.MobileSmallRegular,
   color : Color = ColorPalette.Monochrome300,
   title : String,
-  bgColor : Color = ColorPalette.PrimaryColor100
+  bgColor : Color = ColorPalette.PrimaryColor100,
+  onClick : () -> Unit = { },
+  isEnable : Boolean = true
 ) {
-  var query by remember { mutableStateOf("") }
 
   Box(
     modifier = modifier
@@ -42,12 +45,18 @@ fun SearchBarCustom(
         color = bgColor,
         shape = RoundedCornerShape(40.dp)
       )
+      .clickable {
+        if (! isEnable) {
+          Log.d("SearchBarCustom", "SearchBarCustom is disabled")
+          onClick()
+        }
+      }
   ) {
     TextField(
       textStyle = StyledText.MobileSmallRegular,
-      value = query,
+      value = query ?: "",
       onValueChange = {
-        query = it
+
         onSearch(it)
       },
       placeholder = {
@@ -65,15 +74,18 @@ fun SearchBarCustom(
           tint = color
         )
       },
+      enabled = isEnable,
+
       singleLine = true,
       shape = RoundedCornerShape(40.dp),
       colors = TextFieldDefaults.colors(
-        focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = Color.Transparent,
-        disabledIndicatorColor = Color.Transparent,
-        errorIndicatorColor = Color.Transparent,
-        unfocusedContainerColor = Color.Transparent,
-        focusedContainerColor = Color.Transparent
+        focusedIndicatorColor = ColorPalette.PrimaryColor100,
+        unfocusedIndicatorColor = ColorPalette.PrimaryColor100,
+        disabledIndicatorColor = ColorPalette.PrimaryColor100,
+        errorIndicatorColor = ColorPalette.PrimaryColor100,
+        unfocusedContainerColor = ColorPalette.PrimaryColor100,
+        focusedContainerColor = ColorPalette.PrimaryColor100,
+        disabledContainerColor = ColorPalette.PrimaryColor100,
       ),
     )
   }
