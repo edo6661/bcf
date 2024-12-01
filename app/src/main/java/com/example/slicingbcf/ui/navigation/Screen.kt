@@ -23,15 +23,15 @@ sealed class Screen(val route : String) {
     object Pengaturan : Peserta("pengaturan")
     object PusatInformasi : Peserta("pusat-informasi")
     data class DetailPusatInformasi(val id : String) : Peserta("pusat-informasi/$id")
-    // form feedback mentor
     object FormFeedbackMentor : Peserta("form-mentor")
-    // feedback peserta
     object FeedbackPeserta: Peserta("feedback-peserta")
 
     object SearchPusatInformasi : Mentor("search-pusat-informasi")
     object PenilaianPeserta : Peserta("penilaian-peserta")
     object FormMonthlyReport : Peserta("form-monthly-report")
     data class DetailFormMonthlyReport(val id : String) : Peserta("form-monthly-report/$id")
+    data class AdaMonthlyReport(val id : String) : Peserta("ada-monthly-report/$id")
+    data class TidakAdaMonthlyReport(val id : String) : Peserta("tidak-ada-monthly-report/$id")
     object CheckStatusRegistrasi : Peserta("check-status-registrasi")
 
   }
