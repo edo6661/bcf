@@ -151,7 +151,6 @@ fun CustomOutlinedTextFieldDropdownDateAsterisk(
         readOnly = true,
         labelFocusedColor = labelFocusedColor,
         labelDefaultColor = labelDefaultColor,
-        labelFocusedStyle = StyledText.MobileSmallMedium,
         trailingIcon = {
           Icon(
             imageVector = Icons.Default.ArrowDropDown,
