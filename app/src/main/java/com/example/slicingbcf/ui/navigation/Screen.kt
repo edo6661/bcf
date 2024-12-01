@@ -3,6 +3,7 @@ package com.example.slicingbcf.ui.navigation
 sealed class Screen(val route : String) {
 
   object Home : Screen("home")
+  object SplashScreen : Screen("splash-screen")
 
   sealed class Auth(route : String) : Screen(route) {
     object Login : Auth("login")
