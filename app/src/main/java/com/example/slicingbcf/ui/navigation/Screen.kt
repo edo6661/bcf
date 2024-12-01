@@ -8,6 +8,8 @@ sealed class Screen(val route : String) {
     object Login : Auth("login")
     object ForgotPassword : Auth("forgot-password")
     object Registrasi : Peserta("registrasi")
+    object UmpanBalikRegistrasi : Auth("umpan-balik-registrasi")
+
   }
 
   sealed class Peserta(route : String) : Screen(route) {
@@ -18,27 +20,40 @@ sealed class Screen(val route : String) {
     object WorksheetPeserta : Peserta("worksheet-peserta")
     data class DetailWorksheetPeserta(val id : String) : Peserta("worksheet-peserta/$id")
     object Pengaturan : Peserta("pengaturan")
-    object PusatInformasi : Mentor("pusat-informasi")
-    data class DetailPusatInformasi(val id : String) : Mentor("pusat-informasi/$id")
+    object PusatInformasi : Peserta("pusat-informasi")
+    data class DetailPusatInformasi(val id : String) : Peserta("pusat-informasi/$id")
     // form feedback mentor
     object FormFeedbackMentor : Peserta("form-mentor")
     // feedback peserta
     object FeedbackPeserta: Peserta("feedback-peserta")
 
+    object SearchPusatInformasi : Mentor("search-pusat-informasi")
     object PenilaianPeserta : Peserta("penilaian-peserta")
+    object FormMonthlyReport : Peserta("form-monthly-report")
+    data class DetailFormMonthlyReport(val id : String) : Peserta("form-monthly-report/$id")
+    object CheckStatusRegistrasi : Peserta("check-status-registrasi")
 
   }
 
   sealed class Mentor(route : String) : Screen(route) {
-    object PenilaianPeserta : Mentor("penilaian-peserta")
+    object PenilaianPeserta : Mentor("penilaian-peserta-mentor")
     data class DetailPenilaianPeserta(val id : String) : Mentor("penilaian-peserta/$id")
     object FormFeedbackPeserta : Mentor("form-feedback-peserta")
-    object Pitchdeck : Mentor("pitchdeck")
-    data class DetailPitchdeck(val id : String) : Mentor("pitchdeck/$id")
-    data class MoreDetailPitchdeck(val id : String) : Mentor("pitchdeck/$id/more")
+    object Pitchdeck : Mentor("pitchdeck-mentor")
+    data class DetailPitchdeck(val id : String) : Mentor("pitchdeck-mentor/$id")
+    data class MoreDetailPitchdeck(val id : String) : Mentor("pitchdeck-mentor/$id/more")
     object ForumDiskusi : Mentor("forum-diskusi")
     data class DetailForumDiskusi(val id : String) : Mentor("forum-diskusi/$id")
-    object DataPeserta : Mentor("data-peserta")
+    object DataPeserta : Mentor("data-peserta-mentor")
+
+    object FeedbackPeserta : Mentor("feedback-peserta")
+    object SearchForumDiskusi : Mentor("search-forum-diskusi")
+    object Pengaturan : Mentor("pengaturan-mentor")
+    object Pengumuman : Mentor("pengumuman-mentor")
+    data class DetailPengumumanPeserta(val id : String) : Peserta("pengumuman-mentor/$id")
+    object KelompokMentoring : Mentor("kelompok-mentoring-mentor")
+
+
   }
 
   sealed class Kegiatan(route: String) : Screen(route){

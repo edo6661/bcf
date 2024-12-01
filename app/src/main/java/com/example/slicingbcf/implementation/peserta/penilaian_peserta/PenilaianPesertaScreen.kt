@@ -32,7 +32,6 @@ fun PenilaianPesertaScreen(
 
   ) {
   val scroll = rememberScrollState()
-  var isEdit by remember { mutableStateOf(false) }
   Column(
     modifier = modifier
       .statusBarsPadding()
@@ -44,8 +43,6 @@ fun PenilaianPesertaScreen(
     verticalArrangement = Arrangement.spacedBy(40.dp)
   ) {
     TopSection(
-      isEdit = isEdit,
-      toggleEdit = { isEdit = ! isEdit }
     )
     BottomSection(
       penilaian = Penilaian(
@@ -53,8 +50,6 @@ fun PenilaianPesertaScreen(
         batch = 1,
         totalPenilaian = 100
       ),
-      isEdit = isEdit,
-      toggleEdit = { isEdit = ! isEdit }
     )
 
   }
@@ -64,23 +59,19 @@ fun PenilaianPesertaScreen(
 @Composable
 fun BottomSection(
   penilaian : Penilaian,
-  isEdit : Boolean,
-  toggleEdit : () -> Unit
 ) {
+  val maxPenilaian = 100
   Column(
     verticalArrangement = Arrangement.spacedBy(24.dp)
   ) {
-    InfoSection(
-      data = listOf(
-        "Nama Lembaga" to penilaian.namaLembaga,
-        "Batch" to penilaian.batch.toString(),
-        "Total Penilaian" to penilaian.totalPenilaian.toString()
-      )
+    Text(
+      text = "Total Penilaian: ${penilaian.totalPenilaian}/$maxPenilaian",
+      style = StyledText.MobileBaseSemibold,
+      color = ColorPalette.PrimaryColor700,
     )
+
     TableSection()
     FormSection(
-      isEdit = isEdit,
-      toggleEdit = toggleEdit
     )
 
   }
@@ -88,8 +79,6 @@ fun BottomSection(
 
 @Composable
 fun FormSection(
-  isEdit : Boolean,
-  toggleEdit : () -> Unit
 ) {
   Column {
     Column(
@@ -99,13 +88,12 @@ fun FormSection(
       verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
       TextFieldWithTitle(
-        heading = "Hal-Hal Yang Perlu Ditingkatkan",
-        title = "Masukan Mentor Cluster",
+        heading = "Hal-hal Yang Dibahas Selama Kegiatan Mentoring",
+        title = "Umpan Balik Mentor Cluster",
         onChange = {},
         value = "test text asdasd",
         placeholder = "Dibahas",
         label = "Kegiatan",
-        isEdit = isEdit
       )
       TextFieldWithTitle(
         title = "Umpan Balik Mentor Desain Program",
@@ -113,16 +101,14 @@ fun FormSection(
         value = "",
         placeholder = "Umpan Balik",
         label = "Umpan",
-        isEdit = isEdit
       )
       TextFieldWithTitle(
-        heading = "Hal-hal Yang Dibahas Selama Kegiatan Mentoring",
-        title = "Masukan Mentor Desain Program",
+        heading = "Hal-Hal Yang Perlu Ditingkatkan",
+        title = "Masukan Mentor Cluster",
         onChange = {},
         value = "",
         placeholder = "Dibahas",
         label = "Kegiatan",
-        isEdit = isEdit
       )
       TextFieldWithTitle(
         title = "Umpan Balik Mentor Desain Program",
@@ -130,113 +116,24 @@ fun FormSection(
         value = "",
         placeholder = "Umpan Balik",
         label = "Umpan",
-        isEdit = isEdit
       )
     }
-    AnimatedVisibility(isEdit) {
-      HorizontalDivider()
-      Row(
-        modifier = Modifier
-          .padding(
-            horizontal = 8.dp,
-            vertical = 16.dp
-          )
-          .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(
-          8.dp,
-          Alignment.End
-        ),
-        verticalAlignment = Alignment.CenterVertically
-      ) {
-        SecondaryButton(
-          text = "Batal",
-          onClick = {
-            toggleEdit()
-          }
-        )
-        PrimaryButton(
-          text = "Simpan",
-          onClick = {}
-        )
-      }
-    }
+
   }
 }
 
 
 @Composable
 fun TopSection(
-  isEdit : Boolean,
-  toggleEdit : () -> Unit
 ) {
-  val icon = if (isEdit) Icons.Outlined.Inbox else Icons.Outlined.Edit
-  Column {
+  Text(
+    text = "Penilaian Peserta",
+    style = StyledText.MobileLargeMedium,
+    color = ColorPalette.Black,
+    textAlign = TextAlign.Center,
+    modifier = Modifier.fillMaxWidth()
+  )
 
-    Row(
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically,
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(
-          bottom = 32.dp
-        ),
-    ) {
-      Text(
-        text = "Detail Penilaian Peserta",
-        style = StyledText.MobileLargeMedium,
-        color = ColorPalette.Black,
-      )
-      FloatingActionButton(
-        onClick = {
-          toggleEdit()
-        },
-        containerColor = ColorPalette.PrimaryColor100,
-        contentColor = ColorPalette.PrimaryColor700,
-        modifier = Modifier.size(56.dp)
-      ) {
-        Icon(
-          imageVector = icon,
-          contentDescription = ""
-        )
-      }
-    }
-    HorizontalDivider(
-      Modifier
-        .padding(0.dp)
-        .height(1.dp)
-        .background(color = ColorPalette.OutlineVariant)
-    )
-  }
-}
-
-
-@Composable
-fun InfoSection(data : List<Pair<String, String>>) {
-  Column(
-    verticalArrangement = Arrangement.spacedBy(16.dp)
-  ) {
-    data.forEach { (label, value) ->
-      InfoRow(label = label, value = value)
-    }
-  }
-}
-
-@Composable
-fun InfoRow(label : String, value : String) {
-  Column(
-    verticalArrangement = Arrangement.spacedBy(8.dp)
-  ) {
-    Text(
-      text = label,
-      style = StyledText.MobileBaseSemibold,
-      color = ColorPalette.PrimaryColor700,
-    )
-    Text(
-      text = value,
-      style = StyledText.MobileSmallMedium,
-      color = ColorPalette.Black,
-    )
-  }
 }
 
 
@@ -262,7 +159,7 @@ fun TableSection() {
     verticalArrangement = Arrangement.spacedBy(20.dp)
   ) {
     Text(
-      text = "Evaluasi Capaian Cluster",
+      text = "Penilaian Umum Peserta",
 
       style = StyledText.MobileBaseMedium,
     )
@@ -270,6 +167,21 @@ fun TableSection() {
       headers = headerTable,
       columnWeights = columnWeights,
       rows = rowsPenilaianUmum
+    )
+  }
+
+  Column(
+    verticalArrangement = Arrangement.spacedBy(20.dp)
+  ) {
+    Text(
+      text = "Evaluasi Capaian Desain Program",
+
+      style = StyledText.MobileBaseMedium,
+    )
+    Table(
+      headers = headerTable,
+      columnWeights = columnWeights,
+      rows = rowsNilaiCapaianClusters
     )
   }
 
@@ -288,6 +200,7 @@ fun TableSection() {
     )
   }
 
+
 }
 
 @Composable
@@ -297,6 +210,7 @@ fun Table(
   rows : List<List<String>>
 ) {
   Column(
+    modifier = Modifier.background(ColorPalette.Shade1)
   ) {
     TableRow {
       headers.forEachIndexed { index, header ->

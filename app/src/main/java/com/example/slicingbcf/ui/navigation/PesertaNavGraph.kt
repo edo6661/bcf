@@ -4,9 +4,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.navigation.*
 import androidx.navigation.compose.composable
+import com.example.slicingbcf.implementation.peserta.check_status_registrasi.CheckStatusRegistrasiScreen
 import com.example.slicingbcf.implementation.peserta.data_peserta.DataPesertaScreen
 import com.example.slicingbcf.implementation.peserta.feedback_peserta.FeedbackPesertaScreen
 import com.example.slicingbcf.implementation.peserta.form_feedback_mentor.FeedbackMentorScreen
+import com.example.slicingbcf.implementation.peserta.form_monthly_report.DetailFormMonthlyReportScreen
+import com.example.slicingbcf.implementation.peserta.form_monthly_report.FormMonthlyReportScreen
 import com.example.slicingbcf.implementation.peserta.kelompok_mentoring.KelompokMentoringScreen
 import com.example.slicingbcf.implementation.peserta.pengaturan.PengaturanScreen
 import com.example.slicingbcf.implementation.peserta.pengumuman_peserta.DetailPengumumanPesertaScreen
@@ -14,6 +17,7 @@ import com.example.slicingbcf.implementation.peserta.pengumuman_peserta.Pengumum
 import com.example.slicingbcf.implementation.peserta.penilaian_peserta.PenilaianPesertaScreen
 import com.example.slicingbcf.implementation.peserta.pusat_informasi.DetailPusatInformasiScreen
 import com.example.slicingbcf.implementation.peserta.pusat_informasi.PusatInformasiScreen
+import com.example.slicingbcf.implementation.peserta.pusat_informasi.SearchPusatInformasiScreen
 import com.example.slicingbcf.implementation.peserta.worksheet_peserta.DetailWorksheetPesertaScreen
 import com.example.slicingbcf.implementation.peserta.worksheet_peserta.WorksheetPesertaScreen
 
@@ -27,6 +31,7 @@ fun NavGraphBuilder.pesertaNavGraph(
   ) {
     // Data Peserta
     composable(Screen.Peserta.DataPeserta.route) {
+
       DataPesertaScreen(
         modifier = modifier,
       )
@@ -39,9 +44,14 @@ fun NavGraphBuilder.pesertaNavGraph(
       val onNavigateDetailPusatInformasi = { id : String ->
         navController.navigateSingleTop("pusat-informasi/$id")
       }
+      val onNavigateSearchPusatInformasi = {  ->
+        navController.navigateSingleTop(Screen.Peserta.SearchPusatInformasi.route)
+      }
       PusatInformasiScreen(
         modifier = modifier,
-        onNavigateDetailPusatInformasi = onNavigateDetailPusatInformasi
+        onNavigateDetailPusatInformasi = onNavigateDetailPusatInformasi,
+        onNavigateSearchPusatInformasi = onNavigateSearchPusatInformasi
+
       )
     }
     composable(
@@ -55,8 +65,31 @@ fun NavGraphBuilder.pesertaNavGraph(
         id = id
       )
     }
+    composable(
+      route = Screen.Peserta.SearchPusatInformasi.route
+    ) {
+
+      val onNavigateDetailPusatInformasi = { id : String ->
+        navController.navigateSingleTop("forum-diskusi/$id")
+      }
+
+      SearchPusatInformasiScreen (
+        modifier = modifier,
+        onNavigateDetailPusatInformasi = onNavigateDetailPusatInformasi
+      )
+    }
+
 
     // Penilaian Peserta
+    composable(
+      route = Screen.Peserta.PenilaianPeserta.route,
+    ) {
+      PenilaianPesertaScreen(
+        modifier = modifier,
+      )
+    }
+
+
 
     // kelompok mentoring
     composable(Screen.Peserta.KelompokMentoring.route) {
@@ -114,13 +147,6 @@ fun NavGraphBuilder.pesertaNavGraph(
       )
     }
 
-    composable(
-      route = Screen.Peserta.PenilaianPeserta.route,
-    ) {
-      PenilaianPesertaScreen(
-        modifier = modifier,
-      )
-    }
 
     // Feedback Peserta
     composable(
@@ -139,6 +165,41 @@ fun NavGraphBuilder.pesertaNavGraph(
         modifier = modifier
       )
     }
+    // check status registrasi
+    composable(
+      route = Screen.Peserta.CheckStatusRegistrasi.route
+    ) {
+      CheckStatusRegistrasiScreen(
+        modifier = modifier
+      )
+    }
+    // form monthly report
+    composable(
+      route = Screen.Peserta.FormMonthlyReport.route,
+    ) {
+      val onNavigateDetailFormMonthlyReport = { id : String ->
+        navController.navigateSingleTop("form-monthly-report/$id")
+      }
+      FormMonthlyReportScreen(
+        modifier = modifier,
+        onNavigateDetailFormMonthlyReport = onNavigateDetailFormMonthlyReport
+      )
+    }
+    // detail form monthly report
+    composable(
+      route = "form-monthly-report/{id}",
+      arguments = listOf(navArgument("id") { type = NavType.StringType })
+    ) { backStackEntry ->
+      val id = backStackEntry.arguments?.getString("id") ?: ""
+      if (id.isEmpty()) throw IllegalStateException("id must not be empty")
+      DetailFormMonthlyReportScreen(
+        modifier = modifier,
+        id = id
+      )
+    }
+
+
+
 
   }
 }

@@ -15,11 +15,14 @@ import com.example.slicingbcf.constant.StyledText
 @Composable
 fun PrimaryButton(
   modifier : Modifier = Modifier,
+  modifierText: Modifier = Modifier,
+
   onClick : () -> Unit = {},
   text : String = "Default",
   style : TextStyle = StyledText.MobileSmallRegular,
   color : Color = ColorPalette.PrimaryColor700,
-  textColor : Color = Color.White
+  textColor : Color = Color.White,
+  isEnabled : Boolean = true
 
 ) {
   Button(
@@ -27,12 +30,14 @@ fun PrimaryButton(
     onClick = onClick,
     colors = ButtonDefaults.buttonColors(
       containerColor = color
-    )
+    ),
+    enabled = isEnabled
   ) {
     Text(
       text,
       style = style,
-      color = textColor
+      color = textColor,
+      modifier = modifierText
     )
   }
 }

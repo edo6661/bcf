@@ -1,5 +1,8 @@
 package com.example.slicingbcf.ui.sidenav
 
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
@@ -17,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -26,10 +30,14 @@ import androidx.navigation.NavHostController
 import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.dao.model.Role
+import com.example.slicingbcf.data.dao.model.User
+import com.example.slicingbcf.ui.animations.SubmitLoadingIndicator
 import com.example.slicingbcf.ui.navigation.Screen
 import com.example.slicingbcf.ui.navigation.navigateSingleTop
 import com.example.slicingbcf.ui.shared.PrimaryButton
 import com.example.slicingbcf.ui.shared.dialog.CustomAlertDialog
+import kotlinx.coroutines.delay
 
 @Composable
 fun SideNav(
@@ -71,7 +79,10 @@ fun SideNav(
 fun SideNavContent(
   navController : NavHostController,
   closeSideNavVisible : () -> Unit,
-  isActiveRoute : (String) -> Boolean
+  isActiveRoute : (String) -> Boolean,
+  logout : () -> Unit,
+  user : User?
+
 ) {
   val navigateAndCloseSideNav : (String) -> Unit = { route ->
     closeSideNavVisible()
@@ -99,7 +110,10 @@ fun SideNavContent(
     ) {
       BottomSideNav(
         navigateAndCloseSideNav = navigateAndCloseSideNav,
-        isActiveRoute = isActiveRoute
+        isActiveRoute = isActiveRoute,
+        logout = logout,
+        closeSideNavVisible = closeSideNavVisible,
+        user = user
       )
     }
 
@@ -138,101 +152,139 @@ private fun TopSideNav() {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BottomSideNav(
   navigateAndCloseSideNav : (String) -> Unit,
-  isActiveRoute : (String) -> Boolean
+  isActiveRoute : (String) -> Boolean,
+  logout : () -> Unit,
+  closeSideNavVisible : () -> Unit,
+  user : User?
 ) {
 
   val scroll = rememberScrollState()
 
   var showLogoutDialog by remember { mutableStateOf(false) }
-  Column(
-    modifier = Modifier
-      .fillMaxHeight()
-      .verticalScroll(
-        scroll
-      ),
-    verticalArrangement = Arrangement.SpaceBetween,
+
+  var isLoading by remember { mutableStateOf(false) }
+
+  val context = LocalContext.current
+
+
+  val onNavigateModul = {
+    isLoading = true
+  }
+
+  LaunchedEffect(
+    isLoading
+  ) {
+    if(isLoading) {
+      delay(3000)
+      isLoading = false
+      val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://sites.google.com/new?tgif=d"))
+      context.startActivity(intent)
+    }
+  }
+
+  Box(
   ) {
     Column(
-      verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-      PrimaryButton(
-        text = "Masuk",
-        onClick = {
-          navigateAndCloseSideNav(Screen.Auth.Login.route)
-        }
-      )
-      PrimaryButton(
-        text = "Daftar",
-        onClick = {
-          navigateAndCloseSideNav(Screen.Auth.Registrasi.route)
-        }
-      )
-
-      // TODO ubah sidenav versi mentor dan peserta, udah login blm
-      SideNavDropdownPeserta(
-        navigateAndCloseSideNav,
-        isActiveRoute
-      )
-//      SideNavDropdownMentor(
-//        navigateAndCloseSideNav,
-//        isActiveRoute
-//      )
-////      SideNavDropdownGuest(
-////        navigateAndCloseSideNav,
-////        isActiveRoute
-////      )
-    }
-
-
-    Column(
-      verticalArrangement = Arrangement.spacedBy(16.dp),
       modifier = Modifier
-        .clickable {
-          showLogoutDialog = true
-        }
+        .fillMaxHeight()
+        .verticalScroll(
+          scroll
+        ),
+      verticalArrangement = Arrangement.SpaceBetween,
     ) {
-      Text(
-        text = "Logout",
-        style = StyledText.MobileBaseMedium,
-        color = Color(0xFFB02A37),
-        modifier = Modifier
-          .padding(
-            horizontal = 16.dp,
+      Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+      ) {
+        when {
+          user == null -> {
+            SideNavDropdownGuest(
+              navigateAndCloseSideNav,
+              isActiveRoute
+            )
+          }
+
+          user.role == Role.PESERTA.name -> {
+            SideNavDropdownPeserta(
+              navigateAndCloseSideNav,
+              isActiveRoute,
+              onNavigateModul = onNavigateModul
+            )
+          }
+
+          user.role == Role.MENTOR.name -> {
+            SideNavDropdownMentor(
+              navigateAndCloseSideNav,
+              isActiveRoute,
+              onNavigateModul = onNavigateModul
+            )
+          }
+
+
+        }
+      }
+
+      if (user != null) {
+        Column(
+          verticalArrangement = Arrangement.spacedBy(16.dp),
+          modifier = Modifier
+            .clickable {
+              showLogoutDialog = true
+            }
+        ) {
+          Text(
+            text = "Logout",
+            style = StyledText.MobileBaseMedium,
+            color = Color(0xFFB02A37),
+            modifier = Modifier
+              .padding(
+                horizontal = 16.dp,
+              )
+              .padding(top = 16.dp)
           )
-          .padding(top = 16.dp)
-      )
-      HorizontalDivider(
-        modifier = Modifier.fillMaxWidth()
+          HorizontalDivider(
+            modifier = Modifier.fillMaxWidth()
+          )
+        }
+      }
+
+    }
+
+    if (showLogoutDialog) {
+      CustomAlertDialog(
+        title = "Apakah anda yakin ingin keluar?",
+        confirmButtonText = "Keluar",
+        dismissButtonText = "Batal",
+        onConfirm = {
+          logout()
+          showLogoutDialog = false
+          closeSideNavVisible()
+
+        },
+        onDismiss = {
+          showLogoutDialog = false
+        }
       )
     }
-  }
-
-  if (showLogoutDialog) {
-    CustomAlertDialog(
-      title = "Apakah anda yakin ingin keluar?",
-      confirmButtonText = "Keluar",
-      dismissButtonText = "Batal",
-      onConfirm = {
-        showLogoutDialog = false
-      },
-      onDismiss = {
-        showLogoutDialog = false
-      }
+    SubmitLoadingIndicator(
+      isLoading = isLoading,
+      modifier = Modifier.align(Alignment.Center),
+      title = "Mengrahkan anda ke:",
+      description = "https://sites.google.com/new?tgif=d",
     )
   }
-}
 
+}
 
 @Composable
 private fun SideNavDropdown(
   title : String,
   items : List<DropdownItem>? = null,
   onClickDropdown : () -> Unit = {},
-  isActiveRoute : (String) -> Boolean
+  isActiveRoute : (String) -> Boolean,
+  route : String ? = null
 ) {
   var expanded by remember { mutableStateOf(false) }
 
@@ -249,6 +301,18 @@ private fun SideNavDropdown(
       else          -> onClickDropdown()
     }
   }
+  val colorIsActive = if (isActiveRoute(route ?: title)) {
+    ColorPalette.PrimaryColor700
+  } else {
+    ColorPalette.OnSurface
+  }
+  val textStyle = if (isActiveRoute(route ?: title)) {
+    StyledText.MobileBaseMedium
+  } else {
+    StyledText.MobileBaseRegular
+  }
+
+
 
 
 
@@ -260,7 +324,8 @@ private fun SideNavDropdown(
         text = {
           Text(
             title,
-            style = StyledText.MobileBaseMedium
+            style = textStyle,
+            color = colorIsActive
           )
         },
         onClick = {
@@ -343,34 +408,108 @@ private fun SideNavDropdownItem(
 }
 
 
-// TODO: nanti ganti sesuai dengan role user
+// TODO: GUEST
+
 @Composable
 private fun SideNavDropdownGuest(
   navigateAndCloseSideNav : (String) -> Unit,
   isActiveRoute : (String) -> Boolean
 ) {
+  PrimaryButton(
+    text = "Masuk",
+    onClick = {
+      navigateAndCloseSideNav(Screen.Auth.Login.route)
+    }
+  )
+  SideNavDropdown(
+    "Beranda",
+    items = null,
+    isActiveRoute = isActiveRoute,
+    onClickDropdown = {
+      navigateAndCloseSideNav(Screen.Home.route)
+    },
+
+  )
   SideNavDropdown(
     "Pendaftaran",
-    items = dropdownItemsPendaftaran(
+    items = dropdownItemsPendaftaran_Guest(
       navigateAndCloseSideNav
     ),
     isActiveRoute = isActiveRoute
   )
+
+  SideNavDropdown(
+    "Pusat Informasi",
+    items = null,
+    isActiveRoute = isActiveRoute,
+    onClickDropdown = {
+      navigateAndCloseSideNav(Screen.Peserta.PusatInformasi.route)
+    }
+  )
+
 }
+
+
+// TODO: SEMUA ROLE BIAR ENAK BISA LIAT SEMUA
+
+//@Composable
+//private fun SideNavDropdownGuest(
+//  navigateAndCloseSideNav : (String) -> Unit,
+//  isActiveRoute : (String) -> Boolean
+//) {
+//  PrimaryButton(
+//    text = "Masuk",
+//    onClick = {
+//      navigateAndCloseSideNav(Screen.Auth.Login.route)
+//    }
+//  )
+//  SideNavDropdown(
+//    "Registrasi",
+//    items = dropdownItemsPendaftaran(
+//      navigateAndCloseSideNav
+//    ),
+//    isActiveRoute = isActiveRoute
+//  )
+//  SideNavDropdown(
+//    "Mentor",
+//    items = dropdownItemsMentor_Guest(
+//      navigateAndCloseSideNav
+//    ),
+//    isActiveRoute = isActiveRoute
+//  )
+//  SideNavDropdown(
+//    "Tugas",
+//    items = dropdownItemsTugas_Guest(
+//      navigateAndCloseSideNav
+//    ),
+//    isActiveRoute = isActiveRoute
+//  )
+//
+//  SideNavDropdown(
+//    "Peserta",
+//    items = dropdownItemsPeserta_Guest(
+//      navigateAndCloseSideNav
+//    ),
+//    isActiveRoute = isActiveRoute
+//  )
+//
+//  SideNavDropdown(
+//    "Kegiatan",
+//    items = dropdownItemsKegiatan_Guest(
+//      navigateAndCloseSideNav
+//    ),
+//    isActiveRoute = isActiveRoute
+//  )
+//}
 
 
 @Composable
 private fun SideNavDropdownMentor(
   navigateAndCloseSideNav : (String) -> Unit,
-  isActiveRoute : (String) -> Boolean
+  isActiveRoute : (String) -> Boolean,
+  onNavigateModul : () -> Unit
 ) {
-  SideNavDropdown(
-    "Registrasi",
-    items = dropdownItemsPendaftaran(
-      navigateAndCloseSideNav
-    ),
-    isActiveRoute = isActiveRoute
-  )
+
   SideNavDropdown(
     "Peserta",
     items = dropdownItemsPeserta_Mentor(
@@ -388,7 +527,8 @@ private fun SideNavDropdownMentor(
   SideNavDropdown(
     "Tugas",
     items = dropdownItemsTugas_Mentor(
-      navigateAndCloseSideNav
+      navigateAndCloseSideNav,
+      onNavigateModul = onNavigateModul
     ),
     isActiveRoute = isActiveRoute
   )
@@ -399,26 +539,41 @@ private fun SideNavDropdownMentor(
     ),
     isActiveRoute = isActiveRoute
   )
+  SideNavDropdown(
+    "Forum Diskusi",
+    items = null,
+    isActiveRoute = isActiveRoute,
+    onClickDropdown = {
+      navigateAndCloseSideNav(Screen.Mentor.ForumDiskusi.route)
+    },
+    route = Screen.Mentor.ForumDiskusi.route
+  )
+
+  SideNavDropdown(
+    "Pengaturan",
+    items = null,
+    isActiveRoute = isActiveRoute,
+    onClickDropdown = {
+      navigateAndCloseSideNav(Screen.Mentor.Pengaturan.route)
+    },
+    route = Screen.Mentor.Pengaturan.route
+  )
 }
 
 @Composable
 private fun SideNavDropdownPeserta(
   navigateAndCloseSideNav : (String) -> Unit,
-  isActiveRoute : (String) -> Boolean
+  isActiveRoute : (String) -> Boolean,
+  onNavigateModul : () -> Unit
 ) {
-  SideNavDropdown(
-    "Registrasi",
-    items = dropdownItemsPendaftaran(
-      navigateAndCloseSideNav
-    ),
-    isActiveRoute = isActiveRoute
-  )
+
   SideNavDropdown(
     "Peserta",
     items = dropdownItemsPeserta_Peserta(
       navigateAndCloseSideNav
     ),
-    isActiveRoute = isActiveRoute
+    isActiveRoute = isActiveRoute,
+
   )
   SideNavDropdown(
     "Mentor",
@@ -430,9 +585,14 @@ private fun SideNavDropdownPeserta(
   SideNavDropdown(
     "Tugas",
     items = dropdownItemsTugas_Peserta(
-      navigateAndCloseSideNav
+      navigateAndCloseSideNav,
+      onNavigateModul = onNavigateModul
     ),
-    isActiveRoute = isActiveRoute
+    isActiveRoute = isActiveRoute,
+    onClickDropdown = {
+      onNavigateModul()
+    }
+
   )
   SideNavDropdown(
     "Kegiatan",
@@ -441,4 +601,23 @@ private fun SideNavDropdownPeserta(
     ),
     isActiveRoute = isActiveRoute
   )
+  SideNavDropdown(
+    "Forum Diskusi",
+    items = null,
+    isActiveRoute = isActiveRoute,
+    onClickDropdown = {
+      navigateAndCloseSideNav(Screen.Peserta.PusatInformasi.route)
+    },
+    route = Screen.Peserta.PusatInformasi.route
+  )
+  SideNavDropdown(
+    "Pengaturan",
+    items = null,
+    isActiveRoute = isActiveRoute,
+    onClickDropdown = {
+      navigateAndCloseSideNav(Screen.Peserta.Pengaturan.route)
+    },
+    route = Screen.Peserta.Pengaturan.route
+  )
+
 }

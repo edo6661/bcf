@@ -40,3 +40,13 @@ fun NavController.navigateWithAnimation(
     builder()
   }
 }
+
+
+fun NavController.navigateAndClearStackButHome(
+  route : String,
+) {
+  navigate(route) {
+    popUpTo(Screen.Home.route) { inclusive = false }
+    launchSingleTop = true
+  }
+}

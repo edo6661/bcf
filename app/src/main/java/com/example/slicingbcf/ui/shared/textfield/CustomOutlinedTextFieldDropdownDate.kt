@@ -42,7 +42,9 @@ fun CustomOutlinedTextFieldDropdownDate(
   placeholder : String,
   labelDefaultColor : Color = ColorPalette.PrimaryColor700,
   labelFocusedColor : Color = ColorPalette.PrimaryColor700,
-  datePickerState : DatePickerState
+  datePickerState : DatePickerState,
+  error : String? = null,
+  asteriskAtEnd : Boolean = false
 ) {
   Box(
     modifier = Modifier
@@ -65,10 +67,12 @@ fun CustomOutlinedTextFieldDropdownDate(
         label = label,
         placeholder = placeholder,
         rounded = 40,
+        asteriskAtEnd = asteriskAtEnd,
         readOnly = true,
+
+        error = error,
         labelFocusedColor = labelFocusedColor,
         labelDefaultColor = labelDefaultColor,
-        labelFocusedStyle = StyledText.MobileSmallMedium,
         trailingIcon = {
           Icon(
             imageVector = Icons.Default.ArrowDropDown,
@@ -156,7 +160,6 @@ fun CustomOutlinedTextFieldDropdownDateAsterisk(
         readOnly = true,
         labelFocusedColor = labelFocusedColor,
         labelDefaultColor = labelDefaultColor,
-        labelFocusedStyle = StyledText.MobileSmallMedium,
         trailingIcon = {
           Icon(
             imageVector = Icons.Default.ArrowDropDown,

@@ -37,6 +37,7 @@ fun DataPesertaScreen(
       .verticalScroll(rememberScrollState()),
     verticalArrangement = Arrangement.spacedBy(28.dp),
   ) {
+
     TopSection(
       onSearch = { q ->
       }
@@ -129,7 +130,7 @@ private fun BottomSection() {
     listOf(
       (i + 1).toString(),
       data,
-      "Detail"
+      "Lihat"
     )
   }
   Table(
@@ -146,7 +147,8 @@ private fun Table(
   headers : List<String>
 ) {
   Column(
-    verticalArrangement = Arrangement.spacedBy(16.dp)
+    modifier = Modifier
+
   ) {
     TableRow(isHeader = true) {
       headers.forEachIndexed { i, cell ->
@@ -158,20 +160,36 @@ private fun Table(
         )
       }
     }
-    rows.forEach {
-      Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-      ) {
-        TableRow {
-          it.forEachIndexed { i, cell ->
-            TableCell(
-              modifier = Modifier.weight(columnWeights.getOrElse(i) { 1f }),
-              value = cell,
-              isButton = cell == "Detail",
-            )
+
+    Column(
+      modifier = Modifier
+        .shadow(
+          elevation = 4.dp,
+        )
+        .background(ColorPalette.Monochrome100)
+        .padding(
+          vertical = 16.dp,
+          horizontal = 8.dp
+        ),
+      verticalArrangement = Arrangement.spacedBy(16.dp)
+
+    ) {
+      rows.forEach {
+        Column(
+          verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+          TableRow {
+            it.forEachIndexed { i, cell ->
+              TableCell(
+                modifier = Modifier.weight(columnWeights.getOrElse(i) { 1f }),
+                value = cell,
+                isButton = cell == "Lihat",
+              )
+            }
           }
         }
       }
+
     }
 
   }
@@ -257,12 +275,21 @@ private fun TableRow(
 private val headersPesertaData = listOf(
   "No",
   "Nama Lembaga",
-  "Detail"
+  "Lihat"
 )
 
 private val mockDataPesertaData = listOf(
   "Bakrie Center Foundation",
   "YAMALI",
-  "ASDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDADASD"
+  "Inisiatif Lampung Sehat",
+  "STPI Penabulu Banten",
+  "Perkumpulan Masyarakat Sriwijaya Sehat Sumatera Selatan",
+  "STPI Penabulu DKI Jakarta",
+  "Yayasan Rekat Peduli Indonesia",
+  "Yayasan Bekantan",
+  "Yayasan Kesehatan Masyarakat Indonesia",
+  "Yayasan Kesehatan Masyarakat Indonesia",
+  "Yayasan Kesehatan Masyarakat Indonesia"
 )
+
 
