@@ -1,90 +1,183 @@
 package com.example.slicingbcf.ui.shared.pitchdeck_worksheet
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.NavigateNext
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.outlined.Folder
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.local.PitchDeck
 import com.example.slicingbcf.data.local.WorksheetPeserta
+import com.example.slicingbcf.ui.shared.message.SecondaryButton
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 @Composable
 fun WorksheetItem(
-  worksheet : WorksheetPeserta,
-  onClick : () -> Unit = {},
-  isClickable : Boolean = true,
-  bgColor : Color = ColorPalette.OnPrimary,
-  isDescriptionShown : Boolean = true
+  data: WorksheetPeserta,
+  onNavigateDetailWorksheet : (String) -> Unit,
+  bgColor: Color,
+  id : String
 ) {
-  Row(
-    verticalAlignment = Alignment.CenterVertically,
+  val isExpanded = remember { mutableStateOf(false) }
+
+  Column(
     modifier = Modifier
-      .then(
-        if (isClickable) Modifier.clickable(onClick = onClick)
-        else Modifier
-      )
+      .fillMaxWidth()
       .border(
-        width = 1.dp,
-        color = ColorPalette.Monochrome200,
-        shape = RoundedCornerShape(16.dp),
+        width = if (isExpanded.value) 1.dp else 0.dp,
+        color = if (isExpanded.value) ColorPalette.Monochrome200 else Color.Transparent,
+        shape = RoundedCornerShape(16.dp)
       )
       .background(
         color = bgColor,
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(16.dp)
       )
-      .padding(
-        horizontal = 4.dp,
-        vertical = 24.dp
-      ),
-    horizontalArrangement = Arrangement.SpaceBetween,
   ) {
-    IconButton(
-      onClick = { /*TODO*/ }
+    Card(
+      onClick = {
+        isExpanded.value = !isExpanded.value
+      },
+      shape = MaterialTheme.shapes.large,
+      modifier = Modifier
+        .fillMaxWidth()
+        .height(100.dp),
+      colors = CardDefaults.cardColors(
+        containerColor = bgColor
+      ),
+      border = BorderStroke(1.dp, ColorPalette.Monochrome200)
     ) {
-      Icon(
-        Icons.Outlined.Folder,
-        contentDescription = ""
-      )
-    }
-    Column(
-      modifier = Modifier.weight(1f),
-    ) {
-      Text(
-        text = worksheet.title,
-        style = StyledText.MobileSmallSemibold,
-        color = ColorPalette.OnSurface
-      )
-      if (isDescriptionShown) {
-        Text(
-          text = worksheet.description,
-          style = StyledText.MobileSmallRegular,
-          color = ColorPalette.OnSurface
+      Row(
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+      ) {
+        Row(
+          modifier = Modifier.weight(6f),
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+          Icon(
+            painter = painterResource(id = R.drawable.folder),
+            contentDescription = null,
+            modifier = Modifier.size(30.dp)
+          )
+          Column {
+            Text(
+              text = data.title,
+              style = StyledText.MobileSmallRegular
+            )
+            Text(
+              text = data.subTitle,
+              style = StyledText.MobileXsRegular
+            )
+            Text(
+              text = "Dibuat ${getCurrentTime()} WIB",
+              style = MaterialTheme.typography.bodySmall,
+              color = Color.Black
+            )
+          }
+        }
+        Icon(
+          imageVector = if (isExpanded.value) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+          contentDescription = null,
+          tint = Color.Black,
+          modifier = Modifier.size(16.dp)
         )
       }
     }
-    IconButton(
-      onClick = { /*todo*/ }
-    ) {
-      Icon(
-        Icons.AutoMirrored.Default.NavigateNext,
-        contentDescription = ""
-      )
+
+    if (isExpanded.value) {
+      Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier
+          .padding(horizontal = 16.dp, vertical = 12.dp)
+          .background(
+            color = bgColor,
+            shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+          ),
+      ) {
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+          Image(
+            painter = painterResource(id = R.drawable.folder),
+            contentDescription = "",
+            modifier = Modifier.size(24.dp)
+          )
+          Text(
+            text = data.link,
+            style = StyledText.MobileSmallRegular,
+            color = ColorPalette.PrimaryColor400
+          )
+        }
+        Text(
+          text = data.description,
+          style = StyledText.MobileSmallRegular
+        )
+        Text(
+          text = buildAnnotatedString {
+            append("Batas Submisi: ")
+            withStyle(
+              style = SpanStyle(
+                color = ColorPalette.SecondaryColor400
+              )
+            ) {
+              append(data.submissionDeadline)
+            }
+          },
+          style = StyledText.MobileSmallMedium
+        )
+        Box(
+          modifier = Modifier.fillMaxWidth(),
+          contentAlignment = Alignment.CenterEnd
+        ) {
+          SecondaryButton(
+            text = "Lihat Detail",
+            onClick = {onNavigateDetailWorksheet(id)},
+            style = StyledText.MobileSmallMedium
+          )
+        }
+      }
     }
   }
 }

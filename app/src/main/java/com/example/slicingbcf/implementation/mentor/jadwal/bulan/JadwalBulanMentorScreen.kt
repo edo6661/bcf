@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,8 +25,10 @@ import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -39,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,10 +50,14 @@ import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.detailJadwal
 import com.example.slicingbcf.data.local.profilLembaga
+import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.ZoneId
 import java.time.format.TextStyle
 import java.util.Locale
+import androidx.compose.material3.*
+import com.example.slicingbcf.ui.shared.textfield.CustomDate
 
 @Composable
 fun JadwalBulanMentorScreen(
@@ -64,47 +72,41 @@ fun JadwalBulanMentorScreen(
             "${it.beginTime.formatTime()} - ${it.endTime.formatTime()} WIB ${it.type}" to Color(it.color)
         }
     }
+    var expandedDate by remember { mutableStateOf(false) }
 
     TopSection(
         userName = profilLembaga.firstOrNull()?.name ?: "Pengguna",
         schedule = schedule,
         onNavigateWeeklyCalendar = onNavigateWeeklyCalendar,
         onNavigateDetailScreen = onNavigateDetailScreen,
-        onNavigateAddCalendar = onNavigateAddCalendar
+        onNavigateAddCalendar = onNavigateAddCalendar,
+        expandedDate = expandedDate,
+        onExpandedDateChange = { expandedDate = it },
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopSection(
     userName: String,
     schedule: Map<LocalDate, List<Pair<String, Color>>>,
     onNavigateWeeklyCalendar: (String) -> Unit,
     onNavigateDetailScreen: (String) -> Unit,
-    onNavigateAddCalendar: (String) -> Unit
+    onNavigateAddCalendar: (String) -> Unit,
+    expandedDate : Boolean,
+    onExpandedDateChange : (Boolean) -> Unit,
 ) {
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     val today = LocalDate.now()
     val currentMonth = YearMonth.of(selectedDate.year, selectedDate.month)
     var isMonthlyView by remember { mutableStateOf(true) }
-    val scheduleMonthly = detailJadwal.groupBy { it.date }.mapValues { entry ->
-        entry.value.map {
-            Triple(
-                "${it.beginTime.formatTime()} - ${it.endTime.formatTime()} WIB ${it.type}", // event
-                it.title,
-                Color(it.color)
-            )
-        }
-    }
-
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDate.toEpochDay() * 24 * 60 * 60 * 1000)
     var expanded by remember { mutableStateOf(false) }
-
-    val scheduleWeekly = detailJadwal.groupBy { it.date }.mapValues { entry ->
-        entry.value.map { (it.beginTime to it.endTime) to it.title }
-    }
-
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
         Spacer(modifier = Modifier.height(80.dp))
         Text(
@@ -151,41 +153,30 @@ fun TopSection(
                     textAlign = TextAlign.Center
                 )
             }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(0.dp)
-            ) {
-                IconButton(onClick = { selectedDate = selectedDate.minusMonths(1) }) {
-                    Icon(
-                        Icons.Default.ArrowBackIosNew,
-                        contentDescription = "Previous Month",
-                        modifier = Modifier.size(10.dp)
-                    )
+//            CustomDate(
+//                selectedDate = selectedDate,
+//                onDateSelected = { newDate ->
+//                    selectedDate = newDate
+//                },
+//                datePickerState = datePickerState,
+//                expanded = expandedDate,
+//                onChangeExpanded = {
+//                    onExpandedDateChange(it)
+//                }
+//            )
+            DatePicker(
+                selectedDate = selectedDate,
+                onDateSelected = { newDate ->
+                    selectedDate = newDate
                 }
-
-                Text(
-                    text = currentMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault()) + " ${currentMonth.year}",
-                    style = StyledText.MobileSmallRegular,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-
-                IconButton(onClick = { selectedDate = selectedDate.plusMonths(1) }) {
-                    Icon(
-                        Icons.Default.ArrowForwardIos,
-                        contentDescription = "Next Month",
-                        modifier = Modifier.size(10.dp)
-                    )
-                }
-            }
-
+            )
             Box(
                 Modifier
                     .padding(top = 20.dp, bottom = 20.dp)
             ) {
                 TextButton(onClick = { expanded = true }) {
                     Text(
-                        text = if (isMonthlyView) "Bulan" else "Pekan",
+                        text = if (isMonthlyView) "Bulan" else "Hari",
                         style = StyledText.MobileXsRegular,
                         color = ColorPalette.Black
                     )
@@ -219,7 +210,7 @@ fun TopSection(
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = "Pekan",
+                                text = "Hari",
                                 style = StyledText.MobileSmallRegular
                             )
                         },
@@ -235,16 +226,95 @@ fun TopSection(
         Spacer(modifier = Modifier.height(32.dp))
 
         MonthlyCalendarView(
-            currentMonth = currentMonth,
+            currentMonth = YearMonth.of(selectedDate.year, selectedDate.month),
             today = today,
             selectedDate = selectedDate,
-            schedule = scheduleMonthly,
+            schedule = detailJadwal.groupBy { it.date }.mapValues { entry ->
+                entry.value.map {
+                    Triple(
+                        "${it.beginTime.formatTime()} - ${it.endTime.formatTime()} WIB ${it.type}", // event
+                        it.title,
+                        Color(it.color)
+                    )
+                }
+            },
             onDateSelected = { selectedDate = it },
             onNavigateDetailScreen = onNavigateDetailScreen,
             onNavigateAddCalendar = onNavigateAddCalendar
         )
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePicker(
+    selectedDate: LocalDate,
+    onDateSelected: (LocalDate) -> Unit
+) {
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(0.dp)
+    ) {
+        IconButton(onClick = {
+            onDateSelected(selectedDate.minusMonths(1))
+        }) {
+            Icon(
+                Icons.Default.ArrowBackIosNew,
+                contentDescription = "Previous Month",
+                modifier = Modifier.size(10.dp)
+            )
+        }
+
+        Text(
+            text = "${selectedDate.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${selectedDate.year}",
+            style = StyledText.MobileSmallRegular,
+            modifier = Modifier
+                .align(Alignment.CenterVertically)
+                .clickable { showDatePicker = true }
+        )
+
+        IconButton(onClick = {
+            onDateSelected(selectedDate.plusMonths(1))
+        }) {
+            Icon(
+                Icons.Default.ArrowForwardIos,
+                contentDescription = "Next Month",
+                modifier = Modifier.size(10.dp)
+            )
+        }
+    }
+
+    if (showDatePicker) {
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = selectedDate.toEpochDay() * 24 * 60 * 60 * 1000
+        )
+
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val dateMillis = datePickerState.selectedDateMillis
+                        dateMillis?.let {
+                            val newDate = Instant.ofEpochMilli(it)
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate()
+                            onDateSelected(newDate)
+                        }
+                        showDatePicker = false
+                    }
+                ) {
+                    Text("OK")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+}
+
 @Composable
 fun MonthlyCalendarView(
     currentMonth: YearMonth,

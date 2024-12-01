@@ -12,7 +12,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.local.pitchDeck
 import com.example.slicingbcf.data.local.worksheetsPeserta
+import com.example.slicingbcf.ui.shared.pitchdeck_worksheet.PitchDeckItem
 import com.example.slicingbcf.ui.shared.pitchdeck_worksheet.WorksheetItem
 
 @Composable
@@ -38,10 +40,10 @@ fun WorksheetPesertaScreen(
     ) {
       items(worksheetsPeserta.size) { index ->
         WorksheetItem(
-          worksheet = worksheetsPeserta[index],
-          onClick = {
-            onNavigateDetailWorksheetPeserta(worksheetsPeserta[index].title)
-          }
+          data = worksheetsPeserta[index],
+          onNavigateDetailWorksheet = { onNavigateDetailWorksheetPeserta(pitchDeck[index].title) },
+          bgColor = ColorPalette.OnPrimary,
+          id = "1"
         )
       }
 

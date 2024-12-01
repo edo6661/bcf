@@ -136,8 +136,6 @@ fun TopSection(
         singleLine = true
     )
 
-//    Spacer(modifier = Modifier.height(16.dp))
-
     Text(
         text = """
             • Silakan ubah submisi tugas apabila terdapat kesalahan, pastikan mengumpulkan sebelum Batas Submisi Tugas.

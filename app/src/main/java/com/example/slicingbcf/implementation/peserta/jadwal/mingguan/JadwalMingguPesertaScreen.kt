@@ -158,7 +158,7 @@ fun TopSection(
             ) {
                 TextButton(onClick = { expanded = true }) {
                     Text(
-                        text = if (isWeeklyView) "Pekan" else "Bulan",
+                        text = if (isWeeklyView) "Hari" else "Bulan",
                         style = StyledText.MobileXsRegular,
                         color = ColorPalette.Black
                     )
@@ -193,7 +193,7 @@ fun TopSection(
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = "Pekan",
+                                text = "Hari",
                                 style = StyledText.MobileSmallRegular
                             )
                         },

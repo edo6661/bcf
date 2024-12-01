@@ -1,6 +1,7 @@
 package com.example.slicingbcf.ui.navigation
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.navigation.*
 import androidx.navigation.compose.composable
@@ -15,7 +16,6 @@ import com.example.slicingbcf.implementation.mentor.pengumuman_mentor.DetailPeng
 import com.example.slicingbcf.implementation.mentor.pengumuman_mentor.PengumumanMentorScreen
 import com.example.slicingbcf.implementation.mentor.penilaian_peserta.DetailPenilaianPesertaScreenMentor
 import com.example.slicingbcf.implementation.mentor.penilaian_peserta.PenilaianPesertaScreenMentor
-import com.example.slicingbcf.implementation.mentor.pitchdeck.DetailPitchdeckScreen
 import com.example.slicingbcf.implementation.mentor.pitchdeck.MoreDetailPitchdeckScreen
 import com.example.slicingbcf.implementation.mentor.pitchdeck.PitchdeckScreen
 
@@ -62,7 +62,7 @@ fun NavGraphBuilder.mentorNavGraph(
     ) {
 
       val onNavigateDetailPitchdeck = { id : String ->
-        navController.navigateSingleTop("pitchdeck-mentor/$id")
+        navController.navigateSingleTop("pitchdeck-mentor/$id/more")
       }
 
       PitchdeckScreen(
@@ -70,22 +70,6 @@ fun NavGraphBuilder.mentorNavGraph(
         onNavigateDetailPitchdeck = onNavigateDetailPitchdeck
       )
     }
-    composable(
-      route = "pitchdeck-mentor/{id}",
-      arguments = listOf(navArgument("id") { type = NavType.StringType })
-    ) {
-
-      val onNavigateMoreDetailPitchdeck = { id : String ->
-        navController.navigateSingleTop("pitchdeck-mentor/$id/more")
-      }
-
-      DetailPitchdeckScreen(
-        modifier = modifier,
-        onNavigateMoreDetailPitchdeck = onNavigateMoreDetailPitchdeck,
-        id = it.arguments?.getString("id") ?: "1"
-      )
-    }
-
     composable(
       route = "pitchdeck-mentor/{id}/more",
       arguments = listOf(navArgument("id") { type = NavType.StringType })

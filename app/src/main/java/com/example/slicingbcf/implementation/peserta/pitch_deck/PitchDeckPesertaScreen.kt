@@ -18,11 +18,7 @@ import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.pitchDeck
-import com.example.slicingbcf.data.local.worksheetsPeserta
 import com.example.slicingbcf.ui.shared.pitchdeck_worksheet.PitchDeckItem
-import com.example.slicingbcf.ui.shared.pitchdeck_worksheet.WorksheetItem
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Composable
 @Preview(showSystemUi = true)
@@ -50,8 +46,9 @@ fun PitchDeckPesertaScreen(
             items(pitchDeck.size) { index ->
                 PitchDeckItem(
                     data = pitchDeck[index],
-                    onClick = { onNavigatePitchDeckPeserta(pitchDeck[index].title) },
-                    bgColor = ColorPalette.PrimaryColor100
+                    onNavigateDetailPitchdeck = { onNavigatePitchDeckPeserta(pitchDeck[index].title) },
+                    bgColor = ColorPalette.OnPrimary,
+                    id = "1"
                 )
             }
         }

@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.WorksheetPeserta
+import com.example.slicingbcf.data.local.worksheetsPeserta
 
 
 @Composable
@@ -214,25 +215,4 @@ private fun KeyValueColumn(
 
 }
 
-private val mockUpWorksheetPeserta = listOf(
-  WorksheetPeserta(
-    title = "Judul Lembar Kerja",
-    description = "Pitch Deck Program Peserta",
-  ),
-  WorksheetPeserta(
-    title = "Batch",
-    description = "5",
-  ),
-  WorksheetPeserta(
-    title = "Deskripsi Lembar Kerja",
-    description = "Buatlah sebuah presentasi secara singkat yang memuat terkait “Program Kolaborasi Peningkatan Capaian Terapi Pencegahan Tuberkulosis (TPT) pada Balita Dan anak usia 5-14 tahun” dengan detail: Profil, Latar Belakang, Logical Framework Analysis, Indikator Program, Anggaran Pendanaan, dan lainnya.",
-  ),
-  WorksheetPeserta(
-    title = "Tautan Lembar Kerja",
-    description = "bit.ly/pitchdeckcapaianTPT",
-  ),
-  WorksheetPeserta(
-    title = "Batas Submisi Lembar Kerja",
-    description = "Selasa, 2 April 2024 13.55 WIB",
-  ),
-)
+private val mockUpWorksheetPeserta = worksheetsPeserta
