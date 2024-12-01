@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -31,64 +30,147 @@ import com.example.slicingbcf.data.local.PitchDeck
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.ui.shared.message.SecondaryButton
 
 @Composable
 fun PitchDeckItem(
     data: PitchDeck,
-    onClick: () -> Unit ={},
-    bgColor : Color = ColorPalette.OnPrimary,
+    onNavigateDetailPitchdeck : (String) -> Unit,
+    bgColor: Color,
+    id : String
 ) {
-    val currentTime = remember { getCurrentTime() }
+    val isExpanded = remember { mutableStateOf(false) }
 
-    Card(
-        onClick = onClick,
-        shape = MaterialTheme.shapes.large,
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
+            .border(
+                width = if (isExpanded.value) 1.dp else 0.dp,
+                color = if (isExpanded.value) ColorPalette.Monochrome200 else Color.Transparent,
+                shape = RoundedCornerShape(16.dp)
+            )
             .background(
                 color = bgColor,
-                shape = RoundedCornerShape(16.dp),
-            ),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        border = BorderStroke(1.dp, ColorPalette.Monochrome200)
+                shape = RoundedCornerShape(16.dp)
+            )
     ) {
-        Row(
+        Card(
+            onClick = {
+                isExpanded.value = !isExpanded.value
+            },
+            shape = MaterialTheme.shapes.large,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth()
+                .height(100.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = bgColor
+            ),
+            border = BorderStroke(1.dp, ColorPalette.Monochrome200)
         ) {
             Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.folder),
+                        contentDescription = null,
+                        modifier = Modifier.size(30.dp)
+                    )
+                    Column {
+                        Text(
+                            text = data.title,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text(
+                            text = "Dibuat ${getCurrentTime()} WIB",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Black
+                        )
+                    }
+                }
                 Icon(
-                    painter = painterResource(id = R.drawable.folder),
+                    imageVector = if (isExpanded.value) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                     contentDescription = null,
-                    modifier = Modifier.size(30.dp)
+                    tint = Color.Black,
+                    modifier = Modifier.size(16.dp)
                 )
-                Column {
-                    Text(
-                        text = data.title,
-                        style = MaterialTheme.typography.bodyMedium
+            }
+        }
+
+        if (isExpanded.value) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .background(
+                        color = bgColor,
+                        shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
+                    ),
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier.clickable {
+                        // Handle link click
+                    }
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.folder),
+                        contentDescription = "",
+                        modifier = Modifier.size(24.dp)
                     )
                     Text(
-                        text = "Dibuat $currentTime WIB",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.Black
+                        text = data.link,
+                        style = StyledText.MobileSmallRegular,
+                        color = ColorPalette.PrimaryColor400
+                    )
+                }
+                Text(
+                    text = data.description,
+                    style = StyledText.MobileSmallRegular
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        append("Batas Submisi: ")
+                        withStyle(
+                            style = SpanStyle(
+                                color = ColorPalette.SecondaryColor400
+                            )
+                        ) {
+                            append(data.submissionDeadline)
+                        }
+                    },
+                    style = StyledText.MobileSmallMedium
+                )
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.CenterEnd
+                ) {
+                    SecondaryButton(
+                        text = "Lihat Detail",
+                        onClick = {onNavigateDetailPitchdeck(id)},
+                        style = StyledText.MobileSmallMedium
                     )
                 }
             }
-            Icon(
-                imageVector = Icons.Default.ArrowForwardIos,
-                contentDescription = null,
-                tint = Color.Black,
-                modifier = Modifier.size(16.dp)
-            )
         }
     }
 }

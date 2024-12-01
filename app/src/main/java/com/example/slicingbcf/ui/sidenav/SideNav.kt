@@ -173,18 +173,18 @@ private fun BottomSideNav(
       )
 
       // TODO ubah sidenav versi mentor dan peserta, udah login blm
-//      SideNavDropdownPeserta(
-//        navigateAndCloseSideNav,
-//        isActiveRoute
-//      )
+      SideNavDropdownPeserta(
+        navigateAndCloseSideNav,
+        isActiveRoute
+      )
 //      SideNavDropdownMentor(
 //        navigateAndCloseSideNav,
 //        isActiveRoute
 //      )
-      SideNavDropdownGuest(
-        navigateAndCloseSideNav,
-        isActiveRoute
-      )
+////      SideNavDropdownGuest(
+////        navigateAndCloseSideNav,
+////        isActiveRoute
+////      )
     }
 
 
@@ -350,38 +350,8 @@ private fun SideNavDropdownGuest(
   isActiveRoute : (String) -> Boolean
 ) {
   SideNavDropdown(
-    "Registrasi",
+    "Pendaftaran",
     items = dropdownItemsPendaftaran(
-      navigateAndCloseSideNav
-    ),
-    isActiveRoute = isActiveRoute
-  )
-  SideNavDropdown(
-    "Mentor",
-    items = dropdownItemsMentor_Guest(
-      navigateAndCloseSideNav
-    ),
-    isActiveRoute = isActiveRoute
-  )
-  SideNavDropdown(
-    "Tugas",
-    items = dropdownItemsTugas_Guest(
-      navigateAndCloseSideNav
-    ),
-    isActiveRoute = isActiveRoute
-  )
-
-  SideNavDropdown(
-    "Peserta",
-    items = dropdownItemsPeserta_Guest(
-      navigateAndCloseSideNav
-    ),
-    isActiveRoute = isActiveRoute
-  )
-
-  SideNavDropdown(
-    "Kegiatan",
-    items = dropdownItemsKegiatan_Guest(
       navigateAndCloseSideNav
     ),
     isActiveRoute = isActiveRoute

@@ -12,7 +12,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.local.pitchDeck
 import com.example.slicingbcf.data.local.worksheetsPeserta
+import com.example.slicingbcf.ui.shared.pitchdeck_worksheet.PitchDeckItem
 import com.example.slicingbcf.ui.shared.pitchdeck_worksheet.WorksheetItem
 
 @Composable
@@ -37,13 +39,14 @@ fun PitchdeckScreen(
     LazyColumn(
       verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-      items(worksheetsPeserta.size) { index ->
-        WorksheetItem(
-          worksheet = worksheetsPeserta[index],
-          onClick = { onNavigateDetailPitchdeck(worksheetsPeserta[index].title) }
+      items(pitchDeck.size) { index ->
+        PitchDeckItem(
+          data = pitchDeck[index],
+          onNavigateDetailPitchdeck = { onNavigateDetailPitchdeck(pitchDeck[index].title) },
+          bgColor = ColorPalette.OnPrimary,
+          id = "1"
         )
       }
-
     }
   }
 }

@@ -7,9 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.example.slicingbcf.implementation.mentor.pitchdeck.DetailPitchdeckScreen
 import com.example.slicingbcf.implementation.peserta.pitch_deck.PitchDeckDetailScreen
-import com.example.slicingbcf.implementation.peserta.pitch_deck.PitchDeckPesertaExpanded
 import com.example.slicingbcf.implementation.peserta.pitch_deck.PitchDeckPesertaScreen
 
 fun NavGraphBuilder.tugasNavGraph(
@@ -23,29 +21,11 @@ fun NavGraphBuilder.tugasNavGraph(
             route = Screen.Tugas.PitchDeck.route
         ){
             val onNavigateDetailPitchDeckPeserta = { id : String ->
-                navController.navigateSingleTop("expanded-pitchdeck/$id")
+                navController.navigateSingleTop("detail-pitchdeck/$id")
             }
             PitchDeckPesertaScreen(
                 modifier = modifier,
                 onNavigatePitchDeckPeserta = onNavigateDetailPitchDeckPeserta
-            )
-        }
-
-        composable(
-            route = "expanded-pitchdeck/{id}",
-            arguments = listOf(navArgument("id") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val id = backStackEntry.arguments?.getString("id") ?: ""
-            if (id.isEmpty()) throw IllegalStateException("id must not be empty")
-
-            val onNavigateDetailPitchdeckPeserta = { id : String ->
-                navController.navigateSingleTop("detail-pitchdeck/$id")
-            }
-
-            PitchDeckPesertaExpanded(
-                modifier = modifier,
-                onNavigateDetailPitchdeckPeserta = onNavigateDetailPitchdeckPeserta,
-                id = backStackEntry.arguments?.getString("id") ?: "1"
             )
         }
 

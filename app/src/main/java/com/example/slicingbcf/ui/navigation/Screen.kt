@@ -39,7 +39,6 @@ sealed class Screen(val route : String) {
     object ForumDiskusi : Mentor("forum-diskusi")
     data class DetailForumDiskusi(val id : String) : Mentor("forum-diskusi/$id")
     object DataPeserta : Mentor("data-peserta")
-
   }
 
   sealed class Kegiatan(route: String) : Screen(route){
@@ -55,9 +54,7 @@ sealed class Screen(val route : String) {
 
   sealed class Tugas(route: String) : Screen(route){
     object PitchDeck: Tugas ("pitch-deck")
-    data class PitchDeckExpanded(val id: String) : Tugas("expanded-pitchdeck/$id")
     data class PitchDeckDetail(val id: String) : Tugas("detail-pitchdeck/$id")
-
   }
 
   object ProfilPeserta : Screen("profil-peserta")

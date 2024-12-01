@@ -9,7 +9,6 @@ import com.example.slicingbcf.implementation.mentor.forum_diskusi.DetailForumDis
 import com.example.slicingbcf.implementation.mentor.forum_diskusi.ForumDiskusiScreen
 import com.example.slicingbcf.implementation.mentor.penilaian_peserta.DetailPenilaianPesertaScreen
 import com.example.slicingbcf.implementation.mentor.penilaian_peserta.PenilaianPesertaScreen
-import com.example.slicingbcf.implementation.mentor.pitchdeck.DetailPitchdeckScreen
 import com.example.slicingbcf.implementation.mentor.pitchdeck.MoreDetailPitchdeckScreen
 import com.example.slicingbcf.implementation.mentor.pitchdeck.PitchdeckScreen
 
@@ -56,27 +55,12 @@ fun NavGraphBuilder.mentorNavGraph(
     ) {
 
       val onNavigateDetailPitchdeck = { id : String ->
-        navController.navigateSingleTop("pitchdeck/$id")
+        navController.navigateSingleTop("pitchdeck/$id/more")
       }
 
       PitchdeckScreen(
         modifier = modifier,
         onNavigateDetailPitchdeck = onNavigateDetailPitchdeck
-      )
-    }
-    composable(
-      route = "pitchdeck/{id}",
-      arguments = listOf(navArgument("id") { type = NavType.StringType })
-    ) {
-
-      val onNavigateMoreDetailPitchdeck = { id : String ->
-        navController.navigateSingleTop("pitchdeck/$id/more")
-      }
-
-      DetailPitchdeckScreen(
-        modifier = modifier,
-        onNavigateMoreDetailPitchdeck = onNavigateMoreDetailPitchdeck,
-        id = it.arguments?.getString("id") ?: "1"
       )
     }
 

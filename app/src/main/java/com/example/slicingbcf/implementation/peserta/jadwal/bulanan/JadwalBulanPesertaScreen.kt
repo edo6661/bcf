@@ -24,6 +24,7 @@ import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.detailJadwal
 import com.example.slicingbcf.data.local.profilLembaga
+import com.example.slicingbcf.implementation.mentor.jadwal.bulan.DatePicker
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
@@ -128,32 +129,12 @@ fun TopSection(
                 )
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(0.dp)
-            ) {
-                IconButton(onClick = { selectedDate = selectedDate.minusMonths(1) }) {
-                    Icon(
-                        Icons.Default.ArrowBackIosNew,
-                        contentDescription = "Previous Month",
-                        modifier = Modifier.size(10.dp)
-                    )
+            DatePicker(
+                selectedDate = selectedDate,
+                onDateSelected = { newDate ->
+                    selectedDate = newDate
                 }
-
-                Text(
-                    text = currentMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault()) + " ${currentMonth.year}",
-                    style = StyledText.MobileSmallRegular,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-
-                IconButton(onClick = { selectedDate = selectedDate.plusMonths(1) }) {
-                    Icon(
-                        Icons.Default.ArrowForwardIos,
-                        contentDescription = "Next Month",
-                        modifier = Modifier.size(10.dp)
-                    )
-                }
-            }
+            )
 
             Box(
                 Modifier
