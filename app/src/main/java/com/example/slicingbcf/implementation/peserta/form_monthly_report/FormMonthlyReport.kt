@@ -38,14 +38,14 @@ fun FormMonthlyReportScreen(
     ) {
       items(worksheetsPeserta.size) { index ->
         WorksheetItem(
-          worksheet = worksheetsPeserta[index],
+          data = worksheetsPeserta[index],
           onClick = {
             onNavigateDetailFormMonthlyReport((index + 1).toString())
           },
-          isDescriptionShown = false
+          id = "1",
+          bgColor = ColorPalette.OnPrimary
         )
       }
-
     }
   }
 }
