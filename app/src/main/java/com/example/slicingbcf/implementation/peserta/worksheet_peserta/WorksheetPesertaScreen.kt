@@ -41,7 +41,7 @@ fun WorksheetPesertaScreen(
       items(worksheetsPeserta.size) { index ->
         WorksheetItem(
           data = worksheetsPeserta[index],
-          onNavigateDetailWorksheet = { onNavigateDetailWorksheetPeserta(pitchDeck[index].title) },
+          onClick = { onNavigateDetailWorksheetPeserta(pitchDeck[index].title) },
           bgColor = ColorPalette.OnPrimary,
           id = "1"
         )

@@ -51,7 +51,7 @@ import java.util.Locale
 @Composable
 fun WorksheetItem(
   data: WorksheetPeserta,
-  onNavigateDetailWorksheet : (String) -> Unit,
+  onClick : (String) -> Unit,
   bgColor: Color,
   id : String
 ) {
@@ -173,7 +173,7 @@ fun WorksheetItem(
         ) {
           SecondaryButton(
             text = "Lihat Detail",
-            onClick = {onNavigateDetailWorksheet(id)},
+            onClick = {onClick(id)},
             style = StyledText.MobileSmallMedium
           )
         }
