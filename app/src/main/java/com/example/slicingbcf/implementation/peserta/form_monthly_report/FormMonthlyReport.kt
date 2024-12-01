@@ -12,7 +12,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.local.laporan
 import com.example.slicingbcf.data.local.worksheetsPeserta
+import com.example.slicingbcf.ui.shared.pitchdeck_worksheet.LaporanItem
 import com.example.slicingbcf.ui.shared.pitchdeck_worksheet.WorksheetItem
 
 @Composable
@@ -36,9 +38,9 @@ fun FormMonthlyReportScreen(
     LazyColumn(
       verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-      items(worksheetsPeserta.size) { index ->
-        WorksheetItem(
-          data = worksheetsPeserta[index],
+      items(laporan.size) { index ->
+        LaporanItem(
+          data = laporan[index],
           onClick = {
             onNavigateDetailFormMonthlyReport((index + 1).toString())
           },
