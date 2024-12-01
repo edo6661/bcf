@@ -1,17 +1,27 @@
 package com.example.slicingbcf.implementation.auth.login
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.slicingbcf.data.dao.model.User
+import com.example.slicingbcf.data.local.preferences.UserPreferences
+import com.example.slicingbcf.data.repo.user.UserRepository
 import com.example.slicingbcf.domain.validator.ValidationResult
 import com.example.slicingbcf.domain.validator.validateEmail
 import com.example.slicingbcf.domain.validator.validatePassword
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor() : ViewModel() {
+class LoginViewModel @Inject constructor(
+  private val userRepository : UserRepository,
+  private val userPreferences : UserPreferences
+
+) : ViewModel() {
 
   val _uiState = MutableStateFlow(LoginState())
   val uiState get() = _uiState.asStateFlow()
@@ -50,17 +60,41 @@ class LoginViewModel @Inject constructor() : ViewModel() {
     }
   }
 
-
   private fun onSubmit() {
     resetState()
-//    _uiState.value = _uiState.value.copy(
-//      isSuccess = false,
-//      error = "Login Gagal! Akun Tidak Dikenal!"
-//    )
-    _uiState.value = _uiState.value.copy(
-      isSuccess = true,
-      message = "Permintaan berhasil, silakan cek email Anda."
-    )
+
+    val email = _uiState.value.email
+    val password = _uiState.value.password
+
+    viewModelScope.launch {
+      try {
+        val user : User? = userRepository.getUserIfExist(email, password).first()
+
+        if (user != null) {
+          userPreferences.saveUserSession(user)
+          _uiState.update {
+            it.copy(
+              isSuccess = true,
+              message = "Login berhasil!"
+            )
+          }
+        } else {
+          _uiState.update {
+            it.copy(
+              isSuccess = false,
+              error = "Akun tidak ditemukan atau password salah."
+            )
+          }
+        }
+      } catch (e : Exception) {
+        _uiState.update {
+          it.copy(
+            isSuccess = false,
+            error = e.message ?: "Terjadi kesalahan saat login."
+          )
+        }
+      }
+    }
   }
 
 

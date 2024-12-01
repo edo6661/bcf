@@ -39,3 +39,9 @@ fun String.validateNotEmpty() : ValidationResult {
   }
 }
 
+
+
+fun String?.isBlankOrEmpty() : Boolean {
+  return this?.trim()?.isEmpty() == true
+}
+

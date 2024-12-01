@@ -8,6 +8,7 @@ import androidx.navigation.navigation
 import com.example.slicingbcf.implementation.auth.forgot_password.ForgotPasswordScreen
 import com.example.slicingbcf.implementation.auth.login.LoginScreen
 import com.example.slicingbcf.implementation.auth.registrasi.RegistrasiScreen
+import com.example.slicingbcf.implementation.auth.registrasi.RegistrasiUmpanBalikScreen
 
 fun NavGraphBuilder.authNavGraph(
   modifier : Modifier,
@@ -28,8 +29,23 @@ fun NavGraphBuilder.authNavGraph(
     }
 
     composable(Screen.Auth.Registrasi.route) {
+
+      val navigateToUmpanBalik = {
+        navController.navigateAndClearStack(Screen.Auth.UmpanBalikRegistrasi.route)
+      }
       RegistrasiScreen(
         modifier = modifier,
+        navigateToUmpanBalik = navigateToUmpanBalik
+      )
+    }
+
+    composable(Screen.Auth.UmpanBalikRegistrasi.route) {
+      val navigateToLogin = {
+        navController.navigateAndClearStackButHome(Screen.Auth.Login.route)
+      }
+      RegistrasiUmpanBalikScreen(
+        modifier = modifier,
+        navigateToLogin = navigateToLogin
       )
     }
 
