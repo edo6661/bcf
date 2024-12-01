@@ -177,14 +177,14 @@ private fun BottomSideNav(
 //        navigateAndCloseSideNav,
 //        isActiveRoute
 //      )
-      SideNavDropdownMentor(
-        navigateAndCloseSideNav,
-        isActiveRoute
-      )
-//      SideNavDropdownGuest(
+//      SideNavDropdownMentor(
 //        navigateAndCloseSideNav,
 //        isActiveRoute
 //      )
+      SideNavDropdownGuest(
+        navigateAndCloseSideNav,
+        isActiveRoute
+      )
     }
 
 

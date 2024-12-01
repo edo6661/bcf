@@ -42,7 +42,7 @@ val profilLembaga = listOf(
             WilayahJangkauan(1, "DKI Jakarta", 5000, "https://example.com/rincian1.pdf"),
             WilayahJangkauan(2, "Jawa Barat", 2700, "https://example.com/rincian2.pdf")
         ),
-        keteranganLolos = "TIDAK LOLOS"
+        keteranganLolos = "LOLOS"
     )
 )
 
@@ -91,6 +91,27 @@ val profilPeserta = listOf(
             pertanyaanLainnya = "Apa saja keuntungan mengikuti program ini?",
             pengalamanRegistrasi = "Pengisian data sederhana dan to the point."
         )
+    ),
+    ProfilPeserta(
+        namaLengkap = "Song Kang",
+        posisi = "Wakil Ketua Instansi",
+        pendidikanTerakhir = "S1 - Sistem Informasi",
+        nomorWhatsApp = "081234567890",
+        email = "aurel@gmail.com",
+        ktpPesertaUrl = "https://example.com/KTP_Peserta1.pdf",
+        cvPesertaUrl = "https://example.com/CV_Peserta1.pdf",
+        backgroundImageUrl = "https://via.placeholder.com/300x150",
+        profileImageUrl = "https://via.placeholder.com/100",
+        pertanyaanUmum = PertanyaanUmum(
+            pernahMempelajari = "Pernah mempelajari",
+            mengetahuiLEAD = "Instagram @bakriecenter, Alumni LEAD Indonesia",
+            desainProgram = "Program LEAD Indonesia 2023 bertujuan mengembangkan kepemimpinan.",
+            sustainability = "Keberlanjutan adalah penggunaan metode yang berdampak positif.",
+            socialReport = "Social report menggambarkan data performa media sosial.",
+            ekspektasi = "Menambah wawasan dan relasi.",
+            pertanyaanLainnya = "Apa saja keuntungan mengikuti program ini?",
+            pengalamanRegistrasi = "Pengisian data sederhana dan to the point."
+        )
     )
 )
 
@@ -114,4 +135,26 @@ val mentoringPeserta = listOf(
         batch = 5,
         capaianProgram = "Februari 2023"
     ),
+)
+
+data class ProfilMentor(
+    val namaLengkap: String,
+    val type: String,
+    val cluster: String,
+    val focusIssue: String
+)
+
+val profilMentor = listOf(
+    ProfilMentor(
+        namaLengkap = "Agus Sutarman",
+        type = "Cluster",
+        cluster = "Pendidikan",
+        focusIssue = "Pendidikan Anak Pra Sejahtera"
+    ),
+    ProfilMentor(
+        namaLengkap = "Agus Sasongko",
+        type = "Desain Program",
+        cluster = "Pendidikan",
+        focusIssue = "Pendidikan Anak Pra Sejahtera"
+    )
 )

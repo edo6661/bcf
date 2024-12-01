@@ -109,3 +109,110 @@ fun CustomOutlinedTextFieldDropdownDate(
     }
   }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomOutlinedTextFieldDropdownDateAsterisk(
+  modifier : Modifier = Modifier,
+  value : String,
+  expanded : Boolean,
+  onChangeExpanded : (Boolean) -> Unit,
+  label : String,
+  placeholder : String,
+  labelDefaultColor : Color = ColorPalette.PrimaryColor700,
+  labelFocusedColor : Color = ColorPalette.PrimaryColor700,
+  datePickerState : DatePickerState
+) {
+  Box(
+    modifier = Modifier
+      .fillMaxWidth()
+      .pointerInput(expanded) {
+        detectTapGestures {
+          if (expanded) onChangeExpanded(false)
+        }
+      }
+  ) {
+    Column(
+      modifier = modifier
+        .fillMaxWidth()
+        .animateContentSize()
+    ) {
+      CustomOutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = value,
+        onValueChange = {},
+        label = label,
+        placeholder = placeholder,
+        rounded = 50,
+        readOnly = true,
+        labelFocusedColor = labelFocusedColor,
+        labelDefaultColor = labelDefaultColor,
+        labelFocusedStyle = StyledText.MobileSmallMedium,
+        trailingIcon = {
+          Icon(
+            imageVector = Icons.Default.ArrowDropDown,
+            contentDescription = "Arrow Drop Down",
+            tint = ColorPalette.PrimaryColor700,
+            modifier = Modifier
+              .size(48.dp)
+              .padding(end = 24.dp)
+              .clickable {
+                onChangeExpanded(! expanded)
+              }
+          )
+        }
+      )
+      Box(
+        modifier = Modifier
+          .padding(start = 20.dp)
+          .offset(y = (-64).dp)
+          .background(Color.White)
+      ) {
+        Row{
+          Text(
+            text = "$label",
+            style = StyledText.MobileBaseSemibold,
+            color = ColorPalette.PrimaryColor700,
+          )
+          Text(
+            text = "*",
+            style = StyledText.MobileBaseSemibold,
+            color = ColorPalette.Error,
+          )
+        }
+      }
+
+      AnimatedVisibility(
+        visible = expanded,
+        enter = expandVertically(),
+        exit = shrinkVertically(),
+        label = "DatePicker Dropdown"
+      ) {
+        val shape = RoundedCornerShape(16.dp)
+        Box(
+          modifier = Modifier
+            .padding(4.dp)
+            .shadow(
+              elevation = 4.dp,
+              shape = shape
+            )
+            .background(Color.White, shape)
+            .pointerInput(Unit) {
+              detectTapGestures { }
+            }
+        ) {
+          DatePicker(
+            state = datePickerState,
+            showModeToggle = false,
+            colors = DatePickerDefaults.colors(
+              containerColor = ColorPalette.OnPrimary,
+              selectedDayContainerColor = ColorPalette.PrimaryColor700,
+              todayDateBorderColor = ColorPalette.PrimaryColor700,
+              todayContentColor = ColorPalette.PrimaryColor700
+            )
+          )
+        }
+      }
+    }
+  }
+}
