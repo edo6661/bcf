@@ -66,30 +66,39 @@ import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.ProfilPeserta
 import com.example.slicingbcf.data.local.profilPeserta
 
-@Preview(showSystemUi = true)
+//@Preview(showSystemUi = true)
 @Composable
-fun PreviewProfilPesertaScreen() {
-    ProfilPesertaScreen(profile = profilPeserta[0])
+fun PreviewProfilPesertaScreen(
+    onPreviousClick: () -> Unit
+) {
+    ProfilPesertaScreen(
+        onPreviousClick = onPreviousClick
+    )
 }
 
 @Composable
 fun ProfilPesertaScreen(
-    profile: ProfilPeserta,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onPreviousClick: () -> Unit
 ) {
     Column(
         modifier = modifier.padding(16.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(40.dp)
     ) {
-        TopSection(profile = profile)
-        BottomSection(profile = profile)
+        TopSection(
+            profile = profilPeserta[0],
+            onPreviousClick = onPreviousClick)
+        BottomSection(profile = profilPeserta[0])
     }
 }
 
 @Composable
-fun TopSection(profile: ProfilPeserta) {
-    var currentPage by remember { mutableStateOf(1) }
+fun TopSection(
+    profile: ProfilPeserta,
+    onPreviousClick: () -> Unit
+) {
+    var currentPage by remember { mutableStateOf(2) }
     val totalPages = 2
 
     Column(
@@ -97,10 +106,10 @@ fun TopSection(profile: ProfilPeserta) {
     ) {
 
         NavigationHeader(
-            currentPage = currentPage,
+            currentPage = 2,
             totalPages = totalPages,
-            onPreviousClick = { if (currentPage > 1) currentPage-- },
-            onNextClick = { if (currentPage < totalPages) currentPage++ }
+            onPreviousClick = { onPreviousClick() },
+            onNextClick = {}
         )
         Spacer(modifier = Modifier.height(16.dp))
         HorizontalDivider(

@@ -74,9 +74,21 @@ fun NavGraph(
       )
     }
 
-    composable(Screen.ProfilPeserta.route) {
+    composable(Screen.ProfilLembaga.route) {
+      val onNextClick = { navController.navigateSingleTop("profil-peserta")
+      }
       ProfilLembagaScreen(
         modifier = modifier,
+        onNextClick = onNextClick
+      )
+    }
+
+    composable(Screen.ProfilPeserta.route) {
+      val onPreviousClick = { navController.navigateSingleTop("profil-lembaga")
+      }
+      ProfilPesertaScreen(
+        modifier = modifier,
+        onPreviousClick = onPreviousClick
       )
     }
   }

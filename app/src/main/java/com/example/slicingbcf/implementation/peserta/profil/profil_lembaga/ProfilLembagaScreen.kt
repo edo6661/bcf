@@ -38,35 +38,43 @@ import com.example.slicingbcf.data.local.profilLembaga
 import com.example.slicingbcf.R.drawable
 import androidx.compose.runtime.setValue
 
-@Preview(showSystemUi = true)
+//@Preview(showSystemUi = true)
 @Composable
 fun ProfilLembagaScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNextClick: () -> Unit
+
 ) {
     Column(
         modifier = modifier.padding(16.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(40.dp)
     ) {
-        TopSection(profile = profilLembaga[0])
+        TopSection(
+            profile = profilLembaga[0],
+            onNextClick = onNextClick
+            )
         BottomSection(profile = profilLembaga[0])
     }
 }
 
 @Composable
-fun TopSection(profile: ProfilLembaga) {
+fun TopSection(
+    profile: ProfilLembaga,
+    onNextClick: () -> Unit
+) {
     var currentPage by remember { mutableStateOf(1) }
-    val totalPages = 1
+    val totalPages = 2
 
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
 
         NavigationHeader(
-            currentPage = currentPage,
+            currentPage = 1,
             totalPages = totalPages,
-            onPreviousClick = { if (currentPage > 1) currentPage-- },
-            onNextClick = { if (currentPage < totalPages) currentPage++ }
+            onPreviousClick = { },
+            onNextClick = { onNextClick() }
         )
         Spacer(modifier = Modifier.height(16.dp))
         HorizontalDivider(

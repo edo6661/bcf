@@ -73,6 +73,7 @@ sealed class Screen(val route : String) {
   }
 
   object ProfilPeserta : Screen("profil-peserta")
+  object ProfilLembaga : Screen("profil-lembaga")
   object Pengumuman : Screen("pengumuman")
   data class DetailPengumuman(val id : String) : Screen("pengumuman/$id")
 }
