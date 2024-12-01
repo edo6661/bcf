@@ -142,6 +142,7 @@ fun BottomSection(
       keyboardType = KeyboardType.Email,
       error = emailError,
       modifier = Modifier.fillMaxWidth(),
+      labelFocusedColor = ColorPalette.OnSurfaceVariant,
       rounded = 40
     )
 
