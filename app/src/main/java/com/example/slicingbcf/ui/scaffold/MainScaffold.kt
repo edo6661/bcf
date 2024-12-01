@@ -61,8 +61,17 @@ fun MainScaffold(
   }
 
   val onNavigateProfile = {
-    // TODO navigate profile mentor/peserta
-    navController.navigateSingleTop(Screen.ProfilPeserta.route)
+    when (user?.role) {
+      Role.MENTOR.name -> {
+        // TODO BIND profil mentor disini
+        navController.navigateSingleTop(Screen.ProfilLembaga.route)
+      }
+      Role.PESERTA.name -> {
+        navController.navigateSingleTop(Screen.ProfilLembaga.route)
+      }
+
+    }
+
   }
 
   val onNavigatePengumuman = {

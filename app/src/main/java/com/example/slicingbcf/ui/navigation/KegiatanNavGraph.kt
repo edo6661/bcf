@@ -26,8 +26,12 @@ fun NavGraphBuilder.kegiatanNavGraph(
         composable(
             route = Screen.Kegiatan.UmpanBalikKegiatan.route
         ) {
+            val onNavigateBeranda = { id : Int ->
+                navController.navigateSingleTop("home")
+            }
             FormMiniTrainingScreen(
-                modifier = modifier
+                modifier = modifier,
+                onNavigateBeranda = onNavigateBeranda
             )
         }
     }

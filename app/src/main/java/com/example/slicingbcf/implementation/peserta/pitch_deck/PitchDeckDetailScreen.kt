@@ -24,14 +24,16 @@ import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.PitchDeck
 import com.example.slicingbcf.data.local.pitchDeck
+import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
+import com.example.slicingbcf.ui.shared.dialog.CustomAlertDialog
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-@Preview(showSystemUi = true)
 fun PitchDeckDetailScreen(
     modifier: Modifier = Modifier,
-    id: String = "1"
+    id: String = "1",
+    onNavigateBeranda: (Int) -> Unit,
 ) {
     var tautanPeserta by remember { mutableStateOf(TextFieldValue("")) }
 
@@ -47,7 +49,9 @@ fun PitchDeckDetailScreen(
         TopSection(
             pitchDeck = currentPitchDeck,
             tautanPeserta = tautanPeserta,
-            onTautanChange = { tautanPeserta = it },)
+            onTautanChange = { tautanPeserta = it },
+            onNavigateBeranda = onNavigateBeranda
+            )
     }
 }
 
@@ -56,10 +60,12 @@ fun TopSection(
     tautanPeserta: TextFieldValue,
     pitchDeck: PitchDeck,
     onTautanChange: (TextFieldValue) -> Unit,
+    onNavigateBeranda: (Int) -> Unit,
 ) {
     var lastModified by remember { mutableStateOf(getCurrentTimePitchDeck()) }
     val currentContext = LocalContext.current
     val isLate = checkIfLate(pitchDeck.submissionDeadline)
+    var isLoading by remember { mutableStateOf(false) }
 
     Text(
         text = "Submisi Pitch Deck",
@@ -155,7 +161,7 @@ fun TopSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Button(
-            onClick = { /* TODO: logic on click */ },
+            onClick = { isLoading = true },
             shape = MaterialTheme.shapes.extraLarge,
             colors = ButtonDefaults.buttonColors(
                 containerColor = ColorPalette.PrimaryColor700,
@@ -181,6 +187,15 @@ fun TopSection(
             )
         ) {
             Text(text = "Batal", style = StyledText.MobileBaseSemibold)
+        }
+
+        if(isLoading){
+            SubmitLoadingIndicatorDouble(
+                isLoading = isLoading,
+                title = "Memproses Submisi Pitch Deck Anda...",
+                onAnimationFinished = {onNavigateBeranda(1)},
+                titleBerhasil = "Pitch Deck Anda Berhasil Dikirim!",
+            )
         }
 
     }

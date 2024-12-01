@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.implementation.peserta.form_feedback_mentor.RatingSection
+import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
+import com.example.slicingbcf.ui.shared.dialog.CustomAlertDialog
 import com.example.slicingbcf.ui.shared.dropdown.CustomDropdownMenuAsterisk
 import com.example.slicingbcf.ui.shared.dropdown.DropdownText
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextAsterisk
@@ -30,13 +32,12 @@ import com.example.slicingbcf.ui.shared.textfield.TextFieldLong
 import com.example.slicingbcf.util.convertMillisToDate
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun FormMiniTrainingScreen(
     modifier: Modifier = Modifier,
+    onNavigateBeranda: (Int) -> Unit,
 ){
     var hariKegiatan by remember { mutableStateOf("") }
-//    var selectedDate by remember { mutableStateOf("") }
     val datePickerState = rememberDatePickerState()
     var expandedDate by remember { mutableStateOf(false) }
     val selectedDate = datePickerState.selectedDateMillis?.let { convertMillisToDate(it) } ?: ""
@@ -83,6 +84,7 @@ fun FormMiniTrainingScreen(
             onRatingMetodePemateri1Change = {ratingMetodePemateri1 = it},
             ratingMetodePemateri2 = ratingMetodePemateri2,
             onRatingMetodePemateri2Change = {ratingMetodePemateri2 = it},
+            onNavigateBeranda = onNavigateBeranda
         )
     }
 }
@@ -98,7 +100,7 @@ fun TopSection(
     datePickerState : DatePickerState,
     expandedDate : Boolean,
     onExpandedDateChange : (Boolean) -> Unit,
-
+    onNavigateBeranda: (Int) -> Unit,
     onRatingMateriPemateri1Change: (Int) -> Unit,
     ratingMateriPemateri1: Int,
     onRatingMateriPemateri2Change: (Int) -> Unit,
@@ -122,6 +124,7 @@ fun TopSection(
     var eventDate by remember { mutableStateOf(TextFieldValue("")) }
     var kritikSaran by remember { mutableStateOf(TextFieldValue("")) }
     var expandedHariKegiatan by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
 
     Text(
         text = "Umpan Balik Mini Training",
@@ -282,6 +285,7 @@ fun TopSection(
 
     Button(
         onClick = {
+            isLoading = true
             onSaveFeedback(
                 hariKegiatan,
                 speaker1Name.text,
@@ -299,5 +303,14 @@ fun TopSection(
         )
     ) {
         Text("Simpan", style = StyledText.MobileBaseSemibold)
+    }
+
+    if(isLoading){
+        SubmitLoadingIndicatorDouble(
+            isLoading = isLoading,
+            title = "Memproses Umpan Balik Anda...",
+            onAnimationFinished = {onNavigateBeranda(1)},
+            titleBerhasil = "Umpan Balik Anda Berhasil Terkirim!",
+        )
     }
 }

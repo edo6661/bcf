@@ -36,9 +36,13 @@ fun NavGraphBuilder.tugasNavGraph(
             val id = backStackEntry.arguments?.getString("id") ?: ""
             if (id.isEmpty()) throw IllegalStateException("id must not be empty")
 
+            val onNavigateBeranda = { id : Int ->
+                navController.navigateSingleTop("home")
+            }
             PitchDeckDetailScreen(
                 modifier = modifier,
-                id = id
+                id = id,
+                onNavigateBeranda = onNavigateBeranda
             )
         }
     }
