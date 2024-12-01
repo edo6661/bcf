@@ -12,6 +12,11 @@ fun scaffoldConfig(currentRoute : String?)
   : ScaffoldConfig {
   Log.d("scaffoldConfig", "currentRoute: $currentRoute")
   return when (currentRoute) {
+    Screen.SplashScreen.route -> ScaffoldConfig(
+      showMainNav = false,
+      showBackNav = false,
+    )
+
     Screen.Auth.Login.route          -> ScaffoldConfig(
       showMainNav = false,
     )
@@ -19,7 +24,6 @@ fun scaffoldConfig(currentRoute : String?)
     Screen.Auth.ForgotPassword.route -> ScaffoldConfig(
       showMainNav = false,
     )
-
 
     "pengumuman-peserta/{id}"        -> ScaffoldConfig(
       showMainNav = false,
@@ -149,7 +153,8 @@ fun scaffoldConfig(currentRoute : String?)
       )
     }
 
-    Screen.Mentor.SearchForumDiskusi.route -> ScaffoldConfig(
+    Screen.Mentor.SearchForumDiskusi.route ->
+      ScaffoldConfig(
       showMainNav = false,
       showBackNav = true,
     )
