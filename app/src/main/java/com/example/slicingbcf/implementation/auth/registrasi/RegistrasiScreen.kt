@@ -160,7 +160,6 @@ fun RegistrasiScreen(
         gotoProfilPeserta = gotoProfilPeserta
       )
     }
-    // TODO: akalin biar overlay nya nutupin semuanya
     SubmitLoadingIndicator(
       isLoading = state.isLoading,
       modifier = Modifier.align(Alignment.Center)

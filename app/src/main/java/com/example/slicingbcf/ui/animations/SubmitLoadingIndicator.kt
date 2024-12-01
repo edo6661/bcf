@@ -24,7 +24,8 @@ import com.example.slicingbcf.constant.StyledText
 fun SubmitLoadingIndicator(
   modifier : Modifier = Modifier,
   isLoading : Boolean,
-  title : String = "Memproses Pendaftaran Anda..."
+  title : String = "Memproses Pendaftaran Anda...",
+  description: String? = null
 ) {
   if (isLoading) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.animation_preloader))
@@ -47,12 +48,25 @@ fun SubmitLoadingIndicator(
             .padding(24.dp),
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
-          Text(
-            text = title,
-            style = StyledText.MobileMediumMedium,
-            color = ColorPalette.OnSurface,
-            textAlign = TextAlign.Center
-          )
+          Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+          ) {
+            Text(
+              text = title,
+              style = StyledText.MobileMediumMedium,
+              color = ColorPalette.OnSurface,
+              textAlign = TextAlign.Center
+            )
+            description?.let {
+              Text(
+                text = it,
+                style = StyledText.MobileMediumMedium,
+                color = ColorPalette.PrimaryColor400,
+                textAlign = TextAlign.Center
+              )
+            }
+
+          }
           LottieAnimation(
             composition = composition,
             progress = {

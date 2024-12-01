@@ -26,7 +26,7 @@ import com.example.slicingbcf.ui.shared.message.SecondaryButton
 import com.example.slicingbcf.ui.shared.textfield.TextFieldWithTitle
 
 @Composable
-fun DetailPenilaianPesertaScreen(
+fun DetailPenilaianPesertaScreenMentor(
   modifier : Modifier,
   // TODO: nnti ganti klo dah ada api
   id : String = "1"

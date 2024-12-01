@@ -3,26 +3,40 @@ package com.example.slicingbcf.implementation.mentor.forum_diskusi
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.ui.scaffold.DiscussionScaffold
-import com.example.slicingbcf.ui.shared.pusat_informasi.DataPusatInformasi
 import com.example.slicingbcf.ui.shared.pusat_informasi.PusatInformasiContent
-import com.example.slicingbcf.ui.shared.pusat_informasi.mockDataPusatInformasi
 
 
 @Composable
 fun DetailForumDiskusiScreen(
   modifier : Modifier,
-  id : String
+  id : String,
+  viewModel : DetailForumDiskusiViewModel = hiltViewModel()
+
 ) {
+
+  val verticalScroll = rememberScrollState()
+  val state by viewModel.state.collectAsState()
+
+
+  val addData = { newMockDataPusatInformasi : com.example.slicingbcf.data.local.DataPusatInformasi ->
+    viewModel.onEvent(ForumDiskusiEvent.ClearState)
+    viewModel.onEvent(ForumDiskusiEvent.AddPertanyaan(newMockDataPusatInformasi))
+  }
 
   DiscussionScaffold(
     onClick = { Log.d("discussion", "discussion") }
@@ -34,27 +48,46 @@ fun DetailForumDiskusiScreen(
         .padding(
           horizontal = 16.dp,
         )
-        .background(ColorPalette.OnPrimary),
+        .background(ColorPalette.OnPrimary)
+        .verticalScroll(verticalScroll),
       verticalArrangement = Arrangement.spacedBy(36.dp)
 
     ) {
+
       TopSection()
-      BottomSection()
+      BottomSection(
+        addData = addData,
+        onChangePertanyaan = { viewModel.onEvent(ForumDiskusiEvent.PertanyaanChanged(it)) },
+        state = state
+
+
+      )
     }
   }
 }
 
 @Composable
 private fun BottomSection(
+  addData : (com.example.slicingbcf.data.local.DataPusatInformasi) -> Unit,
+  onChangePertanyaan : (String) -> Unit,
+  state : ForumDiskusiState
 ) {
   Column(
     verticalArrangement = Arrangement.spacedBy(20.dp)
   ) {
     CurrentPusatInformasi(
-      data = mockDataPusatInformasi[0],
+      data = com.example.slicingbcf.data.local.mockDataPusatInformasi[0],
+      onSubmitComment = {
+        addData(
+          it
+        )
+      },
+      question = state.pertanyaan,
+      onChangeQuestion = onChangePertanyaan
 
-      )
-    mockDataPusatInformasi.forEach {
+
+    )
+    state.dataList.forEach {
       CommentsPusatInformasi(
         data = it,
       )
@@ -80,9 +113,10 @@ private fun TopSection(
 
 @Composable
 private fun CurrentPusatInformasi(
-  data : DataPusatInformasi,
-  onSubmitComment : () -> Unit = {},
-  onCancelComment : () -> Unit = {},
+  data : com.example.slicingbcf.data.local.DataPusatInformasi,
+  onSubmitComment : (com.example.slicingbcf.data.local.DataPusatInformasi) -> Unit = {},
+  question : String = "",
+  onChangeQuestion : (String) -> Unit = {}
 ) {
   Column(
     modifier = Modifier
@@ -94,22 +128,28 @@ private fun CurrentPusatInformasi(
         horizontal = 16.dp,
         vertical = 20.dp
       )
+
       .fillMaxWidth(),
     verticalArrangement = Arrangement.spacedBy(32.dp)
   ) {
     PusatInformasiContent(
       data,
-      true,
-      true,
-      onSubmitComment,
-      onCancelComment
+      isCommentable = true,
+      isEnabledTextField = true,
+      question = question,
+      onChangeQuestion = onChangeQuestion,
+      onSubmitComment = {
+        onSubmitComment(
+          it
+        )
+      }
     )
   }
 }
 
 @Composable
 private fun CommentsPusatInformasi(
-  data : DataPusatInformasi,
+  data : com.example.slicingbcf.data.local.DataPusatInformasi,
 ) {
   Column(
     modifier = Modifier
@@ -131,4 +171,5 @@ private fun CommentsPusatInformasi(
       )
   }
 }
+
 

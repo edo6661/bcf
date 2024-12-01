@@ -30,6 +30,7 @@ fun WorksheetItem(
   onClick : () -> Unit = {},
   isClickable : Boolean = true,
   bgColor : Color = ColorPalette.OnPrimary,
+  isDescriptionShown : Boolean = true
 ) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
@@ -63,19 +64,19 @@ fun WorksheetItem(
     }
     Column(
       modifier = Modifier.weight(1f),
-
-
-      ) {
+    ) {
       Text(
         text = worksheet.title,
         style = StyledText.MobileSmallSemibold,
         color = ColorPalette.OnSurface
       )
-      Text(
-        text = worksheet.description,
-        style = StyledText.MobileSmallRegular,
-        color = ColorPalette.OnSurface
-      )
+      if (isDescriptionShown) {
+        Text(
+          text = worksheet.description,
+          style = StyledText.MobileSmallRegular,
+          color = ColorPalette.OnSurface
+        )
+      }
     }
     IconButton(
       onClick = { /*todo*/ }

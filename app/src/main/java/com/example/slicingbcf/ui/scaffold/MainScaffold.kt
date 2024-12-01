@@ -25,6 +25,8 @@ import androidx.navigation.NavHostController
 import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.dao.model.Role
+import com.example.slicingbcf.data.dao.model.User
 import com.example.slicingbcf.ui.navigation.Screen
 import com.example.slicingbcf.ui.navigation.navigateSingleTop
 import com.example.slicingbcf.ui.sidenav.OverlayNav
@@ -37,6 +39,8 @@ fun MainScaffold(
   config : ScaffoldConfig,
   navController : NavHostController,
   isActiveRoute : (String) -> Boolean,
+  user : User?,
+  logout : () -> Unit,
   content : @Composable (PaddingValues) -> Unit,
 ) {
 
@@ -62,7 +66,15 @@ fun MainScaffold(
   }
 
   val onNavigatePengumuman = {
-    navController.navigateSingleTop(Screen.Pengumuman.route)
+    when (user?.role) {
+      Role.MENTOR.name -> {
+        navController.navigateSingleTop(Screen.Pengumuman.route)
+      }
+      Role.PESERTA.name -> {
+        navController.navigateSingleTop(Screen.Pengumuman.route)
+      }
+
+    }
   }
 
   Box(
@@ -78,7 +90,8 @@ fun MainScaffold(
             },
             onNavigateHome = onNavigateHome,
             onAvatarClick = onNavigateProfile,
-            onAnnouncementClick = onNavigatePengumuman
+            onAnnouncementClick = onNavigatePengumuman,
+            user = user
           )
 
           config.showBackNav -> BackNav(
@@ -105,11 +118,14 @@ fun MainScaffold(
         .zIndex(1f),
       isSideNavVisible = isSideNavVisible,
       offSetX = offSetXSideNav,
-    ) {
+
+      ) {
       SideNavContent(
         navController = navController,
         closeSideNavVisible = closeSideNavVisible,
-        isActiveRoute = isActiveRoute
+        isActiveRoute = isActiveRoute,
+        logout = logout,
+        user = user
       )
     }
   }
@@ -123,6 +139,7 @@ fun PrimaryNav(
   onNavigateHome : () -> Unit,
   onAvatarClick : () -> Unit,
   onAnnouncementClick : () -> Unit,
+  user : User?
 ) {
   TopAppBar(
     colors = TopAppBarDefaults.topAppBarColors(
@@ -149,26 +166,39 @@ fun PrimaryNav(
     },
     actions = {
 
-      // TODO IF GUEST:xxxx
-      IconButton(
-        onClick = onAnnouncementClick
-      ){
-        Icon(
-          imageVector = Icons.Default.Notifications,
-          contentDescription = "Announcement"
-        )
-      }
-      IconButton(
-        onClick = onAvatarClick
-      ){
-        Image(
-          painter = painterResource(id = R.drawable.avatar_sampul),
-          contentDescription = "Profile",
-          contentScale = ContentScale.Crop,
-          modifier = Modifier
-            .size(35.dp)
-            .clip(CircleShape)
-        )
+      Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+      ) {
+        user?.namaPeserta?.let {
+          Text(
+            text = user.role,
+            style = StyledText.MobileXsMedium,
+            color = ColorPalette.OnSurfaceVariant
+          )
+          IconButton(
+            onClick = onAnnouncementClick
+          ){
+            Icon(
+              imageVector = Icons.Default.Notifications,
+              contentDescription = "Announcement"
+            )
+          }
+          IconButton(
+            onClick = onAvatarClick
+          ){
+            Image(
+              painter = painterResource(id = R.drawable.avatar_sampul),
+              contentDescription = "Profile",
+              contentScale = ContentScale.Crop,
+              modifier = Modifier
+                .size(35.dp)
+                .clip(CircleShape)
+            )
+          }
+
+        }
+
       }
 
       IconButton(

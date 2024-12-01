@@ -11,12 +11,10 @@ import com.example.slicingbcf.implementation.mentor.jadwal.bulan.JadwalBulanMent
 import com.example.slicingbcf.implementation.mentor.jadwal.detail.DetailJadwalMentorScreen
 import com.example.slicingbcf.implementation.mentor.jadwal.minggu.JadwalMingguMentorScreen
 import com.example.slicingbcf.implementation.mentor.jadwal.tambah_jadwal.AddJadwalMentorScreen
-import com.example.slicingbcf.implementation.mentor.penilaian_peserta.PenilaianPesertaScreen
 import com.example.slicingbcf.implementation.peserta.form_feedback_mini_training.FormMiniTrainingScreen
 import com.example.slicingbcf.implementation.peserta.jadwal.bulanan.JadwalMentoringBulanScreen
 import com.example.slicingbcf.implementation.peserta.jadwal.detail.DetailJadwalScreen
 import com.example.slicingbcf.implementation.peserta.jadwal.mingguan.JadwalMentoringMingguScreen
-import com.example.slicingbcf.implementation.peserta.pitch_deck.PitchDeckPesertaScreen
 
 fun NavGraphBuilder.kegiatanNavGraph(
     modifier : Modifier,

@@ -24,7 +24,7 @@ import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.ui.shared.textfield.SearchBarCustom
 
 @Composable
-fun PenilaianPesertaScreen(
+fun PenilaianPesertaScreenMentor(
   modifier : Modifier,
   onNavigateDetailPenilaianPeserta : (String) -> Unit
 ) {
