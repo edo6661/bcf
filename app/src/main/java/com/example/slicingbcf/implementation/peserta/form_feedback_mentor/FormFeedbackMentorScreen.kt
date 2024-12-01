@@ -42,6 +42,8 @@ import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.FeedbackMentor
 import com.example.slicingbcf.ui.animations.AnimatedContentSlide
+import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
+import com.example.slicingbcf.ui.shared.dialog.CustomAlertDialog
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdown
 
 @Composable
@@ -240,6 +242,8 @@ fun FourthScreen(
     var discussionText by remember { mutableStateOf("") }
     var suggestionsText by remember { mutableStateOf("") }
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
+    var showDialog by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
@@ -299,6 +303,7 @@ fun FourthScreen(
                 Button(
                     onClick = {
                         onSaveFeedback(discussionText, suggestionsText, selectedFileUri)
+                        showDialog = true
                     },
                     modifier = Modifier.weight(1f),
                     shape = MaterialTheme.shapes.extraLarge,
@@ -311,6 +316,28 @@ fun FourthScreen(
                 }
             }
         }
+    }
+    if (showDialog) {
+        CustomAlertDialog(
+            title = "Apakah anda yakin ingin mengirimkan umpan balik ini?",
+            confirmButtonText = "Kirim",
+            dismissButtonText = "Batal",
+            onConfirm = {
+                showDialog = false
+                isLoading = true
+            },
+            onDismiss = {
+                showDialog = false
+            }
+        )
+    }
+    if(isLoading){
+        SubmitLoadingIndicatorDouble(
+            isLoading = isLoading,
+            title = "Memproses Umpan Balik Anda...",
+            onAnimationFinished = {onNavigateBackForm(0)},
+            titleBerhasil = "Umpan Balik Anda Berhasil Terkirim!",
+        )
     }
 }
 
