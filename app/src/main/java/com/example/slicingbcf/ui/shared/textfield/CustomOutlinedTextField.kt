@@ -112,6 +112,7 @@ fun CustomOutlinedTextField(
             labelDefaultColor = labelDefaultColor,
             isFocused = actualIsFocus,
             labelFocusedColor = labelFocusedColor,
+            isError = error != null
 
 
           )
@@ -127,6 +128,7 @@ fun CustomOutlinedTextField(
             isFocused = actualIsFocus,
             isPlaceholder = true,
             labelFocusedColor = labelFocusedColor,
+            isError = error != null
 
 
             )
@@ -139,7 +141,8 @@ fun CustomOutlinedTextField(
         borderFocusedColor = borderFocusedColor,
         bgColor = bgColor,
         labelFocusedColor = labelFocusedColor,
-        labelDefaultColor = labelDefaultColor
+        labelDefaultColor = labelDefaultColor,
+        isError = error != null
       ),
       enabled = isEnabled,
       readOnly = readOnly,
@@ -196,7 +199,8 @@ private fun TextFieldSupport(
   labelDefaultColor : Color,
   labelFocusedColor : Color,
   isFocused : Boolean = false,
-  isPlaceholder : Boolean = false
+  isPlaceholder : Boolean = false,
+  isError : Boolean = false
 ) {
   val fontWeight = if (isPlaceholder) FontWeight.Medium else when {
     valueNotEmpty -> FontWeight.Medium
@@ -206,6 +210,7 @@ private fun TextFieldSupport(
 
   val color = if (isPlaceholder) labelDefaultColor else when {
     valueNotEmpty -> labelFocusedColor
+    isError        -> ColorPalette.Error
     isFocused     -> labelFocusedColor
     else          -> labelDefaultColor
   }
@@ -239,8 +244,11 @@ private fun getTextFieldColors(
   borderFocusedColor : Color,
   bgColor : Color,
   labelFocusedColor : Color,
-  labelDefaultColor : Color
+  labelDefaultColor : Color,
+  isError : Boolean = false
 ) : TextFieldColors {
+
+  val focusedLabelColor = if (isError) ColorPalette.Error else labelFocusedColor
 
   return OutlinedTextFieldDefaults.colors(
     unfocusedBorderColor = borderColor,
@@ -249,7 +257,7 @@ private fun getTextFieldColors(
     unfocusedContainerColor = bgColor,
     focusedContainerColor = bgColor,
     disabledContainerColor = bgColor,
-    focusedLabelColor = labelFocusedColor,
+    focusedLabelColor = focusedLabelColor,
     unfocusedLabelColor = labelDefaultColor,
     errorBorderColor = ColorPalette.Error,
     errorLabelColor = ColorPalette.Error,

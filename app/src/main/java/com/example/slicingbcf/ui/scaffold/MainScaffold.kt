@@ -77,10 +77,10 @@ fun MainScaffold(
   val onNavigatePengumuman = {
     when (user?.role) {
       Role.MENTOR.name -> {
-        navController.navigateSingleTop(Screen.Pengumuman.route)
+        navController.navigateSingleTop(Screen.Mentor.Pengumuman.route)
       }
       Role.PESERTA.name -> {
-        navController.navigateSingleTop(Screen.Pengumuman.route)
+        navController.navigateSingleTop(Screen.Peserta.PengumumanPeserta.route)
       }
 
     }

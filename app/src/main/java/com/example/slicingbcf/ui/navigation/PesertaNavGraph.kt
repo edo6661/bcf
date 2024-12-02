@@ -1,5 +1,8 @@
 package com.example.slicingbcf.ui.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.navigation.*
@@ -144,6 +147,9 @@ fun NavGraphBuilder.pesertaNavGraph(
     composable(Screen.Peserta.PengumumanPeserta.route) {
       PengumumanPesertaScreen(
         modifier = modifier,
+        onNavigateDetailPengumuman = { id : String ->
+          navController.navigateSingleTop("pengumuman-peserta/$id")
+        }
       )
     }
     composable(
@@ -164,6 +170,7 @@ fun NavGraphBuilder.pesertaNavGraph(
     ) {
       PengaturanScreen(
         modifier = modifier,
+
       )
     }
 
@@ -230,13 +237,26 @@ fun NavGraphBuilder.pesertaNavGraph(
     // detail form monthly report
     composable(
       route = "form-monthly-report/{id}",
-      arguments = listOf(navArgument("id") { type = NavType.StringType })
+      arguments = listOf(navArgument("id") { type = NavType.StringType }),
+      enterTransition = {
+        slideInHorizontally(
+          initialOffsetX = { it },
+          animationSpec = tween(700)
+        )
+      },
+
     ) { backStackEntry ->
       val id = backStackEntry.arguments?.getString("id") ?: ""
       if (id.isEmpty()) throw IllegalStateException("id must not be empty")
+
+      val onNavigateBack = {
+        navController.popBackStack()
+      }
+
       DetailFormMonthlyReportScreen(
         modifier = modifier,
-        id = id
+        id = id,
+        onNavigateBack = onNavigateBack
       )
     }
   }
