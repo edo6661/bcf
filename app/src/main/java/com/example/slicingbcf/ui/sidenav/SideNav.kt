@@ -136,14 +136,14 @@ private fun TopSideNav() {
     )
     Text(
       text = buildAnnotatedString {
-        append("LEAD\n")
         withStyle(
           style = SpanStyle(
             color = ColorPalette.PrimaryColor700,
           )
         ) {
-          append("INDONESIA")
+        append("LEAD\n")
         }
+          append("INDONESIA")
       },
       style = StyledText.MobileXlBold,
     )

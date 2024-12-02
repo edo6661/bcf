@@ -26,8 +26,8 @@ import com.example.slicingbcf.ui.shared.textfield.SearchBarCustom
 @Composable
 fun DataPesertaScreen(
   modifier : Modifier = Modifier,
+  onNavigateDetailDataPeserta: (String) -> Unit
 ) {
-
   Column(
     modifier = modifier
       .background(ColorPalette.Monochrome100)
@@ -42,11 +42,12 @@ fun DataPesertaScreen(
       onSearch = { q ->
       }
     )
-    BottomSection()
+    BottomSection(
+      onNavigateDetailDataPeserta = onNavigateDetailDataPeserta
+    )
 
   }
 }
-
 
 @Composable
 fun TopSection(
@@ -124,7 +125,9 @@ private fun ContainerImageCenteredShadow(
 }
 
 @Composable
-private fun BottomSection() {
+private fun BottomSection(
+  onNavigateDetailDataPeserta: (String) -> Unit
+) {
   val columnWeights = listOf(0.1f, 0.6f, 0.3f)
   val rows = mockDataPesertaData.mapIndexed { i, data ->
     listOf(
@@ -136,7 +139,8 @@ private fun BottomSection() {
   Table(
     columnWeights = columnWeights,
     rows = rows,
-    headers = headersPesertaData
+    headers = headersPesertaData,
+    onNavigateDetailDataPeserta = onNavigateDetailDataPeserta
   )
 }
 
@@ -144,7 +148,8 @@ private fun BottomSection() {
 private fun Table(
   columnWeights : List<Float>,
   rows : List<List<String>>,
-  headers : List<String>
+  headers : List<String>,
+  onNavigateDetailDataPeserta: (String) -> Unit
 ) {
   Column(
     modifier = Modifier
@@ -156,7 +161,7 @@ private fun Table(
           modifier = Modifier
             .weight(columnWeights.getOrElse(i) { 1f }),
           isHeader = true,
-          value = cell
+          value = cell,
         )
       }
     }
@@ -184,6 +189,7 @@ private fun Table(
                 modifier = Modifier.weight(columnWeights.getOrElse(i) { 1f }),
                 value = cell,
                 isButton = cell == "Lihat",
+                onClick = {onNavigateDetailDataPeserta(it)}
               )
             }
           }
@@ -201,7 +207,7 @@ private fun TableCell(
   isHeader : Boolean = false,
   value : String,
   isButton : Boolean = false,
-  onClick : () -> Unit = {}
+  onClick : (String) -> Unit = {}
 ) {
   val color = if (isHeader) ColorPalette.Monochrome500 else ColorPalette.Black
   val style = if (isHeader) StyledText.MobileXsRegular else StyledText.MobileSmallMedium
@@ -214,7 +220,7 @@ private fun TableCell(
       PrimaryButton(
         style = StyledText.MobileSmallMedium,
         color = ColorPalette.PrimaryColor700,
-        onClick = { onClick() },
+        onClick = { onClick(value) },
         text = value,
       )
     } else {

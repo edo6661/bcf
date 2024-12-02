@@ -1,11 +1,15 @@
 package com.example.slicingbcf.ui.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.navigation.*
 import androidx.navigation.compose.composable
 import com.example.slicingbcf.implementation.peserta.check_status_registrasi.CheckStatusRegistrasiScreen
 import com.example.slicingbcf.implementation.peserta.data_peserta.DataPesertaScreen
+import com.example.slicingbcf.implementation.peserta.data_peserta.RingkasanDataPeserta
 import com.example.slicingbcf.implementation.peserta.feedback_peserta.FeedbackPesertaScreen
 import com.example.slicingbcf.implementation.peserta.form_feedback_mentor.FeedbackMentorScreen
 import com.example.slicingbcf.implementation.peserta.form_monthly_report.DetailFormMonthlyReportScreen
@@ -15,6 +19,8 @@ import com.example.slicingbcf.implementation.peserta.pengaturan.PengaturanScreen
 import com.example.slicingbcf.implementation.peserta.pengumuman_peserta.DetailPengumumanPesertaScreen
 import com.example.slicingbcf.implementation.peserta.pengumuman_peserta.PengumumanPesertaScreen
 import com.example.slicingbcf.implementation.peserta.penilaian_peserta.PenilaianPesertaScreen
+import com.example.slicingbcf.implementation.peserta.profil.profil_lembaga.ProfilLembagaScreen
+import com.example.slicingbcf.implementation.peserta.profil.profil_peserta.ProfilPesertaScreen
 import com.example.slicingbcf.implementation.peserta.pusat_informasi.DetailPusatInformasiScreen
 import com.example.slicingbcf.implementation.peserta.pusat_informasi.PusatInformasiScreen
 import com.example.slicingbcf.implementation.peserta.pusat_informasi.SearchPusatInformasiScreen
@@ -22,18 +28,58 @@ import com.example.slicingbcf.implementation.peserta.worksheet_peserta.DetailWor
 import com.example.slicingbcf.implementation.peserta.worksheet_peserta.WorksheetPesertaScreen
 
 
+@Suppress("t")
 fun NavGraphBuilder.pesertaNavGraph(
   modifier : Modifier,
   navController : NavHostController
 ) {
   navigation(
-    startDestination = Screen.Peserta.PenilaianPeserta.route, route = "peserta"
+    startDestination = Screen.Peserta.DetailFormMonthlyReport("1").route, route = "peserta"
   ) {
     // Data Peserta
     composable(Screen.Peserta.DataPeserta.route) {
 
+      val onNavigateDetailDataPeserta = { id : String ->
+        navController.navigateSingleTop("data-peserta/$id")
+      }
       DataPesertaScreen(
         modifier = modifier,
+        onNavigateDetailDataPeserta = onNavigateDetailDataPeserta
+      )
+    }
+
+    composable(
+      route = "data-peserta/{id}",
+      arguments = listOf(navArgument("id") { type = NavType.StringType })
+    ) { backStackEntry ->
+      val id = backStackEntry.arguments?.getString("id") ?: ""
+      if (id.isEmpty()) throw IllegalStateException("id must not be empty")
+
+      val onNextClick = { navController.navigateSingleTop("profil-peserta")
+      }
+
+      RingkasanDataPeserta(
+        modifier = modifier,
+        onNextClick = onNextClick
+      )
+    }
+
+    composable(Screen.ProfilLembaga.route) {
+      val onNextClick = { navController.navigateSingleTop("profil-peserta")
+      }
+      ProfilLembagaScreen(
+        modifier = modifier,
+        onNextClick = onNextClick
+      )
+    }
+
+
+    composable(Screen.ProfilPeserta.route) {
+      val onPreviousClick = { navController.navigateSingleTop("profil-lembaga")
+      }
+      ProfilPesertaScreen(
+        modifier = modifier,
+        onPreviousClick = onPreviousClick
       )
     }
 
@@ -102,6 +148,9 @@ fun NavGraphBuilder.pesertaNavGraph(
     composable(Screen.Peserta.PengumumanPeserta.route) {
       PengumumanPesertaScreen(
         modifier = modifier,
+        onNavigateDetailPengumuman = { id : String ->
+          navController.navigateSingleTop("pengumuman-peserta/$id")
+        }
       )
     }
     composable(
@@ -122,6 +171,7 @@ fun NavGraphBuilder.pesertaNavGraph(
     ) {
       PengaturanScreen(
         modifier = modifier,
+
       )
     }
 
@@ -188,19 +238,27 @@ fun NavGraphBuilder.pesertaNavGraph(
     // detail form monthly report
     composable(
       route = "form-monthly-report/{id}",
-      arguments = listOf(navArgument("id") { type = NavType.StringType })
+      arguments = listOf(navArgument("id") { type = NavType.StringType }),
+      enterTransition = {
+        slideInHorizontally(
+          initialOffsetX = { it },
+          animationSpec = tween(700)
+        )
+      },
+
     ) { backStackEntry ->
       val id = backStackEntry.arguments?.getString("id") ?: ""
       if (id.isEmpty()) throw IllegalStateException("id must not be empty")
+
+      val onNavigateBack = {
+        navController.popBackStack()
+      }
+
       DetailFormMonthlyReportScreen(
         modifier = modifier,
-        id = id
+        id = id,
+        onNavigateBack = onNavigateBack
       )
     }
-
-
-
-
-
   }
 }

@@ -62,11 +62,7 @@ fun NavGraph(
       navController = navController
     )
 
-    composable(Screen.Pengumuman.route) {
-      PengumumanPesertaScreen(
-        modifier = modifier,
-      )
-    }
+
     composable(
       route = "pengumuman/{id}",
       arguments = listOf(navArgument("id") { type = NavType.StringType })

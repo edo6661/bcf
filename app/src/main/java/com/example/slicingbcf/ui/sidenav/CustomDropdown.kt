@@ -45,19 +45,20 @@ fun dropdownItemsPeserta_Peserta(
       route = Screen.Peserta.DataPeserta.route
     ),
     DropdownItem(
+      text = "Penilaian Peserta",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Peserta.PenilaianPeserta.route)
+      },
+      route = Screen.Peserta.PenilaianPeserta.route
+    ),
+    DropdownItem(
       text = "Umpan Balik Peserta",
       onClick = {
         navigateAndCloseSideNav(Screen.Peserta.FeedbackPeserta.route)
       },
       route = Screen.Peserta.FeedbackPeserta.route
     ),
-    DropdownItem(
-      text = "Penilaian Peserta",
-      onClick = {
-        navigateAndCloseSideNav(Screen.Peserta.PenilaianPeserta.route)
-      },
-      route = Screen.Peserta.PenilaianPeserta.route
-    )
+
   )
 }
 
@@ -224,7 +225,7 @@ fun dropdownItemsTugas_Mentor(
     DropdownItem(
       text = "Laporan",
       onClick = {
-        Log.d("SideNav", "Laporan clicked")
+        navigateAndCloseSideNav(Screen.Peserta.FormMonthlyReport.route)
       },
       route = null
     ),

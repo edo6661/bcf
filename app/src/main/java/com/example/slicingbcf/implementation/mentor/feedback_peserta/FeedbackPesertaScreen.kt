@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
@@ -25,6 +26,7 @@ import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdow
 import com.example.slicingbcf.ui.shared.textfield.TextFieldWithTitle
 
 // TODO: jadiin best practice tentang animasi dan suruh jelasin tentang animasi nya
+@Preview
 @Composable
 fun FeedbackPesertaScreen(
   modifier : Modifier = Modifier,

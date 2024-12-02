@@ -17,6 +17,20 @@ class ConstantFormMonthlyReport {
       "Youtube",
       "Tiktok",
     )
-    
+    val jenisLembagas = listOf(
+      "Gerakan",
+      "Yayasan",
+      "Komunitas"
+    )
+    val statuses = listOf(
+      "Diterima",
+      "Menunggu",
+      "Ditolak"
+    )
+    val mediaSosials = listOf(
+      "Instagram",
+      "Tiktok",
+      "Linkedin"
+    )
   }
 }

@@ -41,36 +41,43 @@ import androidx.compose.runtime.setValue
 import com.example.slicingbcf.data.local.ProfilPeserta
 import com.example.slicingbcf.data.local.profilMentor
 import com.example.slicingbcf.data.local.profilPeserta
+import com.example.slicingbcf.implementation.peserta.profil.profil_lembaga.NavigationHeader
 
 @Preview(showSystemUi = true)
 @Composable
 fun RingkasanDataPeserta(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNextClick: () -> Unit ={}
 ) {
     Column(
         modifier = modifier.padding(16.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(40.dp)
     ) {
-        TopSection(profile = profilLembaga[0])
+        TopSection(
+            profile = profilLembaga[0],
+            onNextClick = onNextClick
+        )
         BottomSection(profile = profilLembaga[0])
     }
 }
 
 @Composable
-fun TopSection(profile: ProfilLembaga) {
+fun TopSection(
+    profile: ProfilLembaga,
+    onNextClick: () -> Unit
+) {
     var currentPage by remember { mutableStateOf(1) }
-    val totalPages = 1
+    val totalPages = 3
 
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-
         NavigationHeader(
             currentPage = currentPage,
             totalPages = totalPages,
-            onPreviousClick = { if (currentPage > 1) currentPage-- },
-            onNextClick = { if (currentPage < totalPages) currentPage++ }
+            onPreviousClick = {},
+            onNextClick = { onNextClick() }
         )
         Spacer(modifier = Modifier.height(16.dp))
         HorizontalDivider(
@@ -335,54 +342,6 @@ fun RingkasanProfilMentor() {
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-        }
-    }
-}
-
-@Composable
-fun NavigationHeader(
-    currentPage: Int,
-    totalPages: Int,
-    onPreviousClick: () -> Unit,
-    onNextClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = "Ringkasan Data Lembaga",
-            style = StyledText.MobileBaseSemibold,
-            color = ColorPalette.PrimaryColor700
-        )
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBackIosNew,
-                contentDescription = "Previous Page",
-                tint = if (currentPage > 1) Color.Black else Color.Gray,
-                modifier = Modifier
-                    .size(20.dp)
-                    .clickable(enabled = currentPage > 1) { onPreviousClick() }
-            )
-            Text(
-                text = "$currentPage dari $totalPages",
-                style = StyledText.MobileSmallRegular,
-                textAlign = TextAlign.Center
-            )
-            Icon(
-                imageVector = Icons.Default.ArrowForwardIos,
-                contentDescription = "Next Page",
-                tint = if (currentPage < totalPages) Color.Black else Color.Gray,
-                modifier = Modifier
-                    .size(20.dp)
-                    .clickable(enabled = currentPage < totalPages) { onNextClick() }
-            )
         }
     }
 }

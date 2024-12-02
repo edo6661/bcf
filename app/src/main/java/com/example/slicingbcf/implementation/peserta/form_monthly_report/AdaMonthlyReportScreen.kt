@@ -26,90 +26,69 @@ import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.laporan
 
-//@Preview(showSystemUi = true)
+
+@Preview(showSystemUi = true)
 @Composable
 fun AdaMonthlyReportScreen(
-    modifier: Modifier = Modifier,
-    onNavigateFormMonthly: (Int) -> Unit = {},
-    onNavigateBack: (Int) -> Unit = {},
-    id: String
+    onNavigateChangeReport: (Int) -> Unit = {},
+    onNavigateRingkasan: (Int) -> Unit = {},
 ){
     Column(
-        modifier = modifier
-            .padding(16.dp)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        Title()
-        ReportActions(
-            onNavigateFormMonthly = onNavigateFormMonthly,
-            onNavigateBack = onNavigateBack
-        )
-    }
-}
-
-@Composable
-fun Title(){
-    val judul = laporan[0].title
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(56.dp))
-        Text(
-            text = "$judul Belum Tersedia",
-            style = StyledText.MobileLargeSemibold,
-            textAlign = TextAlign.Center,
+        val judul = laporan[0].title
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start= 52.dp, end=52.dp, bottom = 16.dp),
-            color = ColorPalette.PrimaryColor700
-        )
-        Image(
-            painter = painterResource(id = R.drawable.laporan_ada),
-            contentDescription = "",
-            modifier = Modifier.size(320.dp)
-        )
-    }
-}
-
-@Composable
-fun ReportActions(
-    onNavigateFormMonthly: (Int) -> Unit,
-    onNavigateBack: (Int) -> Unit,
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(
-            onClick = { onNavigateFormMonthly(1) },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = ColorPalette.PrimaryColor700),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(44.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(56.dp))
             Text(
-                "Buat Laporan",
-                color = ColorPalette.OnPrimary)
-        }
+                text = "$judul Sudah Tersedia",
+                style = StyledText.MobileLargeSemibold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start= 52.dp, end=52.dp, bottom = 16.dp),
+                color = ColorPalette.PrimaryColor700
+            )
+            Image(
+                painter = painterResource(id = R.drawable.laporan_tidak_ada),
+                contentDescription = "",
+                modifier = Modifier.size(320.dp)
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(56.dp))
 
-        Button(
-            onClick = { onNavigateBack(1) },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = ColorPalette.PrimaryColor100),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(44.dp)
-        ) {
-            Text(
-                "Kembali",
-                color = ColorPalette.PrimaryColor700)
+            Button(
+                onClick = { onNavigateRingkasan(1) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = ColorPalette.PrimaryColor700),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(44.dp)
+            ) {
+                Text(
+                    "Lihat Ringkasan",
+                    color = ColorPalette.OnPrimary)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = { onNavigateChangeReport(1) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = ColorPalette.PrimaryColor100),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(44.dp)
+            ) {
+                Text(
+                    "Ubah Laporan",
+                    color = ColorPalette.PrimaryColor700)
+            }
         }
     }
 }

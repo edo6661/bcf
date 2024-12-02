@@ -267,3 +267,60 @@ val headerMediaSosial = listOf(
   "Waktu Posting",
   "Konten Posting",
 )
+
+// form
+
+data class JumlahAngkaPenerimaanManfaat(
+  val wilayahPenerimaManfaat: String,
+  val jumlah: String,
+)
+
+data class WilayahPenerimaManfaat (
+  val wilayah : String,
+  val jumlah: String,
+)
+
+data class Donasi(
+  val jumlah: String,
+  val platform: String,
+)
+
+data class ProsesOpenRecruitmentRelawan(
+  val jumlah: String,
+  val prosesYangDilakukan: String
+)
+
+val emptyDonasis =  listOf(
+  Donasi(
+    "", "",
+  ),
+  Donasi(
+    "", "",
+  ),
+)
+
+data class DonasiMitra(
+  val jumlah: String,
+  val keterangan: String,
+)
+
+val emptyDonasiMitras = listOf(
+  DonasiMitra("", ""),
+  DonasiMitra("", ""),
+  DonasiMitra("", ""),
+)
+
+data class KerjaSama(
+  val jenisLembaga:String,
+  val status: String,
+  val namaLembaga: String,
+  val keterangan: String,
+)
+
+data class  PemasaranSosialMedia(
+  val mediaSosial: String,
+  val waktu: String,
+  val konten: String,
+  val tautan: String,
+)
+
