@@ -74,7 +74,7 @@ fun PitchDeckItem(
                 .fillMaxWidth()
                 .height(100.dp),
             colors = CardDefaults.cardColors(
-                containerColor = bgColor
+                containerColor = if (isExpanded.value) ColorPalette.PrimaryColor100 else bgColor,
             ),
             border = BorderStroke(1.dp, ColorPalette.Monochrome200)
         ) {
@@ -133,7 +133,7 @@ fun PitchDeckItem(
                     }
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.folder),
+                        painter = painterResource(id = R.drawable.icon_link_45deg),
                         contentDescription = "",
                         modifier = Modifier.size(24.dp)
                     )

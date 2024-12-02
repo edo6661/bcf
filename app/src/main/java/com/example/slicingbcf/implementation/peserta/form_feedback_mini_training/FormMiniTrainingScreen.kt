@@ -118,7 +118,7 @@ fun TopSection(
     onRatingMetodePemateri2Change: (Int) -> Unit,
     ratingMetodePemateri2: Int,
 ) {
-    var hariKegiatan by remember { mutableStateOf("") }
+//    var hariKegiatan by remember { mutableStateOf("") }
     var speaker1Name by remember { mutableStateOf(TextFieldValue("")) }
     var speaker2Name by remember { mutableStateOf(TextFieldValue("")) }
     var eventDate by remember { mutableStateOf(TextFieldValue("")) }

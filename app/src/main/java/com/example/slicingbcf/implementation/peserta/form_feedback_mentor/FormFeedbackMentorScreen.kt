@@ -1,6 +1,7 @@
 package com.example.slicingbcf.implementation.peserta.form_feedback_mentor
 
 import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -41,24 +42,43 @@ import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.FeedbackMentor
+import com.example.slicingbcf.data.local.formEvaluasiCapaianMentoring
+import com.example.slicingbcf.data.local.formMentor
+import com.example.slicingbcf.implementation.auth.registrasi.RegisterEvent
+import com.example.slicingbcf.implementation.auth.registrasi.RegistrasiState
 import com.example.slicingbcf.ui.animations.AnimatedContentSlide
 import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
 import com.example.slicingbcf.ui.shared.dialog.CustomAlertDialog
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdown
+import com.example.slicingbcf.ui.upload.FileUploadSection
+
 
 @Composable
 fun FeedbackMentorScreen(
-    modifier : Modifier = Modifier,
+    modifier : Modifier = Modifier
 ) {
+
     var currentScreen by rememberSaveable { mutableStateOf(0) }
     val onChangeScreen : (Int) -> Unit = { screen ->
         currentScreen = screen
     }
     var initialState by remember { mutableStateOf(0) }
 
+    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
+    val deleteFile = {
+        selectedFileUri = null
+    }
+
     val onNavigateNextForm: (Int) -> Unit = { screen ->
         onChangeScreen(screen)
     }
+
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = { uri ->
+            selectedFileUri = uri
+        }
+    )
 
     Column(
         modifier = modifier
@@ -96,6 +116,9 @@ fun FeedbackMentorScreen(
                 3 -> FourthScreen(
                     onNavigateBackForm = { onChangeScreen(2) },
                     id = "id",
+                    deleteFile = deleteFile,
+                    selectedFileUri = selectedFileUri,
+                    filePickerLauncher = filePickerLauncher
                 )
             }
 
@@ -161,7 +184,6 @@ fun SecondScreen(
         BottomSectionScreen2(
             onNavigateBackForm = {onNavigateBackForm(1)},
             onNavigateNextForm = {
-                // TODO: logika "Berikutnya"
                 onNavigateNextForm(1)
                 val feedback = FeedbackMentor(
                     issueSharingRating,
@@ -238,17 +260,15 @@ fun FourthScreen(
     onSaveFeedback: (String, String, Uri?) -> Unit = { _, _, _ -> },
     onNavigateBackForm: (Int) -> Unit,
     id: String,
+    deleteFile : () -> Unit,
+    selectedFileUri: Uri?,
+    filePickerLauncher: ManagedActivityResultLauncher<Array<String>, Uri?>
 ) {
     var discussionText by remember { mutableStateOf("") }
     var suggestionsText by remember { mutableStateOf("") }
-    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
     var showDialog by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
 
-    val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument(),
-        onResult = { uri -> selectedFileUri = uri }
-    )
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -256,24 +276,27 @@ fun FourthScreen(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         TextSection(
-            title = "Pembahasan selama kegiatan mentoring",
+            title = formMentor[5].title,
             hint = "Tuliskan hal yang dibahas selama mentoring disini...",
             textValue = discussionText,
             onTextChange = { discussionText = it }
         )
 
         TextSection(
-            title = "Kritik dan saran kegiatan mentoring",
+            title = formMentor[6].title,
             hint = "Berisi uraian penjelasan mengenai kritik dan saran dari peserta...",
             textValue = suggestionsText,
             onTextChange = { suggestionsText = it }
         )
 
         FileUploadSection(
-            title = "Dokumentasi sesi mentoring cluster",
-            buttonText = "Klik untuk unggah file dokumentasi",
+            title = formMentor[7].title,
+            asteriskAtEnd = true,
+            buttonText = "Klik untuk unggah file",
             onFileSelect = { filePickerLauncher.launch(arrayOf("image/*", "application/pdf")) },
-            selectedFileUri = selectedFileUri
+            selectedFileUri = selectedFileUri,
+            deleteFile = deleteFile,
+            error = null
         )
 
         Box(
@@ -360,7 +383,7 @@ fun TopSectionScreen1(
     ) {
         // Dropdown Evaluasi Capaian Mentoring
         Text(
-            text = "Evaluasi Capaian Mentoring",
+            text = formMentor[0].title,
             style = StyledText.MobileBaseSemibold,
             textAlign = TextAlign.Left,
             color = ColorPalette.PrimaryColor700,
@@ -378,7 +401,7 @@ fun TopSectionScreen1(
 
         // Input Field Nama Mentor
         Text(
-            text = "Nama Mentor",
+            text = formMentor[1].title,
             style = StyledText.MobileBaseSemibold,
             textAlign = TextAlign.Left,
             color = ColorPalette.PrimaryColor700,
@@ -408,15 +431,11 @@ fun TopSectionScreen1(
 
         // Dropdown Periode Capaian Mentoring
         Text(
-            text = "Periode Capaian Mentoring",
+            text = formMentor[2].title,
             style = StyledText.MobileBaseSemibold,
             textAlign = TextAlign.Left,
             color = ColorPalette.PrimaryColor700,
         )
-//        DropdownButton(
-//            text = selectedPeriode,
-//            onClick = { /* TODO: logic on click dropdown */ }
-//        )
         CustomOutlinedTextFieldDropdown(
             value = selectedPeriode,
             onValueChange = onPeriodeChange,
@@ -497,7 +516,7 @@ fun TopSectionScreen2(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Text(
-            text = "Evaluasi Capaian Mentoring Cluster 1",
+            text = formMentor[3].title,
             style = StyledText.MobileBaseSemibold,
             color = ColorPalette.PrimaryColor700,
             textAlign = TextAlign.Left,
@@ -505,19 +524,19 @@ fun TopSectionScreen2(
         )
 
         RatingSection(
-            title = "Sharing isu yang digeluti, membahas 3P (Progress, Problem, Plan) yang dilalui peserta dalam kegiatan LEAD maupun yang dihadapi di lapangan",
+            title = formEvaluasiCapaianMentoring[0].title,
             rating = issueSharingRating,
             onRatingSelected = onIssueSharingRatingChange
         )
 
         RatingSection(
-            title = "Pemetaan potensial stakeholder...",
+            title = formEvaluasiCapaianMentoring[1].title,
             rating = stakeholderMappingRating,
             onRatingSelected = onStakeholderMappingRatingChange
         )
 
         RatingSection(
-            title = "Menyusun strategi capaian pendanaan...",
+            title = formEvaluasiCapaianMentoring[2].title,
             rating = fundingStrategyRating,
             onRatingSelected = onFundingStrategyRatingChange
         )
@@ -575,12 +594,24 @@ fun RatingSection(
     onRatingSelected: (Int) -> Unit
 ) {
     Column {
-        Text(
-            text = title,
-            style = StyledText.MobileSmallRegular,
-            textAlign = TextAlign.Justify,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ){
+            Text(
+                text = title,
+                style = StyledText.MobileSmallRegular,
+                textAlign = TextAlign.Justify,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .width(356.dp)
+            )
+            Text(
+                text = "*",
+                style = StyledText.MobileBaseSemibold,
+                color = ColorPalette.Error,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -646,12 +677,22 @@ fun TextSection(
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            text = title,
-            style = StyledText.MobileBaseSemibold,
-            color = ColorPalette.PrimaryColor700,
-            modifier = Modifier.fillMaxWidth()
-        )
+        Row(){
+            Text(
+                text = title,
+                style = StyledText.MobileBaseSemibold,
+                color = ColorPalette.PrimaryColor700,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .width(356.dp)
+            )
+            Text(
+                text = "*",
+                style = StyledText.MobileBaseSemibold,
+                color = ColorPalette.Error,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
         OutlinedTextField(
             value = textValue,
             onValueChange = onTextChange,
@@ -677,49 +718,49 @@ fun TextSection(
     }
 }
 
-@Composable
-fun FileUploadSection(
-    title: String,
-    buttonText: String,
-    onFileSelect: () -> Unit,
-    selectedFileUri: Uri?
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = title,
-            style = StyledText.MobileBaseSemibold,
-            color = ColorPalette.PrimaryColor700,
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedButton(
-            onClick = onFileSelect,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            shape = RoundedCornerShape(12.dp),
-            border = BorderStroke(1.dp, ColorPalette.PrimaryColor700),
-            colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = Color.Transparent,
-                contentColor = ColorPalette.PrimaryColor700
-            )
-        ) {
-            Text(
-                text = buttonText,
-                style = StyledText.MobileSmallRegular,
-                textAlign = TextAlign.Center
-            )
-        }
-
-        selectedFileUri?.let {
-            Text(
-                text = "File terpilih: ${it.lastPathSegment}",
-                style = StyledText.MobileSmallRegular,
-                color = ColorPalette.Monochrome700,
-                textAlign = TextAlign.Left,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-        }
-    }
-}
+//@Composable
+//fun FileUploadSection(
+//    title: String,
+//    buttonText: String,
+//    onFileSelect: () -> Unit,
+//    selectedFileUri: Uri?
+//) {
+//    Column(
+//        verticalArrangement = Arrangement.spacedBy(8.dp)
+//    ) {
+//        Text(
+//            text = title,
+//            style = StyledText.MobileBaseSemibold,
+//            color = ColorPalette.PrimaryColor700,
+//            modifier = Modifier.fillMaxWidth()
+//        )
+//        OutlinedButton(
+//            onClick = onFileSelect,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(50.dp),
+//            shape = RoundedCornerShape(12.dp),
+//            border = BorderStroke(1.dp, ColorPalette.PrimaryColor700),
+//            colors = ButtonDefaults.outlinedButtonColors(
+//                containerColor = Color.Transparent,
+//                contentColor = ColorPalette.PrimaryColor700
+//            )
+//        ) {
+//            Text(
+//                text = buttonText,
+//                style = StyledText.MobileSmallRegular,
+//                textAlign = TextAlign.Center
+//            )
+//        }
+//
+//        selectedFileUri?.let {
+//            Text(
+//                text = "File terpilih: ${it.lastPathSegment}",
+//                style = StyledText.MobileSmallRegular,
+//                color = ColorPalette.Monochrome700,
+//                textAlign = TextAlign.Left,
+//                modifier = Modifier.padding(top = 8.dp)
+//            )
+//        }
+//    }
+//}

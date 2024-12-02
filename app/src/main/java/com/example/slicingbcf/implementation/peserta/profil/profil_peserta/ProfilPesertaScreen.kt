@@ -1,6 +1,7 @@
 package com.example.slicingbcf.implementation.peserta.profil.profil_peserta
 
 import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -64,6 +65,7 @@ import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.ProfilPeserta
+import com.example.slicingbcf.data.local.formMentor
 import com.example.slicingbcf.data.local.profilPeserta
 
 //@Preview(showSystemUi = true)
@@ -81,6 +83,15 @@ fun ProfilPesertaScreen(
     modifier: Modifier = Modifier,
     onPreviousClick: () -> Unit
 ) {
+    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
+    val deleteFile = {
+        selectedFileUri = null
+    }
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = { uri -> selectedFileUri = uri }
+    )
+
     Column(
         modifier = modifier.padding(16.dp)
             .verticalScroll(rememberScrollState()),
@@ -89,7 +100,11 @@ fun ProfilPesertaScreen(
         TopSection(
             profile = profilPeserta[0],
             onPreviousClick = onPreviousClick)
-        BottomSection(profile = profilPeserta[0])
+        BottomSection(
+            profile = profilPeserta[0],
+            deleteFile = deleteFile,
+            selectedFileUri = selectedFileUri,
+            filePickerLauncher = filePickerLauncher)
     }
 }
 
@@ -173,13 +188,13 @@ fun TopSection(
 }
 
 @Composable
-fun BottomSection(profile: ProfilPeserta) {
-    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
+fun BottomSection(
+    profile: ProfilPeserta,
+    deleteFile : () -> Unit,
+    selectedFileUri: Uri?,
+    filePickerLauncher: ManagedActivityResultLauncher<Array<String>, Uri?>
 
-    val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument(),
-        onResult = { uri -> selectedFileUri = uri }
-    )
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -190,20 +205,6 @@ fun BottomSection(profile: ProfilPeserta) {
             color = ColorPalette.PrimaryColor700,
             modifier = Modifier.fillMaxWidth()
         )
-
-//        InputField(
-//            label = "Apakah Anda pernah mengikuti pelatihan atau memiliki pengetahuan terkait desain program sebelum mendaftar LEAD Indonesia 2024?",
-//            value = profile.pertanyaanUmum.pernahMempelajari,
-//            onValueChange = { profile.pertanyaanUmum.pernahMempelajari = it },
-//            placeholder = "isi jawaban disini"
-//        )
-//
-//        InputField(
-//            label = "Dari mana Anda mengetahui LEAD Indonesia?",
-//            value = profile.pertanyaanUmum.mengetahuiLEAD,
-//            onValueChange = { profile.pertanyaanUmum.mengetahuiLEAD = it },
-//            placeholder = "isi jawaban disini"
-//        )
 
         DropdownField(
             label = "Apakah Anda pernah mengikuti pelatihan atau memiliki pengetahuan terkait desain program sebelum mendaftar LEAD Indonesia 2024?",
@@ -240,11 +241,14 @@ fun BottomSection(profile: ProfilPeserta) {
             placeholder = "isi jawaban disini"
         )
 
-        FileUploadSection(
+        com.example.slicingbcf.ui.upload.FileUploadSection(
             title = "Unggah Laporan Akhir Tahun atau Laporan Pertanggungjawaban Pelaksanaan Program Instansi",
-            buttonText = "Unggah File Dokumentasi",
+            asteriskAtEnd = true,
+            buttonText = "Klik untuk unggah file",
             onFileSelect = { filePickerLauncher.launch(arrayOf("image/*", "application/pdf")) },
-            selectedFileUri = selectedFileUri
+            selectedFileUri = selectedFileUri,
+            deleteFile = deleteFile,
+            error = null
         )
 
         InputField(
@@ -478,69 +482,6 @@ fun DropdownField(
                     )
                 }
             }
-        }
-    }
-}
-
-
-@Composable
-fun FileUploadSection(
-    title: String,
-    buttonText: String,
-    onFileSelect: () -> Unit,
-    selectedFileUri: Uri?
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = title,
-            style = StyledText.MobileSmallRegular,
-            color = ColorPalette.PrimaryColor700,
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedButton(
-            onClick = onFileSelect,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .drawBehind {
-                    val strokeWidth = 1.dp.toPx()
-                    val dashWidth = 10.dp.toPx()
-                    val dashGap = 6.dp.toPx()
-                    val cornerRadius = 12.dp.toPx()
-                    val pathEffect = PathEffect.dashPathEffect(floatArrayOf(dashWidth, dashGap), 0f)
-
-                    drawRoundRect(
-                        color = ColorPalette.PrimaryColor400,
-                        topLeft = Offset(0f, 0f),
-                        size = size,
-                        cornerRadius = CornerRadius(cornerRadius, cornerRadius),
-                        style = Stroke(width = strokeWidth, pathEffect = pathEffect)
-                    )
-                },
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = Color.Transparent,
-                contentColor = ColorPalette.PrimaryColor400
-            ),
-            border = null
-        ) {
-            Text(
-                text = buttonText,
-                style = StyledText.MobileSmallRegular,
-                textAlign = TextAlign.Center
-            )
-        }
-
-        selectedFileUri?.let {
-            Text(
-                text = "File terpilih: ${it.lastPathSegment}",
-                style = StyledText.MobileSmallRegular,
-                color = ColorPalette.Monochrome700,
-                textAlign = TextAlign.Left,
-                modifier = Modifier.padding(top = 8.dp)
-            )
         }
     }
 }

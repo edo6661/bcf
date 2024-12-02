@@ -45,19 +45,20 @@ fun dropdownItemsPeserta_Peserta(
       route = Screen.Peserta.DataPeserta.route
     ),
     DropdownItem(
+      text = "Penilaian Peserta",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Peserta.PenilaianPeserta.route)
+      },
+      route = Screen.Peserta.PenilaianPeserta.route
+    ),
+    DropdownItem(
       text = "Umpan Balik Peserta",
       onClick = {
         navigateAndCloseSideNav(Screen.Peserta.FeedbackPeserta.route)
       },
       route = Screen.Peserta.FeedbackPeserta.route
     ),
-    DropdownItem(
-      text = "Penilaian Peserta",
-      onClick = {
-        navigateAndCloseSideNav(Screen.Peserta.PenilaianPeserta.route)
-      },
-      route = Screen.Peserta.PenilaianPeserta.route
-    )
+
   )
 }
 

@@ -6,7 +6,6 @@ data class EvaluasiMentoring(
     val penilaian: String
 )
 
-// TODO: REPLACE WITH REAL DATA
 val evaluasiMentoring = listOf(
     EvaluasiMentoring(
         no = 1,

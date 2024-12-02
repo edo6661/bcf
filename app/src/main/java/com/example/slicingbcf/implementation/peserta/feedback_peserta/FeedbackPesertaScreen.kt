@@ -30,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,7 +78,6 @@ fun FeedbackPesertaScreen(
     modifier: Modifier = Modifier,
 ) {
     var currentScreen by rememberSaveable { mutableStateOf(0) }
-//    val scrollState = rememberScrollState()
     var initialState by remember { mutableStateOf(0) }
     var currentTabIndex by rememberSaveable { mutableStateOf(0) }
 
@@ -99,7 +99,7 @@ fun FeedbackPesertaScreen(
         PrimaryTabRow(
             selectedTabIndex = currentTabIndex,
             containerColor = Color.Transparent,
-            contentColor = ColorPalette.PrimaryColor700
+            contentColor = ColorPalette.PrimaryColor700,
         ) {
             Tab(
                 selected = currentTabIndex == 0,
@@ -367,7 +367,7 @@ fun TopSectionFirstScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "Evaluasi Lembaga",
+                text = "Kepuasan Mentoring",
                 style = StyledText.MobileBaseSemibold,
                 textAlign = TextAlign.Left,
             )
@@ -629,7 +629,7 @@ fun HeaderRow(headers : List<Header>) {
     Row(
         modifier = Modifier
             .background(
-                color = ColorPalette.Monochrome150,
+                color = ColorPalette.PrimaryColor100,
                 shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)
             )
             .border(
@@ -671,7 +671,7 @@ fun JadwalMentoringRow(jadwalMentoring : JadwalMentoring, index : Int) {
         )
         TableCell(
             text = "${jadwalMentoring.waktuMulai.format(timeFormatter)} - ${jadwalMentoring.waktuSelesai.format(timeFormatter)}",
-            weight = 1f
+            weight = 1.3f
         )
     }
 }
@@ -686,17 +686,21 @@ fun EvaluasiCapaianRow(evaluasiMentoring: EvaluasiMentoring, index : Int) {
                 shape = RectangleShape
             )
     ) {
-        TableCell(
+        TableCellEvaluasiMentoring(
             text = evaluasiMentoring.no.toString(),
-            weight = 0.5f
+            weight = 0.5f,
+            evaluasiMentoring = evaluasiMentoring
         )
-        TableCell(
+        TableCellEvaluasiMentoring(
             text = evaluasiMentoring.aspek_penilaian,
-            weight = 1.7f
+            weight = 1.7f,
+            evaluasiMentoring = evaluasiMentoring
         )
-        TableCell(
+        TableCellEvaluasiMentoring(
             text = evaluasiMentoring.penilaian,
-            weight = 0.8f
+            weight = 1f,
+            evaluasiMentoring = evaluasiMentoring,
+            isPenilaian = true
         )
     }
 }
@@ -711,17 +715,21 @@ fun EvaluasiLembagaRow(evaluasiLembaga: EvaluasiLembaga, index : Int) {
                 shape = RectangleShape
             )
     ) {
-        TableCell(
+        TableCellEvaluasiLembaga(
             text = evaluasiLembaga.no.toString(),
-            weight = 0.5f
+            weight = 0.5f,
+            evaluasiLembaga = evaluasiLembaga
         )
-        TableCell(
+        TableCellEvaluasiLembaga(
             text = evaluasiLembaga.aspek_penilaian,
-            weight = 1.7f
+            weight = 1.7f,
+            evaluasiLembaga = evaluasiLembaga
         )
-        TableCell(
+        TableCellEvaluasiLembaga(
             text = evaluasiLembaga.penilaian,
-            weight = 0.8f
+            weight = 1f,
+            evaluasiLembaga = evaluasiLembaga,
+            isPenilaian = true
         )
     }
 }
@@ -736,17 +744,21 @@ fun KepuasanMentoringRow(kepuasanMentoring: KepuasanMentoring, index : Int) {
                 shape = RectangleShape
             )
     ) {
-        TableCell(
+        TableCellKepuasanMentoring(
             text = kepuasanMentoring.no.toString(),
-            weight = 0.5f
+            weight = 0.5f,
+            kepuasanMentoring = kepuasanMentoring
         )
-        TableCell(
+        TableCellKepuasanMentoring(
             text = kepuasanMentoring.aspek_penilaian,
-            weight = 1.7f
+            weight = 1.7f,
+            kepuasanMentoring = kepuasanMentoring
         )
-        TableCell(
+        TableCellKepuasanMentoring(
             text = kepuasanMentoring.penilaian,
-            weight = 0.8f
+            weight = 1f,
+            isPenilaian = true,
+            kepuasanMentoring = kepuasanMentoring
         )
     }
 }
@@ -756,18 +768,160 @@ fun TableCell(
     text : String,
     isHeader : Boolean = false,
     weight : Float,
-    color : Color = ColorPalette.Monochrome900
+    color : Color = ColorPalette.Monochrome900,
+    isPenilaian: Boolean = false,
 ) {
     Text(
         text = text,
         style = if (isHeader) StyledText.MobileXsBold else StyledText.MobileXsRegular,
         color = color,
-//        textAlign = TextAlign.Center,
         modifier = Modifier
             .width(120.dp * weight)
             .padding(8.dp)
     )
 }
+
+@Composable
+fun TableCellEvaluasiMentoring(
+    text : String,
+    isHeader : Boolean = false,
+    weight : Float,
+    color : Color = ColorPalette.Monochrome900,
+    isPenilaian: Boolean = false,
+    evaluasiMentoring: EvaluasiMentoring
+) {
+    if(isPenilaian){
+        Box(modifier = Modifier
+                .width(120.dp * weight)
+                .padding(8.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = if (evaluasiMentoring.penilaian == "Sangat Baik") ColorPalette.Success100 else ColorPalette.Warning100,
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = if (evaluasiMentoring.penilaian == "Sangat Baik") ColorPalette.Success600 else ColorPalette.Warning700,
+                    )
+                    .width(72.dp)
+                    .height(20.dp)
+            ){
+                Text(
+                    text = evaluasiMentoring.penilaian,
+                    color = if (evaluasiMentoring.penilaian == "Sangat Baik") ColorPalette.Success600 else ColorPalette.Warning700,
+                    style = StyledText.Mobile2xsRegular,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                )
+            }
+        }
+    } else {
+        Text(
+            text = text,
+            style = if (isHeader) StyledText.MobileXsBold else StyledText.MobileXsRegular,
+            color = color,
+            modifier = Modifier
+                .width(120.dp * weight)
+                .padding(8.dp)
+        )
+    }
+}
+
+@Composable
+fun TableCellEvaluasiLembaga(
+    text : String,
+    isHeader : Boolean = false,
+    weight : Float,
+    color : Color = ColorPalette.Monochrome900,
+    isPenilaian: Boolean = false,
+    evaluasiLembaga: EvaluasiLembaga
+) {
+    if(isPenilaian){
+        Box(modifier = Modifier
+            .width(120.dp * weight)
+            .padding(8.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = if (evaluasiLembaga.penilaian == "Sangat Baik") ColorPalette.Success100 else ColorPalette.Warning100,
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = if (evaluasiLembaga.penilaian == "Sangat Baik") ColorPalette.Success600 else ColorPalette.Warning700,
+                    )
+                    .width(72.dp)
+                    .height(20.dp)
+            ){
+                Text(
+                    text = evaluasiLembaga.penilaian,
+                    color = if (evaluasiLembaga.penilaian == "Sangat Baik") ColorPalette.Success600 else ColorPalette.Warning700,
+                    style = StyledText.Mobile2xsRegular,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                )
+            }
+        }
+    } else {
+        Text(
+            text = text,
+            style = if (isHeader) StyledText.MobileXsBold else StyledText.MobileXsRegular,
+            color = color,
+            modifier = Modifier
+                .width(120.dp * weight)
+                .padding(8.dp)
+        )
+    }
+}
+
+@Composable
+fun TableCellKepuasanMentoring(
+    text : String,
+    isHeader : Boolean = false,
+    weight : Float,
+    color : Color = ColorPalette.Monochrome900,
+    isPenilaian: Boolean = false,
+    kepuasanMentoring: KepuasanMentoring
+) {
+    if(isPenilaian){
+        Box(modifier = Modifier
+            .width(120.dp * weight)
+            .padding(8.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = if (kepuasanMentoring.penilaian == "Sangat Puas") ColorPalette.Success100 else ColorPalette.Warning100,
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = if (kepuasanMentoring.penilaian == "Sangat Puas") ColorPalette.Success600 else ColorPalette.Warning700,
+                    )
+                    .width(72.dp)
+                    .height(20.dp)
+            ){
+                Text(
+                    text = kepuasanMentoring.penilaian,
+                    color = if (kepuasanMentoring.penilaian == "Sangat Puas") ColorPalette.Success600 else ColorPalette.Warning700,
+                    style = StyledText.Mobile2xsRegular,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                )
+            }
+        }
+    } else {
+        Text(
+            text = text,
+            style = if (isHeader) StyledText.MobileXsBold else StyledText.MobileXsRegular,
+            color = color,
+            modifier = Modifier
+                .width(120.dp * weight)
+                .padding(8.dp)
+        )
+    }
+}
+
 
 @Composable
 fun JawabanPertanyaanRow(pertanyaan: JawabanPertanyaan) {
@@ -851,13 +1005,13 @@ data class Header(
 val jadwal_headers = listOf(
     Header("No.", 0.5f),
     Header("Tanggal", 1.5f),
-    Header("Waktu", 1f)
+    Header("Waktu", 1.3f)
 )
 
 val evaluasi_headers = listOf(
     Header("No.", 0.5f),
     Header("Aspek Penilaian", 1.7f),
-    Header("Penilaian", 0.8f)
+    Header("Penilaian", 1f)
 )
 
 @Composable
