@@ -1,5 +1,7 @@
 package com.example.slicingbcf.implementation.mentor.pengumuman_mentor
 
+import android.util.Log
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,62 +22,85 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
-import com.example.slicingbcf.implementation.peserta.pengumuman_peserta.Pengumuman
-import java.util.Date
+import com.example.slicingbcf.data.local.Pengumuman
+import com.example.slicingbcf.data.local.pengumumans
 
 @Composable
-@Preview(showSystemUi = true)
 fun PengumumanMentorScreen(
-  modifier : Modifier = Modifier,
-  onNavigateDetailPengumuman : (String) -> Unit = {}
+  modifier: Modifier = Modifier,
+  onNavigateDetailPengumuman: (String) -> Unit
 ) {
   var currentTab by remember { mutableIntStateOf(0) }
   Column(
     modifier = modifier
       .fillMaxWidth()
-      .padding(
-        horizontal = 16.dp,
-      ),
+      .padding(horizontal = 16.dp),
     verticalArrangement = Arrangement.spacedBy(28.dp)
   ) {
     TopSection(currentTab) { selectedTab ->
       currentTab = selectedTab
     }
     BottomSection(
+      currentTab,
       onNavigateDetailPengumuman
     )
   }
-
 }
 
 @Composable
 fun BottomSection(
-  onNavigateDetailPengumuman : (String) -> Unit
+  currentTab: Int,
+  onNavigateDetailPengumuman: (String) -> Unit
 ) {
-  LazyColumn(
-    verticalArrangement = Arrangement.spacedBy(16.dp),
-    modifier = Modifier
-      .fillMaxWidth()
-      .padding(horizontal = 16.dp)
-  ) {
-    items(pengumumans.size) { index ->
-      PengumumanItem(
-        pengumuman = pengumumans[index],
-        onNavigateDetailPengumuman
+  val filteredPengumumans = when (currentTab) {
+    0 -> pengumumans
+    1 -> pengumumans.filter { it.category == "Berita" }
+    2 -> pengumumans.filter { it.category == "LEAD" }
+    3 -> pengumumans.filter { it.category == "BCF" }
+    else -> emptyList()
+  }
+
+  if (filteredPengumumans.isEmpty()) {
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(top = 32.dp),
+      contentAlignment = Alignment.Center
+    ) {
+      Text(
+        text = "Tidak ada pengumuman untuk kategori ini.",
+        style = StyledText.MobileSmallMedium,
+        color = ColorPalette.Monochrome400
       )
+    }
+  } else {
+    LazyColumn(
+      verticalArrangement = Arrangement.spacedBy(16.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp)
+        .animateContentSize()
+    ) {
+      items(filteredPengumumans.size) { index ->
+        PengumumanItem(
+          pengumuman = filteredPengumumans[index],
+          onNavigateDetailPengumuman = onNavigateDetailPengumuman
+        )
+      }
     }
   }
 }
 
 @Composable
 fun PengumumanItem(
-  pengumuman : Pengumuman,
-  onNavigateDetailPengumuman : (String) -> Unit
+  pengumuman: Pengumuman,
+  onNavigateDetailPengumuman: (String) -> Unit
 ) {
   Row(
     horizontalArrangement = Arrangement.spacedBy(28.dp),
     verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier.clickable {
+      Log.d("PengumumanItem", "PengumumanItem: ${pengumuman.title}")
       onNavigateDetailPengumuman(pengumuman.title)
     }
   ) {
@@ -106,6 +131,8 @@ fun PengumumanItem(
         )
       }
     }
+
+
     Column(
       verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -116,49 +143,14 @@ fun PengumumanItem(
       )
       Text(
         text = pengumuman.date.toString(),
-        // Mobile/xs/Regular
         style = StyledText.MobileXsRegular,
         color = ColorPalette.Monochrome400
       )
-
     }
   }
 }
 
 
-data class Pengumuman(
-  val title : String,
-  val date : Date,
-  val content : String
-)
-
-val pengumumans = listOf(
-  Pengumuman(
-    title = "Jangan lupa untuk mengumpulkan MISI 2 terkait Momen Onboarding sebelum Sabtu, 2 Mei 2023 pukul 19.00 WIB. Tetap semangat, ya!",
-    date = Date(),
-    content = "Content 1"
-  ),
-  Pengumuman(
-    title = "Pengumuman 2",
-    date = Date(),
-    content = "Content 2"
-  ),
-  Pengumuman(
-    title = "Pengumuman 3",
-    date = Date(),
-    content = "Content 3"
-  ),
-  Pengumuman(
-    title = "Pengumuman 4",
-    date = Date(),
-    content = "Content 4"
-  ),
-  Pengumuman(
-    title = "Pengumuman 5",
-    date = Date(),
-    content = "Content 5"
-  ),
-)
 
 @Composable
 fun TopSection(
@@ -200,34 +192,33 @@ fun Tabs(
       )
     }
   ) {
-    TabWithBadge(
+    com.example.slicingbcf.implementation.peserta.pengumuman_peserta.TabWithBadge(
       selected = currentTab == 0,
       onClick = { onTabSelected(0) },
       text = "Semua",
-      badgeNumber = "5"
+      badgeNumber = pengumumans.size.toString()
     )
-    TabWithBadge(
+    com.example.slicingbcf.implementation.peserta.pengumuman_peserta.TabWithBadge(
       selected = currentTab == 1,
       onClick = { onTabSelected(1) },
       text = "Berita",
-      badgeNumber = "10"
+      badgeNumber = pengumumans.filter { it.category == "Berita" }.size.toString()
     )
-    TabWithBadge(
+    com.example.slicingbcf.implementation.peserta.pengumuman_peserta.TabWithBadge(
       selected = currentTab == 2,
       onClick = { onTabSelected(2) },
       text = "LEAD",
-      badgeNumber = "10"
+      badgeNumber = pengumumans.filter { it.category == "LEAD" }.size.toString()
     )
-    TabWithBadge(
+    com.example.slicingbcf.implementation.peserta.pengumuman_peserta.TabWithBadge(
       selected = currentTab == 3,
       onClick = { onTabSelected(3) },
       text = "BCF",
-      badgeNumber = "10"
+      badgeNumber = pengumumans.filter { it.category == "BCF" }.size.toString()
     )
   }
 
 }
-
 @Composable
 fun TabWithBadge(
   selected : Boolean = false,

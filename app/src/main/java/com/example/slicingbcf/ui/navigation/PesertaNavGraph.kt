@@ -102,6 +102,9 @@ fun NavGraphBuilder.pesertaNavGraph(
     composable(Screen.Peserta.PengumumanPeserta.route) {
       PengumumanPesertaScreen(
         modifier = modifier,
+        onNavigateDetailPengumuman = { id : String ->
+          navController.navigateSingleTop("pengumuman-peserta/$id")
+        }
       )
     }
     composable(
