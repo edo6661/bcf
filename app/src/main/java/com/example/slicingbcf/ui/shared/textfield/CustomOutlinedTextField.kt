@@ -63,7 +63,8 @@ fun CustomOutlinedTextField(
   bgColor : Color = Color.White,
   borderFocusedColor : Color = ColorPalette.Monochrome400,
   isFocused : Boolean? = null,
-  onFocusChange : (Boolean) -> Unit = {}
+  onFocusChange : (Boolean) -> Unit = {},
+  textStyle : TextStyle = StyledText.MobileSmallRegular
 ) {
 
   val focusRequester = remember { FocusRequester() }
@@ -134,7 +135,7 @@ fun CustomOutlinedTextField(
             )
         }
       },
-      textStyle = StyledText.MobileSmallRegular,
+      textStyle = textStyle,
       isError = error != null,
       colors = getTextFieldColors(
         borderColor = borderColor,
