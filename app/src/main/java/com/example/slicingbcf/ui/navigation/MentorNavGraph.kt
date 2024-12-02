@@ -5,12 +5,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.navigation.*
 import androidx.navigation.compose.composable
+import com.example.slicingbcf.data.local.listBatch
+import com.example.slicingbcf.data.local.mentor
 import com.example.slicingbcf.implementation.mentor.data_peserta.DataPesertaMentorScreen
 import com.example.slicingbcf.implementation.mentor.feedback_peserta.FeedbackPesertaScreen
 import com.example.slicingbcf.implementation.mentor.forum_diskusi.DetailForumDiskusiScreen
 import com.example.slicingbcf.implementation.mentor.forum_diskusi.ForumDiskusiScreen
 import com.example.slicingbcf.implementation.mentor.forum_diskusi.SearchForumDiskusiScreen
 import com.example.slicingbcf.implementation.mentor.kelompok_mentoring_mentor.KelompokMentoringMentorScreen
+import com.example.slicingbcf.implementation.mentor.laporan.LaporanDataPesertaScreen
 import com.example.slicingbcf.implementation.mentor.pengaturan_mentor.PengaturanMentorScreen
 import com.example.slicingbcf.implementation.mentor.pengumuman_mentor.DetailPengumumanMentorScreen
 import com.example.slicingbcf.implementation.mentor.pengumuman_mentor.PengumumanMentorScreen
@@ -18,6 +21,7 @@ import com.example.slicingbcf.implementation.mentor.penilaian_peserta.DetailPeni
 import com.example.slicingbcf.implementation.mentor.penilaian_peserta.PenilaianPesertaScreenMentor
 import com.example.slicingbcf.implementation.mentor.pitchdeck.MoreDetailPitchdeckScreen
 import com.example.slicingbcf.implementation.mentor.pitchdeck.PitchdeckScreen
+import com.example.slicingbcf.implementation.mentor.profil.ProfilMentorScreen
 
 fun NavGraphBuilder.mentorNavGraph(
   modifier : Modifier,
@@ -126,6 +130,24 @@ fun NavGraphBuilder.mentorNavGraph(
         modifier = modifier,
 
         )
+    }
+
+    composable(
+      route = Screen.Mentor.ProfilMentor.route
+    ) {
+      ProfilMentorScreen(
+        modifier = modifier,
+        mentor = mentor,
+        batches = listBatch
+      )
+    }
+
+    composable(
+      route = Screen.Mentor.Laporan.route
+    ) {
+      LaporanDataPesertaScreen(
+        modifier = Modifier
+      )
     }
 
     composable(
