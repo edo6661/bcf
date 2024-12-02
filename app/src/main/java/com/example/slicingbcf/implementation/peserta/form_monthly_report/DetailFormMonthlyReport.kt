@@ -37,12 +37,91 @@ import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdown
 
 
+
 @Composable
 fun DetailFormMonthlyReportScreen(
   modifier : Modifier,
+  id : String,
+  onNavigateBack  :() -> Boolean
+) {
+  var currentScreen by rememberSaveable { mutableIntStateOf(0) }
+  val changeScreen : (Int) -> Unit = { screen -> currentScreen = screen }
+  var initialState by remember { mutableIntStateOf(0) }
+  val onInitialScreenChange = { newInitialState : Int ->
+    initialState = newInitialState
+  }
+
+  val navigateToRingkasanScreen = {
+    changeScreen(1)
+  }
+
+
+
+  Column(
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp),
+    verticalArrangement = Arrangement.spacedBy(40.dp),
+  ) {
+    AnimatedContentSlide(
+      currentScreen = currentScreen,
+      initialState = initialState,
+      label = "Registrasi Animation Navigate Content",
+    ) { targetScreen ->
+      when (targetScreen) {
+        0 -> {
+          ScreenBasedOnId(
+            id = id,
+            navigateToRingkasanScreen = navigateToRingkasanScreen,
+            onNavigateBack = onNavigateBack
+          )
+        }
+
+        1 -> {
+          DetailFormMonthlyReport(
+            modifier = Modifier,
+            id = id
+          )
+        }
+      }
+
+      LaunchedEffect(currentScreen) { onInitialScreenChange(currentScreen) }
+    }
+
+  }
+}
+
+@Composable
+fun ScreenBasedOnId(
+  id : String,
+  navigateToRingkasanScreen : () -> Unit,
+  onNavigateBack : () -> Boolean
+) {
+  if(id != "1"){
+    AdaMonthlyReportScreen(
+      onNavigateChangeReport = {
+        // TODO: belum ada di figma
+      },
+      onNavigateRingkasan = { navigateToRingkasanScreen() }
+    )
+
+  }else {
+    TidakAdaMonthlyReportScreen(
+      onNavigateFormMonthly = {
+        navigateToRingkasanScreen()
+      },
+      onNavigateBack = { onNavigateBack() }
+
+    )
+  }
+}
+
+
+@Composable
+fun DetailFormMonthlyReport(
+  modifier : Modifier,
   id : String
 ) {
-  Log.d("id", id)
   var currentScreen by rememberSaveable { mutableIntStateOf(0) }
   var indicatorProgress by remember { mutableFloatStateOf(0.2f) }
   var initialState by remember { mutableIntStateOf(0) }
@@ -442,195 +521,6 @@ private fun ThirdScreenNotForm(
       columnWeights = listOf(0.3f, 1f, 1f)
     )
   }
-}
-
-@Composable
-private fun TotalData(
-  title : String,
-
-  ) {
-  TableRow(
-    modifier = Modifier
-      .fillMaxWidth()
-
-  ) {
-    TableCell(
-      text = title,
-      isHeader = true,
-    )
-  }
-
-
-}
-
-@Composable
-private fun Title(
-  text : String
-) {
-  Text(
-    text = text,
-    style = StyledText.MobileBaseMedium,
-    color = ColorPalette.PrimaryColor700
-  )
-}
-
-@Composable
-private fun TitleTable(
-  text : String
-) {
-  TableRow(
-    isRowHaveBg = true,
-    modifier = Modifier
-      .fillMaxWidth(),
-  ) {
-    Text(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 8.dp),
-      text = text,
-      style = StyledText.MobileSmallSemibold,
-      color = ColorPalette.Black,
-      textAlign = TextAlign.Center
-    )
-
-  }
-
-}
-
-@Composable
-fun TableAndTotalData(
-  headers : List<String>,
-  columnWeights : List<Float> = listOf(0.3f, 1f, 1f),
-  rows : List<List<String>>,
-  titleTotalData : String,
-  isHeaderHaveBg : Boolean = false
-
-) {
-  Column {
-    Table(
-      headers = headers,
-      columnWeights = columnWeights,
-      rows = rows,
-      isHeaderHaveBg = isHeaderHaveBg
-    )
-    TotalData(
-      title = titleTotalData
-    )
-  }
-}
-
-@Composable
-fun Table(
-  headers : List<String>,
-  columnWeights : List<Float>,
-  rows : List<List<String>>,
-  isHeaderHaveBg : Boolean = false
-) {
-  Column(
-  ) {
-    TableRow(
-      modifier = Modifier.then(
-        if (isHeaderHaveBg) Modifier.background(ColorPalette.PrimaryColor100)
-        else Modifier
-      )
-    ) {
-      headers.forEachIndexed { index, header ->
-        TableCell(
-          isHeader = true,
-          text = header,
-          modifier = Modifier.weight(columnWeights.getOrElse(index) { 1f })
-        )
-      }
-    }
-
-    rows.forEach { row ->
-      TableRow {
-        row.forEachIndexed { index, cell ->
-          TableCell(
-            text = cell,
-            modifier = Modifier.weight(columnWeights.getOrElse(index) { 1f })
-          )
-        }
-      }
-    }
-  }
-}
-
-@Composable
-fun TableRow(
-  modifier : Modifier = Modifier,
-  isRowHaveBg : Boolean = false,
-  content : @Composable () -> Unit,
-) {
-  Row(
-    horizontalArrangement = Arrangement.SpaceBetween,
-    modifier = modifier
-      .then(
-        if (isRowHaveBg) Modifier.background(ColorPalette.PrimaryColor100)
-        else Modifier
-      )
-
-      .drawBehind {
-        drawLine(
-          color = ColorPalette.OutlineVariant,
-          strokeWidth = 1.dp.toPx(),
-          start = Offset(0f, 0f),
-          end = Offset(size.width, 0f)
-        )
-        drawLine(
-          color = ColorPalette.OutlineVariant,
-          strokeWidth = 1.dp.toPx(),
-          start = Offset(0f, size.height),
-          end = Offset(size.width, size.height)
-        )
-      }
-      .padding(horizontal = 16.dp, vertical = 8.dp)
-      .fillMaxWidth()
-  ) {
-    content()
-  }
-}
-
-@Composable
-fun TableCell(
-  modifier : Modifier = Modifier,
-  isHeader : Boolean = false,
-  text : String,
-) {
-  val fontStyle = if (isHeader) StyledText.MobileSmallSemibold else StyledText.MobileSmallRegular
-  val isStatus =
-    text == "Disetujui" || text == "Ditolak" || text == "Pengajuan Proposal" || text == "Tahap Persetujuan"
-  val color = when (text) {
-    "Disetujui"          -> ColorPalette.Success500
-    "Ditolak"            -> ColorPalette.Danger500
-    "Pengajuan Proposal" -> ColorPalette.Warning700
-    "Tahap Persetujuan"  -> ColorPalette.PrimaryColor600
-    else                 -> ColorPalette.Black
-  }
-  val bgColor = when (text) {
-    "Disetujui"          -> ColorPalette.Success100
-    "Ditolak"            -> ColorPalette.Danger100
-    "Pengajuan Proposal" -> ColorPalette.Warning200
-    "Tahap Persetujuan"  -> ColorPalette.PrimaryColor200
-    else                 -> Color.Transparent
-  }
-  val padding =
-    if (isStatus) 8.dp else 0.dp
-  val textAlign =
-    if (isStatus) TextAlign.Center else TextAlign.Start
-
-  Text(
-    text = text,
-    style = fontStyle,
-    color = color,
-    modifier = modifier
-      .background(bgColor, RoundedCornerShape(16.dp))
-      .padding(
-        vertical = padding,
-        horizontal = 8.dp
-      ),
-    textAlign = textAlign
-  )
 }
 
 
@@ -1188,6 +1078,197 @@ fun FourthScreen(
 
 
 }
+
+
+@Composable
+private fun TotalData(
+  title : String,
+
+  ) {
+  TableRow(
+    modifier = Modifier
+      .fillMaxWidth()
+
+  ) {
+    TableCell(
+      text = title,
+      isHeader = true,
+    )
+  }
+
+
+}
+
+@Composable
+private fun Title(
+  text : String
+) {
+  Text(
+    text = text,
+    style = StyledText.MobileBaseMedium,
+    color = ColorPalette.PrimaryColor700
+  )
+}
+
+@Composable
+private fun TitleTable(
+  text : String
+) {
+  TableRow(
+    isRowHaveBg = true,
+    modifier = Modifier
+      .fillMaxWidth(),
+  ) {
+    Text(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = 8.dp),
+      text = text,
+      style = StyledText.MobileSmallSemibold,
+      color = ColorPalette.Black,
+      textAlign = TextAlign.Center
+    )
+
+  }
+
+}
+
+@Composable
+fun TableAndTotalData(
+  headers : List<String>,
+  columnWeights : List<Float> = listOf(0.3f, 1f, 1f),
+  rows : List<List<String>>,
+  titleTotalData : String,
+  isHeaderHaveBg : Boolean = false
+
+) {
+  Column {
+    Table(
+      headers = headers,
+      columnWeights = columnWeights,
+      rows = rows,
+      isHeaderHaveBg = isHeaderHaveBg
+    )
+    TotalData(
+      title = titleTotalData
+    )
+  }
+}
+
+@Composable
+fun Table(
+  headers : List<String>,
+  columnWeights : List<Float>,
+  rows : List<List<String>>,
+  isHeaderHaveBg : Boolean = false
+) {
+  Column(
+  ) {
+    TableRow(
+      modifier = Modifier.then(
+        if (isHeaderHaveBg) Modifier.background(ColorPalette.PrimaryColor100)
+        else Modifier
+      )
+    ) {
+      headers.forEachIndexed { index, header ->
+        TableCell(
+          isHeader = true,
+          text = header,
+          modifier = Modifier.weight(columnWeights.getOrElse(index) { 1f })
+        )
+      }
+    }
+
+    rows.forEach { row ->
+      TableRow {
+        row.forEachIndexed { index, cell ->
+          TableCell(
+            text = cell,
+            modifier = Modifier.weight(columnWeights.getOrElse(index) { 1f })
+          )
+        }
+      }
+    }
+  }
+}
+
+@Composable
+fun TableRow(
+  modifier : Modifier = Modifier,
+  isRowHaveBg : Boolean = false,
+  content : @Composable () -> Unit,
+) {
+  Row(
+    horizontalArrangement = Arrangement.SpaceBetween,
+    modifier = modifier
+      .then(
+        if (isRowHaveBg) Modifier.background(ColorPalette.PrimaryColor100)
+        else Modifier
+      )
+
+      .drawBehind {
+        drawLine(
+          color = ColorPalette.OutlineVariant,
+          strokeWidth = 1.dp.toPx(),
+          start = Offset(0f, 0f),
+          end = Offset(size.width, 0f)
+        )
+        drawLine(
+          color = ColorPalette.OutlineVariant,
+          strokeWidth = 1.dp.toPx(),
+          start = Offset(0f, size.height),
+          end = Offset(size.width, size.height)
+        )
+      }
+      .padding(horizontal = 16.dp, vertical = 8.dp)
+      .fillMaxWidth()
+  ) {
+    content()
+  }
+}
+
+@Composable
+fun TableCell(
+  modifier : Modifier = Modifier,
+  isHeader : Boolean = false,
+  text : String,
+) {
+  val fontStyle = if (isHeader) StyledText.MobileSmallSemibold else StyledText.MobileSmallRegular
+  val isStatus =
+    text == "Disetujui" || text == "Ditolak" || text == "Pengajuan Proposal" || text == "Tahap Persetujuan"
+  val color = when (text) {
+    "Disetujui"          -> ColorPalette.Success500
+    "Ditolak"            -> ColorPalette.Danger500
+    "Pengajuan Proposal" -> ColorPalette.Warning700
+    "Tahap Persetujuan"  -> ColorPalette.PrimaryColor600
+    else                 -> ColorPalette.Black
+  }
+  val bgColor = when (text) {
+    "Disetujui"          -> ColorPalette.Success100
+    "Ditolak"            -> ColorPalette.Danger100
+    "Pengajuan Proposal" -> ColorPalette.Warning200
+    "Tahap Persetujuan"  -> ColorPalette.PrimaryColor200
+    else                 -> Color.Transparent
+  }
+  val padding =
+    if (isStatus) 8.dp else 0.dp
+  val textAlign =
+    if (isStatus) TextAlign.Center else TextAlign.Start
+
+  Text(
+    text = text,
+    style = fontStyle,
+    color = color,
+    modifier = modifier
+      .background(bgColor, RoundedCornerShape(16.dp))
+      .padding(
+        vertical = padding,
+        horizontal = 8.dp
+      ),
+    textAlign = textAlign
+  )
+}
+
 
 @Composable
 private fun RupiahField(

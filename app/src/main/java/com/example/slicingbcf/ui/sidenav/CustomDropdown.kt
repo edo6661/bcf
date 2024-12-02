@@ -210,7 +210,7 @@ fun dropdownItemsTugas_Mentor(
     DropdownItem(
       text = "Laporan",
       onClick = {
-        Log.d("SideNav", "Laporan clicked")
+        navigateAndCloseSideNav(Screen.Peserta.FormMonthlyReport.route)
       },
       route = null
     ),
