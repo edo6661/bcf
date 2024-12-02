@@ -159,6 +159,7 @@ fun firstScreen(
         ) {
         TopSectionFirstScreen(
             capaianMentoringOnValueChange = { newValue -> capaianMentoring = newValue },
+            capaianMentoring = capaianMentoring
             )
         BottomSectionFirstScreen()
     }
@@ -185,8 +186,9 @@ fun secondScreen(
 @Composable
 fun TopSectionFirstScreen(
     capaianMentoringOnValueChange : (String) -> Unit,
+    capaianMentoring: String
 ) {
-    var capaianMentoring by remember { mutableStateOf("") }
+//    var capaianMentoring by remember { mutableStateOf("") }
     var expandedCapaianMentoring by remember { mutableStateOf(false) }
 
     var mentorNameCluster = mentoringPeserta.find{it.mentoringType == "Cluster"}?.mentorName
@@ -202,9 +204,10 @@ fun TopSectionFirstScreen(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(20.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
             Text(
+                modifier = Modifier.padding(top=16.dp),
                 text = "Capaian Mentoring",
                 style = StyledText.MobileBaseSemibold,
                 textAlign = TextAlign.Left,
