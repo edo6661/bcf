@@ -79,13 +79,13 @@ fun SearchBarCustom(
       singleLine = true,
       shape = RoundedCornerShape(40.dp),
       colors = TextFieldDefaults.colors(
-        focusedIndicatorColor = ColorPalette.PrimaryColor100,
-        unfocusedIndicatorColor = ColorPalette.PrimaryColor100,
-        disabledIndicatorColor = ColorPalette.PrimaryColor100,
-        errorIndicatorColor = ColorPalette.PrimaryColor100,
-        unfocusedContainerColor = ColorPalette.PrimaryColor100,
-        focusedContainerColor = ColorPalette.PrimaryColor100,
-        disabledContainerColor = ColorPalette.PrimaryColor100,
+        focusedIndicatorColor = bgColor,
+        unfocusedIndicatorColor = bgColor,
+        disabledIndicatorColor = bgColor,
+        errorIndicatorColor = bgColor,
+        unfocusedContainerColor = bgColor,
+        focusedContainerColor = bgColor,
+        disabledContainerColor = bgColor,
       ),
     )
   }
