@@ -28,12 +28,13 @@ import com.example.slicingbcf.implementation.peserta.worksheet_peserta.DetailWor
 import com.example.slicingbcf.implementation.peserta.worksheet_peserta.WorksheetPesertaScreen
 
 
+@Suppress("t")
 fun NavGraphBuilder.pesertaNavGraph(
   modifier : Modifier,
   navController : NavHostController
 ) {
   navigation(
-    startDestination = Screen.Peserta.PenilaianPeserta.route, route = "peserta"
+    startDestination = Screen.Peserta.FeedbackPeserta.route, route = "peserta"
   ) {
     // Data Peserta
     composable(Screen.Peserta.DataPeserta.route) {

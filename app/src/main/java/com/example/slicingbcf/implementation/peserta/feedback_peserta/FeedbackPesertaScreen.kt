@@ -22,16 +22,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowRight
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -95,11 +88,23 @@ fun FeedbackPesertaScreen(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-
-        PrimaryTabRow(
+        // ! punyamu
+//        PrimaryTabRow(
+//            selectedTabIndex = currentTabIndex,
+//            containerColor = Color.Transparent,
+//            contentColor = ColorPalette.PrimaryColor700,
+//        ) {
+        TabRow (
             selectedTabIndex = currentTabIndex,
             containerColor = Color.Transparent,
             contentColor = ColorPalette.PrimaryColor700,
+            indicator = { tabPositions ->
+                SecondaryIndicator(
+                    modifier = Modifier.tabIndicatorOffset(tabPositions[currentTabIndex]),
+                    color = ColorPalette.PrimaryColor700,
+
+                    )
+            }
         ) {
             Tab(
                 selected = currentTabIndex == 0,

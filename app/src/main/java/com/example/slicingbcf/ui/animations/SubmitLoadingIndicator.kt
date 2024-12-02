@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -90,6 +91,10 @@ fun SubmitLoadingIndicatorDouble(
   title : String,
   titleBerhasil : String,
   titleColor : Color = ColorPalette.OnSurface,
+  titleStyle : TextStyle = StyledText.MobileMediumMedium,
+  titleBerhasilStyle : TextStyle = StyledText.MobileMediumMedium,
+  descriptionStyle : TextStyle = StyledText.MobileSmallRegular,
+
 
   description: String? = null,
   descriptionColor: Color = ColorPalette.PrimaryColor400,
@@ -110,6 +115,9 @@ fun SubmitLoadingIndicatorDouble(
     title = title,
     titleBerhasil = titleBerhasil,
     description = description,
+    titleStyle = titleStyle,
+    titleBerhasilStyle = titleBerhasilStyle,
+    descriptionStyle = descriptionStyle,
     titleColor = titleColor,
     descriptionColor = descriptionColor,
     isShowingPreloader = isShowingPreloader,
@@ -118,7 +126,8 @@ fun SubmitLoadingIndicatorDouble(
     onPreloaderFinished = {
       isShowingPreloader = false
     },
-    onCheckedFinished = onAnimationFinished
+    onCheckedFinished = onAnimationFinished,
+
   )
 }
 
@@ -129,6 +138,9 @@ private fun LottieAnimationContainer(
   description: String? = null,
   descriptionColor : Color,
   titleColor : Color,
+  titleStyle : TextStyle,
+  titleBerhasilStyle : TextStyle,
+  descriptionStyle : TextStyle,
   isShowingPreloader : Boolean,
   preloaderSpec : LottieCompositionSpec,
   checkedSpec : LottieCompositionSpec,
@@ -185,13 +197,13 @@ private fun LottieAnimationContainer(
         ) {
           Text(
             text = title,
-            style = StyledText.MobileMediumMedium,
+            style = titleStyle,
             color = titleColor,
             textAlign = TextAlign.Center
           )
           Text(
             text = description ?: "",
-            style = StyledText.MobileSmallRegular,
+            style = descriptionStyle,
             color = descriptionColor,
             textAlign = TextAlign.Center
           )
@@ -205,7 +217,7 @@ private fun LottieAnimationContainer(
       ) {
         Text(
           text = titleBerhasil,
-          style = StyledText.MobileMediumMedium,
+          style = titleBerhasilStyle,
           color = ColorPalette.OnSurface,
           textAlign = TextAlign.Center
         )

@@ -3,15 +3,17 @@ package com.example.slicingbcf.implementation.peserta.worksheet_peserta
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
 import com.example.slicingbcf.ui.shared.PrimaryButton
 import com.example.slicingbcf.ui.shared.message.SecondaryButton
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
+import kotlinx.coroutines.delay
 
 // TODO: RAPIHIN LAYOUT + TAMBAHIN ITEMS ITEMS LAINNYA YANG ADA DI COLUMN JUDUL DLL
 @Composable
@@ -19,19 +21,27 @@ fun DetailWorksheetPesertaScreen(
   modifier : Modifier = Modifier,
   id : String
 ) {
+  var tautanLembarKerja by remember { mutableStateOf("") }
+  val onChangeTautanLembarKerja = { value : String ->
+    tautanLembarKerja = value
+  }
+  var isLoading by remember { mutableStateOf(false) }
+
+
+
   Column(
     modifier = modifier.padding(
       horizontal = 16.dp,
     ),
     verticalArrangement = Arrangement.spacedBy(36.dp),
   ) {
-    Text(
-      text = "Submisi Lembar Kerja",
-      style = StyledText.MobileLargeMedium,
-      color = ColorPalette.Black,
-      modifier = Modifier.fillMaxWidth(),
-      textAlign = TextAlign.Center,
-    )
+//    Text(
+//      text = "Submisi Lembar Kerja",
+//      style = StyledText.MobileLargeMedium,
+//      color = ColorPalette.Black,
+//      modifier = Modifier.fillMaxWidth(),
+//      textAlign = TextAlign.Center,
+//    )
     Column(
       verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -94,13 +104,12 @@ fun DetailWorksheetPesertaScreen(
         color = ColorPalette.PrimaryColor700
       )
       CustomOutlinedTextField(
-        value = "",
-        onValueChange = {},
+        value = tautanLembarKerja,
+        onValueChange = onChangeTautanLembarKerja,
         label = "Masukkan tautan lembar kerja",
         placeholder = "Masukkan tautan lembar kerja",
         rounded = 40,
         modifier = Modifier.fillMaxWidth(),
-
         )
     }
     HorizontalDivider()
@@ -109,7 +118,9 @@ fun DetailWorksheetPesertaScreen(
     ) {
 
       PrimaryButton(
-        onClick = {},
+        onClick = {
+          isLoading = true
+        },
         text = "Simpan",
         color = ColorPalette.PrimaryColor700,
         style = StyledText.MobileSmallMedium,
@@ -123,4 +134,19 @@ fun DetailWorksheetPesertaScreen(
 
     }
   }
+  SubmitLoadingIndicatorDouble(
+    isLoading = isLoading,
+    title = "Mohon Tunggu",
+    titleColor = ColorPalette.PrimaryColor700,
+    description = "Memproses Submisi Lembar Kerja Anda...",
+    descriptionColor = ColorPalette.OnSurface,
+    onAnimationFinished = {
+      isLoading = false
+    },
+    titleBerhasil = "Lembar Kerja Anda Berhasil Dikirim!",
+    titleStyle = StyledText.MobileMediumSemibold,
+    descriptionStyle = StyledText.MobileSmallRegular,
+    titleBerhasilStyle = StyledText.MobileMediumMedium,
+
+  )
 }
