@@ -167,6 +167,13 @@ fun dropdownItemsPeserta_Mentor(
         navigateAndCloseSideNav(Screen.Mentor.PenilaianPeserta.route)
       },
       route = Screen.Mentor.PenilaianPeserta.route
+    ),
+    DropdownItem(
+      text = "Laporan",
+        onClick = {
+            navigateAndCloseSideNav(Screen.Mentor.Laporan.route)
+        },
+      route = Screen.Mentor.Laporan.route
     )
   )
 }
@@ -190,6 +197,13 @@ fun dropdownItemsMentor_Mentor(
       },
       route = null
     ),
+    DropdownItem(
+      text = "Profil Mentor",
+        onClick = {
+            navigateAndCloseSideNav(Screen.Mentor.ProfilMentor.route)
+        },
+        route = Screen.Mentor.ProfilMentor.route
+    )
   )
 }
 
