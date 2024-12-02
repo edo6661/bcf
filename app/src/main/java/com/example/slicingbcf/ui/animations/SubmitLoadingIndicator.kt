@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -25,7 +26,9 @@ fun SubmitLoadingIndicator(
   modifier : Modifier = Modifier,
   isLoading : Boolean,
   title : String = "Memproses Pendaftaran Anda...",
-  description: String? = null
+  titleColor : Color = ColorPalette.OnSurface,
+  description: String? = null,
+  descriptionColor: Color = ColorPalette.PrimaryColor400
 ) {
   if (isLoading) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.animation_preloader))
@@ -54,14 +57,14 @@ fun SubmitLoadingIndicator(
             Text(
               text = title,
               style = StyledText.MobileMediumMedium,
-              color = ColorPalette.OnSurface,
+              color = titleColor,
               textAlign = TextAlign.Center
             )
             description?.let {
               Text(
                 text = it,
                 style = StyledText.MobileMediumMedium,
-                color = ColorPalette.PrimaryColor400,
+                color = descriptionColor,
                 textAlign = TextAlign.Center
               )
             }
@@ -86,7 +89,11 @@ fun SubmitLoadingIndicatorDouble(
   isLoading : Boolean,
   title : String,
   titleBerhasil : String,
-  onAnimationFinished : () -> Unit
+  titleColor : Color = ColorPalette.OnSurface,
+
+  description: String? = null,
+  descriptionColor: Color = ColorPalette.PrimaryColor400,
+  onAnimationFinished : () -> Unit,
 ) {
   if (! isLoading) return
 
@@ -102,6 +109,9 @@ fun SubmitLoadingIndicatorDouble(
   LottieAnimationContainer(
     title = title,
     titleBerhasil = titleBerhasil,
+    description = description,
+    titleColor = titleColor,
+    descriptionColor = descriptionColor,
     isShowingPreloader = isShowingPreloader,
     preloaderSpec = preloaderComposition,
     checkedSpec = checkedComposition,
@@ -116,6 +126,9 @@ fun SubmitLoadingIndicatorDouble(
 private fun LottieAnimationContainer(
   title : String,
   titleBerhasil : String,
+  description: String? = null,
+  descriptionColor : Color,
+  titleColor : Color,
   isShowingPreloader : Boolean,
   preloaderSpec : LottieCompositionSpec,
   checkedSpec : LottieCompositionSpec,
@@ -166,12 +179,23 @@ private fun LottieAnimationContainer(
         enter = fadeIn() + expandVertically(),
         exit = fadeOut() + shrinkVertically()
       ) {
-        Text(
-          text = title,
-          style = StyledText.MobileMediumMedium,
-          color = ColorPalette.OnSurface,
-          textAlign = TextAlign.Center
-        )
+        Column(
+          horizontalAlignment = Alignment.CenterHorizontally,
+
+        ) {
+          Text(
+            text = title,
+            style = StyledText.MobileMediumMedium,
+            color = titleColor,
+            textAlign = TextAlign.Center
+          )
+          Text(
+            text = description ?: "",
+            style = StyledText.MobileSmallRegular,
+            color = descriptionColor,
+            textAlign = TextAlign.Center
+          )
+        }
       }
 
       AnimatedVisibility(

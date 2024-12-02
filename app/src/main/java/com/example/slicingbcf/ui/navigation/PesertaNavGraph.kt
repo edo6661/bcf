@@ -122,6 +122,7 @@ fun NavGraphBuilder.pesertaNavGraph(
     ) {
       PengaturanScreen(
         modifier = modifier,
+
       )
     }
 
