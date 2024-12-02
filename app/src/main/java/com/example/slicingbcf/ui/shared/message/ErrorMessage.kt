@@ -16,12 +16,15 @@ import com.example.slicingbcf.constant.StyledText
 
 
 @Composable
-fun ErrorMessageTextField(errorMessage : String) {
+fun ErrorMessageTextField(
+  errorMessage : String,
+  modifier : Modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+) {
   Text(
     text = errorMessage,
     color = ColorPalette.Error,
     style = StyledText.Mobile2xsRegular,
-    modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+    modifier = modifier
   )
 }
 

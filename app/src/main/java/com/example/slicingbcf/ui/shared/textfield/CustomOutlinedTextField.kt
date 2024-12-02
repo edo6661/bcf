@@ -111,7 +111,8 @@ fun CustomOutlinedTextField(
             labelDefaultStyle = labelDefaultStyle,
             labelDefaultColor = labelDefaultColor,
             isFocused = actualIsFocus,
-            labelFocusedColor = labelFocusedColor
+            labelFocusedColor = labelFocusedColor,
+
 
           )
         }

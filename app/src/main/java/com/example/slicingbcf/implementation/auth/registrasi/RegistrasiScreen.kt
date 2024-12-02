@@ -194,7 +194,9 @@ private fun TopSection(
   ) {
     Text(
       text = "Pendaftaran LEAD Indonesia 2023",
-      style = StyledText.MobileLargeMedium
+      style = StyledText.MobileLargeMedium,
+      textAlign = TextAlign.Center,
+      modifier = Modifier.fillMaxWidth()
     )
     AnimatedContent(
       targetState = titleBasedOnScreen,
@@ -205,7 +207,9 @@ private fun TopSection(
     ) { title ->
       Text(
         text = title,
-        style = StyledText.MobileLargeBold
+        style = StyledText.MobileLargeBold,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.fillMaxWidth()
       )
     }
     LinearProgressIndicator(
@@ -1302,9 +1306,9 @@ fun FourthScreen(
       )
   }
   ColumnTextField(
-    label = "Apakah yang anda ketahui terkait sustainability atau keberlanjutan?",
+    label = "Jelaskan pengetahuanmu terkait sustainability atau keberlanjutan",
     value = state.pengetahuanSustainability,
-    text = "Jelaskan pengetahuanmu terkait sustainability atau keberlanjutan",
+    text = "Apakah yang anda ketahui terkait sustainability atau keberlanjutan",
     onValueChange = {
 
       onEvent(RegisterEvent.PengetahuanSustainabilityChanged(it))
@@ -1314,9 +1318,9 @@ fun FourthScreen(
 
   )
   ColumnTextField(
-    label = "Apakah yang anda ketahui terkait social report atau laporan social?",
+    text = "Apakah yang anda ketahui terkait social report atau laporan social?",
     value = state.pengetahuanSocialReport,
-    text = "Jelaskan pengetahuanmu terkait social report atau laporan social",
+    label = "Jelaskan pengetahuanmu terkait social report atau laporan social",
     onValueChange = {
       onEvent(RegisterEvent.PengetahuanSocialReportChanged(it))
     },
@@ -1345,9 +1349,9 @@ fun FourthScreen(
     error = state.ekspetasiSetelahLEADError
   )
   ColumnTextField(
-    label = "Apakah ada hal lain yang ingin anda tanyakan atau sampaikan terkait LEAD Indonesia 2023?",
+    text = "Apakah ada hal lain yang ingin anda tanyakan atau sampaikan terkait LEAD Indonesia 2023?",
     value = state.halLainYangInginDisampaikan,
-    text = "Jelaskan hal lain yang ingin anda tanyakan atau sampaikan terkait LEAD Indonesia 2023",
+    label = "Tuliskan pertanyaan anda disini",
     onValueChange = {
       onEvent(RegisterEvent.HalLainYangInginDisampaikanChanged(it))
     },
@@ -1460,7 +1464,7 @@ fun FifthScreen(
       true  -> {
         ColumnKeyValue(
           key = "Jumlah Angka Penerimaan Manfaat",
-          value = "",
+          value = "Belum diisi",
         )
       }
 
@@ -1676,6 +1680,7 @@ private fun ColumnKeyValue(
       error?.let {
         ErrorMessageTextField(
           it,
+          Modifier
         )
       }
     }
@@ -1684,12 +1689,6 @@ private fun ColumnKeyValue(
         text = value,
         style = StyledText.MobileSmallRegular,
         color = ColorPalette.Monochrome800
-      )
-    } else {
-      Text(
-        text = "Belum diisi",
-        style = StyledText.MobileSmallRegular,
-        color = ColorPalette.Monochrome400
       )
     }
   }

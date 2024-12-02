@@ -83,7 +83,7 @@ fun LoginScreen(
         onLoginClick = { viewModel.onEvent(LoginEvent.Submit) },
         emailError = state.emailError,
         passwordError = state.passwordError,
-        isPasswordVisible = isPasswordVisible
+        isPasswordVisible = isPasswordVisible,
       )
     }
 
@@ -171,7 +171,8 @@ fun BottomSection(
       keyboardType = KeyboardType.Email,
       error = emailError,
       modifier = Modifier.fillMaxWidth(),
-      rounded = 40
+      rounded = 40,
+      labelFocusedColor = ColorPalette.OnSurfaceVariant,
     )
     CustomOutlinedTextField(
       value = password,
@@ -183,6 +184,7 @@ fun BottomSection(
       error = passwordError,
       modifier = Modifier.fillMaxWidth(),
       isPasswordVisible = isPasswordVisible,
+      labelFocusedColor = ColorPalette.OnSurfaceVariant,
       rounded = 40
     )
     GotoForgotPassword(navigateToForgotPassword = onNavigateToForgotPassword)
@@ -225,7 +227,7 @@ fun GotoForgotPassword(navigateToForgotPassword : () -> Unit) {
   ) {
     Text(
       text = "Lupa kata sandi",
-      style = StyledText.MobileSmallRegular,
+      style = StyledText.MobileXsRegular,
       modifier = Modifier.clickable { navigateToForgotPassword() },
       textDecoration = TextDecoration.Underline
 

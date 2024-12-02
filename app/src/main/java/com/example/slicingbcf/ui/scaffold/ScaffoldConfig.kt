@@ -159,6 +159,16 @@ fun scaffoldConfig(currentRoute : String?)
       showBackNav = true,
     )
 
+    "ada-monthly-report/{id}" -> ScaffoldConfig(
+      showMainNav = false,
+      showBackNav = false,
+    )
+
+    "tidak-ada-monthly-report/{id}" -> ScaffoldConfig(
+      showMainNav = false,
+      showBackNav = false,
+    )
+
 
     else                             -> ScaffoldConfig()
   }
