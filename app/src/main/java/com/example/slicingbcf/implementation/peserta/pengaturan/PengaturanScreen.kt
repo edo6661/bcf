@@ -1,19 +1,20 @@
 package com.example.slicingbcf.implementation.peserta.pengaturan
 
-import androidx.compose.foundation.clickable
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
@@ -22,22 +23,25 @@ import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
 
 @Composable
 fun PengaturanScreen(
-  modifier : Modifier = Modifier
+  modifier: Modifier = Modifier,
+  viewModel: PengaturanViewModel = hiltViewModel()
 ) {
   val scrollState = rememberScrollState()
+  val uiState by viewModel.uiState.collectAsState()
+
+
   Column(
     modifier = modifier
       .statusBarsPadding()
-      .padding(
-        horizontal = 16.dp,
-      )
+      .padding(horizontal = 16.dp)
       .verticalScroll(scrollState),
     verticalArrangement = Arrangement.spacedBy(36.dp)
   ) {
     Text(
       text = "Pengaturan",
       style = StyledText.MobileLargeMedium,
-      textAlign = TextAlign.Center
+      textAlign = TextAlign.Center,
+      modifier = Modifier.fillMaxWidth()
     )
     Column(
       verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -47,70 +51,159 @@ fun PengaturanScreen(
         style = StyledText.MobileMediumSemibold,
         color = ColorPalette.PrimaryColor700
       )
-      Forms()
+      Forms(
+        uiState = uiState,
+        onOldPasswordChanged = { viewModel.onEvent(PengaturanEvent.OldPasswordChanged(it)) },
+        onNewPasswordChanged = { viewModel.onEvent(PengaturanEvent.NewPasswordChanged(it)) },
+        onConfirmPasswordChanged = { viewModel.onEvent(PengaturanEvent.ConfirmPasswordChanged(it)) },
+        onSubmit = { viewModel.onEvent(PengaturanEvent.Submit) }
+      )
     }
-
   }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Forms() {
+private fun Forms(
+  uiState: PengaturanState,
+  onOldPasswordChanged: (String) -> Unit,
+  onNewPasswordChanged: (String) -> Unit,
+  onConfirmPasswordChanged: (String) -> Unit,
+  onSubmit: () -> Unit
+) {
   val isPasswordVisible = remember { mutableStateOf(false) }
   val isNewPasswordVisible = remember { mutableStateOf(false) }
   val isConfirmationPasswordVisible = remember { mutableStateOf(false) }
-  var isLoading by remember { mutableStateOf(false) }
+  var showDialog by remember { mutableStateOf(false) }
 
   TextFieldWithTitle(
     title = "Kata Sandi Lama",
     placeholder = "Masukkan kata sandi lama",
     label = "Kata Sandi Lama",
-    isPasswordVisible = isPasswordVisible
+    isPasswordVisible = isPasswordVisible,
+    value = uiState.oldPassword,
+    onValueChange = onOldPasswordChanged,
+    error = uiState.oldPasswordError,
+
   )
   TextFieldWithTitle(
     title = "Kata Sandi Baru",
     placeholder = "Masukkan kata sandi baru",
     label = "Kata Sandi Baru",
-    isPasswordVisible = isNewPasswordVisible
+    isPasswordVisible = isNewPasswordVisible,
+    value = uiState.newPassword,
+    onValueChange = onNewPasswordChanged,
+    error = uiState.newPasswordError
   )
   TextFieldWithTitle(
     title = "Konfirmasi Kata Sandi",
     placeholder = "Masukkan konfirmasi kata sandi",
     label = "Konfirmasi Kata Sandi",
-    isPasswordVisible = isConfirmationPasswordVisible
+    isPasswordVisible = isConfirmationPasswordVisible,
+    value = uiState.confirmPassword,
+    onValueChange = onConfirmPasswordChanged,
+    error = uiState.confirmPasswordError
   )
   Text(
     text = "*) Anda hanya dapat mengganti kata sandi setiap 2 minggu sekali",
     style = StyledText.MobileSmallRegular,
     color = ColorPalette.Danger500
   )
-  Spacer(
-    modifier = Modifier.height(16.dp)
-  )
+  Spacer(modifier = Modifier.height(16.dp))
   PrimaryButton(
-    text = "Ubah Kata Sandi",
+    text = if (uiState.isLoading) "Mengubah..." else "Ubah Kata Sandi",
     style = StyledText.MobileSmallMedium,
-    onClick = {isLoading = true},
-    modifier = Modifier
-      .fillMaxWidth(),
-    textColor = ColorPalette.OnPrimary
+    onClick = onSubmit,
+    modifier = Modifier.fillMaxWidth(),
+    textColor = ColorPalette.OnPrimary,
+    isEnabled = !uiState.isLoading
   )
-  if(isLoading){
     SubmitLoadingIndicatorDouble(
-      isLoading = isLoading,
-      title = "Mengubah Kata Sandi Baru Anda...",
-      onAnimationFinished = {isLoading = false},
-      titleBerhasil = "Kata Sandi Berhasil Diubah!",
+      isLoading = uiState.isLoading,
+      title = "Mohon Tunggu",
+      titleBerhasil = uiState.successMessage ?: "Kata Sandi Berhasil Diubah!",
+      description = "Megubah kata sandi anda...",
+      descriptionColor = ColorPalette.OnSurface,
+      titleColor = ColorPalette.PrimaryColor700,
+      onAnimationFinished = {},
     )
-  }
+    AnimatedVisibility(uiState.errorMessage != null) {
+      BasicAlertDialog(onDismissRequest ={
+        showDialog = false
+      } ) {
+        Column(
+          verticalArrangement = Arrangement.spacedBy(24.dp),
+          modifier = Modifier
+            .clip(RoundedCornerShape(24.dp))
+            .background(ColorPalette.OnPrimary)
+            .padding(24.dp)
+        ) {
+          Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+          ) {
+            Text(
+              text = "Ubah Kata Sandi Gagal!",
+              style = StyledText.MobileMediumSemibold,
+              textAlign = TextAlign.Center,
+              color = ColorPalette.Error,
+              modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+              text = "Anda hanya dapat mengganti kata sandi setiap 2 minggu sekali",
+              style = StyledText.MobileXsRegular,
+              textAlign = TextAlign.Center,
+              modifier = Modifier.fillMaxWidth()
+            )
+          }
+          Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxWidth()
+          ) {
+            Image(
+              painter = painterResource(id = R.drawable.exclamation),
+              contentDescription = "Error",
+              modifier = Modifier.size(50.dp)
+            )
+          }
+         Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxWidth()
+         ) {
+           FilledTonalButton(
+             onClick = {
+               showDialog = false
+             },
+             enabled = true,
+             colors = ButtonDefaults.buttonColors(
+               containerColor = ColorPalette.PrimaryColor100
+             ),
+
+             ) {
+             Text(
+               text = "Tutup",
+               style = StyledText.MobileBaseMedium,
+               color = ColorPalette.PrimaryColor700
+             )
+           }
+         }
+
+        }
+      }
+    }
 
 }
 
 @Composable
 private fun TextFieldWithTitle(
-  title : String,
-  placeholder : String,
-  label : String,
-  isPasswordVisible : MutableState<Boolean>
+  title: String,
+  placeholder: String,
+  label: String,
+  isPasswordVisible: MutableState<Boolean>,
+  value: String,
+  onValueChange: (String) -> Unit,
+  error: String?
 ) {
   Column(
     verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -120,15 +213,17 @@ private fun TextFieldWithTitle(
       style = StyledText.MobileBaseSemibold
     )
     CustomOutlinedTextField(
-      value = "",
-      onValueChange = {},
+      value = value,
+      onValueChange = onValueChange,
       placeholder = placeholder,
       label = label,
       isPassword = true,
       isPasswordVisible = isPasswordVisible,
       modifier = Modifier.fillMaxWidth(),
       rounded = 40,
+      error = error,
+      labelFocusedColor = ColorPalette.OnSurfaceVariant,
+    )
 
-      )
   }
 }
