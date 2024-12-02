@@ -20,7 +20,6 @@ import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
 import com.example.slicingbcf.ui.shared.PrimaryButton
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
-
 @Composable
 fun PengaturanScreen(
   modifier: Modifier = Modifier,
