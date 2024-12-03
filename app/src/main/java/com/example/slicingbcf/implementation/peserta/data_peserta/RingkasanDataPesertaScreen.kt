@@ -12,8 +12,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -38,7 +36,6 @@ import com.example.slicingbcf.data.local.WilayahJangkauan
 import com.example.slicingbcf.data.local.profilLembaga
 import com.example.slicingbcf.R.drawable
 import androidx.compose.runtime.setValue
-import com.example.slicingbcf.data.local.ProfilPeserta
 import com.example.slicingbcf.data.local.profilMentor
 import com.example.slicingbcf.data.local.profilPeserta
 import com.example.slicingbcf.implementation.peserta.profil.profil_lembaga.NavigationHeader
@@ -68,7 +65,7 @@ fun TopSection(
     onNextClick: () -> Unit
 ) {
     var currentPage by remember { mutableStateOf(1) }
-    val totalPages = 3
+    val totalPages = 2
 
     Column(
         modifier = Modifier.fillMaxWidth()

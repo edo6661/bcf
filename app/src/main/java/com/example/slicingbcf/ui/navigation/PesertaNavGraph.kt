@@ -75,7 +75,7 @@ fun NavGraphBuilder.pesertaNavGraph(
 
 
     composable(Screen.ProfilPeserta.route) {
-      val onPreviousClick = { navController.navigateSingleTop("profil-lembaga")
+      val onPreviousClick = { navController.navigateSingleTop("data-peserta/$id")
       }
       ProfilPesertaScreen(
         modifier = modifier,
