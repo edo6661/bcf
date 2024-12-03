@@ -20,8 +20,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
-import com.example.slicingbcf.implementation.auth.login.ForgotPasswordEvent
-import com.example.slicingbcf.implementation.auth.login.ForgotPasswordViewModel
 import com.example.slicingbcf.ui.navigation.Screen
 import com.example.slicingbcf.ui.shared.CenteredAuthImage
 import com.example.slicingbcf.ui.shared.CenteredLogo

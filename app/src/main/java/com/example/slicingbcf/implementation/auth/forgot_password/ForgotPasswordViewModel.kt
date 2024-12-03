@@ -1,4 +1,4 @@
-package com.example.slicingbcf.implementation.auth.login
+package com.example.slicingbcf.implementation.auth.forgot_password
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
