@@ -38,6 +38,7 @@ fun KelompokMentoringScreen(
 ) {
   val state by vm.state.collectAsState()
   val currentTabIndex by vm.currentTabIndex.collectAsState()
+  val currentMentor by vm.currentMentor.collectAsState()
 
   Column(
     modifier = modifier.padding(
@@ -46,9 +47,13 @@ fun KelompokMentoringScreen(
     ),
     verticalArrangement = Arrangement.spacedBy(40.dp),
   ) {
-    TopSection(currentTabIndex = currentTabIndex, onTabChanged = {
+    TopSection(
+      currentTabIndex = currentTabIndex,
+      onTabChanged = {
       vm.onEvent(KelompokMentoringEvent.TabChanged(it))
-    })
+    },
+      mentor = currentMentor
+    )
 
     when (state) {
       is UiState.Loading -> {
@@ -71,13 +76,11 @@ fun KelompokMentoringScreen(
   }
 }
 
-
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopSection(
   currentTabIndex: Int,
-  onTabChanged: (Int) -> Unit
+  mentor: Mentor?,
+  onTabChanged: (Int) -> Unit,
 ) {
   val tabTitles = listOf("Cluster", "Desain Program")
   Column(
@@ -96,45 +99,47 @@ fun TopSection(
       text = "Berikut Kelompok Mentoring dan Mentor yang akan menjadi pendampingmu selama perjalanan LEAD Indonesia!",
       style = StyledText.MobileSmallRegular
     )
-  }
 
-  TabRow(
-    selectedTabIndex = currentTabIndex,
-    containerColor = ColorPalette.Monochrome100,
-    contentColor = ColorPalette.PrimaryColor700,
-    indicator = { tabPositions ->
-      TabRowDefaults.PrimaryIndicator(
-        color = ColorPalette.PrimaryColor700,
-        width = 46.dp,
-        shape = RoundedCornerShape(
-          topStart = 16.dp,
-          topEnd = 16.dp
-        ),
-        modifier = Modifier.tabIndicatorOffset(tabPositions[currentTabIndex])
-      )
+    TabRow(
+      selectedTabIndex = currentTabIndex,
+      containerColor = ColorPalette.Monochrome100,
+      contentColor = ColorPalette.PrimaryColor700,
+      indicator = { tabPositions ->
+        TabRowDefaults.PrimaryIndicator(
+          color = ColorPalette.PrimaryColor700,
+          width = 120.dp,
+          shape = RoundedCornerShape(
+            topStart = 16.dp,
+            topEnd = 16.dp
+          ),
+          modifier = Modifier.tabIndicatorOffset(tabPositions[currentTabIndex])
+        )
+      }
+    ) {
+      tabTitles.forEachIndexed { index, title ->
+        Tab(
+          selected = currentTabIndex == index,
+          onClick = { onTabChanged(index) },
+          text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) }
+        )
+      }
     }
-  ) {
-    tabTitles.forEachIndexed { index, title ->
-      Tab(
-        selected = currentTabIndex == index,
-        onClick = { onTabChanged(index) },
-        text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) }
-      )
+
+    mentor?.let { mentor ->
+      TabContent(mentor = mentor)
     }
   }
-  TabContent(currentTabIndex)
 }
 
 @Composable
-fun TabContent(currentTabIndex: Int) {
-  val textMentor = if (currentTabIndex == 0) {
-    "Mentor Cluster • Kesehatan"
-  } else {
-    "Mentor Desain Program • Pendidikan"
-  }
-
+fun TabContent(mentor: Mentor) {
   Row(
-    horizontalArrangement = Arrangement.spacedBy(20.dp)
+    horizontalArrangement = Arrangement.spacedBy(20.dp),
+    modifier = Modifier.padding(
+      top = 16.dp
+    ),
+    verticalAlignment = Alignment.CenterVertically
+
   ) {
     Image(
       modifier = Modifier.size(100.dp),
@@ -145,18 +150,18 @@ fun TabContent(currentTabIndex: Int) {
       verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
       Text(
-        text = "Dody Supriyadi",
+        text = mentor.name,
         style = StyledText.MobileMediumMedium
       )
       Column(
         verticalArrangement = Arrangement.spacedBy(4.dp)
       ) {
         Text(
-          text = textMentor,
+          text = mentor.role,
           style = StyledText.MobileSmallRegular
         )
         Text(
-          text = "Tuberculosis (TBC) • Stunting • HIV/AIDS",
+          text = mentor.expertise,
           style = StyledText.Mobile2xsRegular
         )
       }
@@ -297,14 +302,11 @@ fun KelompokMentoringRow(
     modifier = Modifier
       .background(backgroundColor)
       .then(
-        if (!isLastRow) {
           Modifier.border(
             width = 1.dp,
             color = ColorPalette.Monochrome300,
           )
-        } else {
-          Modifier
-        }
+
       )
   ) {
     headerKelompokMentorings.forEach { header ->

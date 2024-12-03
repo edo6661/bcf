@@ -3,8 +3,10 @@ package com.example.slicingbcf.implementation.mentor.kelompok_mentoring_mentor
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,7 +18,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,6 +30,7 @@ import com.example.slicingbcf.data.local.KelompokMentoring
 import com.example.slicingbcf.data.local.headerKelompokMentorings
 import com.example.slicingbcf.implementation.peserta.kelompok_mentoring.KelompokMentoringEvent
 import com.example.slicingbcf.implementation.peserta.kelompok_mentoring.KelompokMentoringViewModel
+import com.example.slicingbcf.implementation.peserta.kelompok_mentoring.Mentor
 import com.example.slicingbcf.ui.shared.state.ErrorWithReload
 import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 
@@ -39,7 +41,7 @@ fun KelompokMentoringMentorScreen(
   vm: KelompokMentoringViewModel = hiltViewModel()
 ) {
   val state by vm.state.collectAsState()
-  val currentTabIndex by vm.currentTabIndex.collectAsState()
+  val currentMentor by vm.currentMentor.collectAsState()
 
   Column(
     modifier = modifier.padding(
@@ -48,9 +50,12 @@ fun KelompokMentoringMentorScreen(
     ),
     verticalArrangement = Arrangement.spacedBy(40.dp),
   ) {
-    TopSection(currentTabIndex = currentTabIndex, onTabChanged = {
-      vm.onEvent(KelompokMentoringEvent.TabChanged(it))
-    })
+    TopSection(
+      onTabChanged = {
+        vm.onEvent(KelompokMentoringEvent.TabChanged(it))
+      },
+      mentor = currentMentor
+    )
 
     when (state) {
       is UiState.Loading -> {
@@ -73,12 +78,10 @@ fun KelompokMentoringMentorScreen(
   }
 }
 
-
-
 @Composable
 fun TopSection(
-  currentTabIndex: Int,
-  onTabChanged: (Int) -> Unit
+  mentor: Mentor?,
+  onTabChanged: (Int) -> Unit,
 ) {
   val tabTitles = listOf("Cluster", "Desain Program")
   Column(
@@ -97,45 +100,22 @@ fun TopSection(
       text = "Berikut Kelompok Mentoring dan Mentor yang akan menjadi pendampingmu selama perjalanan LEAD Indonesia!",
       style = StyledText.MobileSmallRegular
     )
-  }
 
-  TabRow(
-    selectedTabIndex = currentTabIndex,
-    containerColor = ColorPalette.Monochrome100,
-    contentColor = ColorPalette.PrimaryColor700,
-    indicator = { tabPositions ->
-      TabRowDefaults.PrimaryIndicator(
-        color = ColorPalette.PrimaryColor700,
-        width = 46.dp,
-        shape = RoundedCornerShape(
-          topStart = 16.dp,
-          topEnd = 16.dp
-        ),
-        modifier = Modifier.tabIndicatorOffset(tabPositions[currentTabIndex])
-      )
-    }
-  ) {
-    tabTitles.forEachIndexed { index, title ->
-      Tab(
-        selected = currentTabIndex == index,
-        onClick = { onTabChanged(index) },
-        text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) }
-      )
+    mentor?.let { mentor ->
+      TabContent(mentor = mentor)
     }
   }
-  TabContent(currentTabIndex)
 }
 
 @Composable
-fun TabContent(currentTabIndex: Int) {
-  val textMentor = if (currentTabIndex == 0) {
-    "Mentor Cluster • Kesehatan"
-  } else {
-    "Mentor Desain Program • Pendidikan"
-  }
-
+fun TabContent(mentor: Mentor) {
   Row(
-    horizontalArrangement = Arrangement.spacedBy(20.dp)
+    horizontalArrangement = Arrangement.spacedBy(20.dp),
+    modifier = Modifier.padding(
+      top = 16.dp
+    ),
+    verticalAlignment = Alignment.CenterVertically
+
   ) {
     Image(
       modifier = Modifier.size(100.dp),
@@ -146,18 +126,18 @@ fun TabContent(currentTabIndex: Int) {
       verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
       Text(
-        text = "Dody Supriyadi",
+        text = mentor.name,
         style = StyledText.MobileMediumMedium
       )
       Column(
         verticalArrangement = Arrangement.spacedBy(4.dp)
       ) {
         Text(
-          text = textMentor,
+          text = mentor.role,
           style = StyledText.MobileSmallRegular
         )
         Text(
-          text = "Tuberculosis (TBC) • Stunting • HIV/AIDS",
+          text = mentor.expertise,
           style = StyledText.Mobile2xsRegular
         )
       }
@@ -298,14 +278,11 @@ fun KelompokMentoringRow(
     modifier = Modifier
       .background(backgroundColor)
       .then(
-        if (!isLastRow) {
-          Modifier.border(
-            width = 1.dp,
-            color = ColorPalette.Monochrome300,
-          )
-        } else {
-          Modifier
-        }
+        Modifier.border(
+          width = 1.dp,
+          color = ColorPalette.Monochrome300,
+        )
+
       )
   ) {
     headerKelompokMentorings.forEach { header ->

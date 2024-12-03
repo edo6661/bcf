@@ -186,7 +186,7 @@ fun dropdownItemsMentor_Mentor(
     DropdownItem(
       text = "Kelompok Mentoring",
       onClick = {
-        navigateAndCloseSideNav(Screen.Peserta.KelompokMentoring.route)
+        navigateAndCloseSideNav(Screen.Mentor.KelompokMentoring.route)
       },
       route = Screen.Peserta.KelompokMentoring.route
     ),
@@ -213,7 +213,6 @@ fun dropdownItemsTugas_Mentor(
       },
       route = null
     ),
-    // ! screen sari
     DropdownItem(
       text = "Laporan",
       onClick = {

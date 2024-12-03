@@ -29,19 +29,24 @@ class KelompokMentoringViewModel @Inject constructor(
   private val _currentTabIndex = MutableStateFlow(0)
   val currentTabIndex: StateFlow<Int> = _currentTabIndex.asStateFlow()
 
+  private val _currentMentor = MutableStateFlow<Mentor?>(null)
+  val currentMentor: StateFlow<Mentor?> = _currentMentor.asStateFlow()
+
   init {
     loadData()
+    updateMentor(0)
   }
 
   fun onEvent(event: KelompokMentoringEvent) {
     when (event) {
       is KelompokMentoringEvent.TabChanged -> {
         _currentTabIndex.value = event.tabIndex
+        updateMentor(event.tabIndex)
       }
       is KelompokMentoringEvent.ReloadData -> {
         loadData()
       }
-
+      else -> Unit
     }
   }
 
@@ -62,5 +67,27 @@ class KelompokMentoringViewModel @Inject constructor(
       }
     }
   }
+
+  private fun updateMentor(tabIndex: Int) {
+    val mentor = when (tabIndex) {
+      0 -> Mentor(
+        name = "Dody Supriyadi",
+        role = "Mentor Cluster • Kesehatan",
+        expertise = "Tuberculosis (TBC) • Stunting • HIV/AIDS"
+      )
+      1 -> Mentor(
+        name = "Rini Wijayanti",
+        role = "Mentor Desain Program • Pendidikan",
+        expertise = "Pengajaran Anak Usia Dini • Literasi Dasar"
+      )
+      else -> null
+    }
+    _currentMentor.value = mentor
+  }
 }
 
+data class Mentor(
+  val name: String,
+  val role: String,
+  val expertise: String
+)
