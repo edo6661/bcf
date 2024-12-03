@@ -197,13 +197,6 @@ fun dropdownItemsMentor_Mentor(
         Log.d("SideNav", "Umpan Balik Mentor clicked")
       },
       route = null
-    ),
-    DropdownItem(
-      text = "Profil Mentor",
-        onClick = {
-            navigateAndCloseSideNav(Screen.Mentor.ProfilMentor.route)
-        },
-        route = Screen.Mentor.ProfilMentor.route
     )
   )
 }

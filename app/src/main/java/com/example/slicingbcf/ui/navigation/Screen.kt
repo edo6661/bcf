@@ -58,7 +58,6 @@ sealed class Screen(val route : String) {
     object Laporan : Mentor("laporan")
     object ProfilMentor : Mentor("profil-mentor")
     data class UbahProfilMentor(val id : String) : Mentor("ubah-profil-mentor/$id")
-
   }
 
   sealed class Kegiatan(route: String) : Screen(route){
