@@ -42,7 +42,7 @@ fun KelompokMentoringScreen(
   Column(
     modifier = modifier.padding(
       horizontal = 16.dp,
-      vertical = 44.dp
+      vertical = 24.dp
     ),
     verticalArrangement = Arrangement.spacedBy(40.dp),
   ) {

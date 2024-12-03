@@ -49,7 +49,7 @@ class KelompokMentoringViewModel @Inject constructor(
     viewModelScope.launch(ioDispatcher) {
       _state.value = UiState.Loading
       try {
-        delay(4000)
+        delay(1500)
 
         val data = kelompoksMentoring
         withContext(mainDispatcher) {
