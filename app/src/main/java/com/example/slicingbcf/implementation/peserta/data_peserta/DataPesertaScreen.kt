@@ -9,6 +9,8 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,41 +19,87 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.common.UiState
+import com.example.slicingbcf.data.local.preferences.headersPesertaData
 import com.example.slicingbcf.ui.shared.PrimaryButton
+import com.example.slicingbcf.ui.shared.state.ErrorWithReload
+import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 import com.example.slicingbcf.ui.shared.textfield.SearchBarCustom
 
 @Composable
 fun DataPesertaScreen(
-  modifier : Modifier = Modifier,
-  onNavigateDetailDataPeserta: (String) -> Unit
+  modifier: Modifier = Modifier,
+  onNavigateDetailDataPeserta: (String) -> Unit,
+  vm: DataPesertaViewModel = hiltViewModel()
 ) {
-  Column(
+  val state by vm.state.collectAsState()
+  val searchQuery by vm.searchQuery.collectAsState()
+
+  Box(
     modifier = modifier
       .background(ColorPalette.Monochrome100)
-      .padding(
-        horizontal = 16.dp,
-      )
-      .verticalScroll(rememberScrollState()),
-    verticalArrangement = Arrangement.spacedBy(28.dp),
+      .fillMaxSize()
   ) {
-
-    TopSection(
-      onSearch = { q ->
+    when (state) {
+      is UiState.Loading -> {
+        Box(
+          modifier = Modifier
+            .fillMaxSize(),
+          contentAlignment = Alignment.Center
+        ) {
+          LoadingCircularProgressIndicator()
+        }
       }
-    )
-    BottomSection(
-      onNavigateDetailDataPeserta = onNavigateDetailDataPeserta
-    )
+      is UiState.Success -> {
+        val data = (state as UiState.Success<List<String>>).data
+        Column(
+          modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 24.dp),
+          verticalArrangement = Arrangement.spacedBy(28.dp)
+        ) {
+          TopSection(
+            onSearch = { query ->
+              vm.onEvent(DataPesertaEvent.Search(query))
+            },
+            query = searchQuery
+          )
+          BottomSection(
+            onNavigateDetailDataPeserta = onNavigateDetailDataPeserta,
+            dataPeserta = data
+          )
+        }
+      }
+      is UiState.Error -> {
+        val errorMessage = (state as UiState.Error).message
+        Column(
+          modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 24.dp),
+          verticalArrangement = Arrangement.spacedBy(28.dp)
+        ) {
 
+          ErrorWithReload(
+            errorMessage = errorMessage,
+            onRetry = { vm.onEvent(DataPesertaEvent.Reload) }
+          )
+        }
+      }
+    }
   }
 }
 
+
 @Composable
 fun TopSection(
-  onSearch : (String) -> Unit
+  onSearch : (String) -> Unit,
+  query : String
 ) {
   Column(
     modifier = Modifier
@@ -59,7 +107,7 @@ fun TopSection(
     verticalArrangement = Arrangement.spacedBy(16.dp)
   ) {
     Text(
-      text = "Data Peserta",
+      text = "Data Memek",
       style = StyledText.MobileLargeSemibold,
       textAlign = TextAlign.Center,
       modifier = Modifier.fillMaxWidth()
@@ -73,6 +121,8 @@ fun TopSection(
       ) {
       SearchBarCustom(
         onSearch = onSearch,
+        query = query ,
+
         title = "Cari Peserta",
         bgColor = ColorPalette.OnPrimary,
       )
@@ -123,13 +173,13 @@ private fun ContainerImageCenteredShadow(
     content()
   }
 }
-
 @Composable
 private fun BottomSection(
-  onNavigateDetailDataPeserta: (String) -> Unit
+  onNavigateDetailDataPeserta: (String) -> Unit,
+  dataPeserta: List<String>
 ) {
   val columnWeights = listOf(0.1f, 0.6f, 0.3f)
-  val rows = mockDataPesertaData.mapIndexed { i, data ->
+  val rows = dataPeserta.mapIndexed { i, data ->
     listOf(
       (i + 1).toString(),
       data,
@@ -152,7 +202,6 @@ private fun Table(
   onNavigateDetailDataPeserta: (String) -> Unit
 ) {
   Column(
-    modifier = Modifier
 
   ) {
     TableRow(isHeader = true) {
@@ -278,24 +327,5 @@ private fun TableRow(
 }
 
 
-private val headersPesertaData = listOf(
-  "No",
-  "Nama Lembaga",
-  "Lihat"
-)
-
-private val mockDataPesertaData = listOf(
-  "Bakrie Center Foundation",
-  "YAMALI",
-  "Inisiatif Lampung Sehat",
-  "STPI Penabulu Banten",
-  "Perkumpulan Masyarakat Sriwijaya Sehat Sumatera Selatan",
-  "STPI Penabulu DKI Jakarta",
-  "Yayasan Rekat Peduli Indonesia",
-  "Yayasan Bekantan",
-  "Yayasan Kesehatan Masyarakat Indonesia",
-  "Yayasan Kesehatan Masyarakat Indonesia",
-  "Yayasan Kesehatan Masyarakat Indonesia"
-)
 
 
