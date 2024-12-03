@@ -1031,7 +1031,6 @@ fun CustomDropdownMenu(
     dropdownItems: List<String>,
     expanded: Boolean,
     onChangeExpanded: (Boolean) -> Unit
-
 ) {
     Column(
         modifier = Modifier
@@ -1054,7 +1053,7 @@ fun CustomDropdownMenu(
                 ),
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.Top,
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
