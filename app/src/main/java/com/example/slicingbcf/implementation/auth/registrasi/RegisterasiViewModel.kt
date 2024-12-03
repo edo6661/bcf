@@ -375,9 +375,9 @@ class RegistrasiViewModel @Inject constructor(
     val validationsBoolean = listOf(
       state.readAndUnderstandChecked to "Mohon centang bahwa anda telah membaca dan memahami informasi",
       state.confirmInformationChecked to "Mohon centang bahwa informasi yang anda berikan adalah benar",
-      state.miniTrainingCheckedError to "Mohon centang bahwa anda telah membaca dan memahami informasi",
+      state.initialMentoringChecked to "Mohon centang bahwa anda telah membaca dan memahami informasi",
       state.initialMentoringCheckedError to "Mohon centang bahwa anda telah membaca dan memahami informasi",
-      state.pendampinganIntensifCheckedError to "Mohon centang bahwa anda telah membaca dan memahami informasi",
+      state.pendampinganIntensifChecked to "Mohon centang bahwa anda telah membaca dan memahami informasi",
 
       )
     val validationsUri = listOf(
@@ -386,6 +386,10 @@ class RegistrasiViewModel @Inject constructor(
       state.selectedFileUriKTP to "KTP tidak boleh kosong",
       state.selectedFileUriCV to "CV tidak boleh kosong",
       state.selectedFileUriLaporanAkhirTahun to "Laporan akhir tahun tidak boleh kosong",
+    )
+
+    val validationsArray = listOf(
+      state.jumlahAngkaPenerimaanManfaat to "Kota tidak boleh kosong"
     )
 
     val errorMapString = validationsString.mapNotNull { (field, errorMessage) ->
@@ -399,7 +403,13 @@ class RegistrasiViewModel @Inject constructor(
       if (field == null) errorMessage else null
     }
 
-    val allErrorsMap = errorMapString + errorMapBoolean + errorMapUri
+    val errorMapArray = validationsArray.mapNotNull { (field, errorMessage) ->
+      if (field.isEmpty() || field.all {
+        it.kota.isBlankOrEmpty() || it.jumlah == 0
+        }) errorMessage else null
+    }
+
+    val allErrorsMap = errorMapString + errorMapBoolean + errorMapUri + errorMapArray
 
 
     _uiState.update { it ->
@@ -443,6 +453,7 @@ class RegistrasiViewModel @Inject constructor(
         selectedFileUriKTPError = errorMapUri.find { it == "KTP tidak boleh kosong" },
         selectedFileUriCVError = errorMapUri.find { it == "CV tidak boleh kosong" },
         selectedFileUriLaporanAkhirTahunError = errorMapUri.find { it == "Laporan akhir tahun tidak boleh kosong" },
+        jumlahAngkaPenerimaanManfaatError = errorMapArray.find { it == "Kota tidak boleh kosong" },
 
         )
     }
