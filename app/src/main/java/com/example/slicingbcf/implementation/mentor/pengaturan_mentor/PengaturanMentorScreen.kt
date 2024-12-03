@@ -1,235 +1,266 @@
-package com.example.slicingbcf.implementation.mentor.pengaturan_mentor
+package com.dicoding.lead
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.R
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.slicingbcf.constant.ColorPalette
-import com.example.slicingbcf.constant.StyledText
-import com.example.slicingbcf.implementation.peserta.pengaturan.PengaturanEvent
-import com.example.slicingbcf.implementation.peserta.pengaturan.PengaturanState
-import com.example.slicingbcf.implementation.peserta.pengaturan.PengaturanViewModel
-import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
-import com.example.slicingbcf.ui.shared.PrimaryButton
-import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.zIndex // Import zIndex
+
+val poppinsRegular = FontFamily(
+    Font(R.font.poppins_regular)
+)
 
 @Composable
-fun PengaturanMentorScreen(
-  modifier: Modifier = Modifier,
-  viewModel: PengaturanViewModel = hiltViewModel()
-) {
-  val scrollState = rememberScrollState()
-  val uiState by viewModel.uiState.collectAsState()
+fun ChangePasswordScreen() {
+    var currentPassword by remember { mutableStateOf("") }
+    var newPassword by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
 
+    var currentPasswordVisible by remember { mutableStateOf(false) }
+    var newPasswordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
 
-  Column(
-    modifier = modifier
-      .statusBarsPadding()
-      .padding(horizontal = 16.dp)
-      .verticalScroll(scrollState),
-    verticalArrangement = Arrangement.spacedBy(36.dp)
-  ) {
-    Text(
-      text = "Pengaturan",
-      style = StyledText.MobileLargeMedium,
-      textAlign = TextAlign.Center,
-      modifier = Modifier.fillMaxWidth()
-    )
-    Column(
-      verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-      Text(
-        text = "Ubah Kata Sandi",
-        style = StyledText.MobileMediumSemibold,
-        color = ColorPalette.PrimaryColor700
-      )
-      Forms(
-        uiState = uiState,
-        onOldPasswordChanged = { viewModel.onEvent(PengaturanEvent.OldPasswordChanged(it)) },
-        onNewPasswordChanged = { viewModel.onEvent(PengaturanEvent.NewPasswordChanged(it)) },
-        onConfirmPasswordChanged = { viewModel.onEvent(PengaturanEvent.ConfirmPasswordChanged(it)) },
-        onSubmit = { viewModel.onEvent(PengaturanEvent.Submit) }
-      )
-    }
-  }
-}
+    var showError by remember { mutableStateOf(false) }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun Forms(
-  uiState: PengaturanState,
-  onOldPasswordChanged: (String) -> Unit,
-  onNewPasswordChanged: (String) -> Unit,
-  onConfirmPasswordChanged: (String) -> Unit,
-  onSubmit: () -> Unit
-) {
-  val isPasswordVisible = remember { mutableStateOf(false) }
-  val isNewPasswordVisible = remember { mutableStateOf(false) }
-  val isConfirmationPasswordVisible = remember { mutableStateOf(false) }
-  var showDialog by remember { mutableStateOf(false) }
-
-  TextFieldWithTitle(
-    title = "Kata Sandi Lama",
-    placeholder = "Masukkan kata sandi lama",
-    label = "Kata Sandi Lama",
-    isPasswordVisible = isPasswordVisible,
-    value = uiState.oldPassword,
-    onValueChange = onOldPasswordChanged,
-    error = uiState.oldPasswordError,
-
-    )
-  TextFieldWithTitle(
-    title = "Kata Sandi Baru",
-    placeholder = "Masukkan kata sandi baru",
-    label = "Kata Sandi Baru",
-    isPasswordVisible = isNewPasswordVisible,
-    value = uiState.newPassword,
-    onValueChange = onNewPasswordChanged,
-    error = uiState.newPasswordError
-  )
-  TextFieldWithTitle(
-    title = "Konfirmasi Kata Sandi",
-    placeholder = "Masukkan konfirmasi kata sandi",
-    label = "Konfirmasi Kata Sandi",
-    isPasswordVisible = isConfirmationPasswordVisible,
-    value = uiState.confirmPassword,
-    onValueChange = onConfirmPasswordChanged,
-    error = uiState.confirmPasswordError
-  )
-  Text(
-    text = "*) Anda hanya dapat mengganti kata sandi setiap 2 minggu sekali",
-    style = StyledText.MobileSmallRegular,
-    color = ColorPalette.Danger500
-  )
-  Spacer(modifier = Modifier.height(16.dp))
-  PrimaryButton(
-    text = if (uiState.isLoading) "Mengubah..." else "Ubah Kata Sandi",
-    style = StyledText.MobileSmallMedium,
-    onClick = onSubmit,
-    modifier = Modifier.fillMaxWidth(),
-    textColor = ColorPalette.OnPrimary,
-    isEnabled = !uiState.isLoading
-  )
-  SubmitLoadingIndicatorDouble(
-    isLoading = uiState.isLoading,
-    title = "Mohon Tunggu",
-    titleBerhasil = uiState.successMessage ?: "Kata Sandi Berhasil Diubah!",
-    description = "Megubah kata sandi anda...",
-    descriptionColor = ColorPalette.OnSurface,
-    titleColor = ColorPalette.PrimaryColor700,
-    onAnimationFinished = {},
-  )
-  AnimatedVisibility(uiState.errorMessage != null) {
-    BasicAlertDialog(onDismissRequest ={
-      showDialog = false
-    } ) {
-      Column(
-        verticalArrangement = Arrangement.spacedBy(24.dp),
+    Box(
         modifier = Modifier
-          .clip(RoundedCornerShape(24.dp))
-          .background(ColorPalette.OnPrimary)
-          .padding(24.dp)
-      ) {
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        Navbar()
+
         Column(
-          horizontalAlignment = Alignment.CenterHorizontally,
-          modifier = Modifier.fillMaxWidth(),
-          verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+                .padding(top = 90.dp) // Ensure padding to avoid overlap with Navbar
+                .verticalScroll(rememberScrollState()), // Added import for scroll state
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.Start
         ) {
-          Text(
-            text = "Ubah Kata Sandi Gagal!",
-            style = StyledText.MobileMediumSemibold,
-            textAlign = TextAlign.Center,
-            color = ColorPalette.Error,
-            modifier = Modifier.fillMaxWidth()
-          )
-          Text(
-            text = "Anda hanya dapat mengganti kata sandi setiap 2 minggu sekali",
-            style = StyledText.MobileXsRegular,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-          )
-        }
-        Box(
-          contentAlignment = Alignment.Center,
-          modifier = Modifier.fillMaxWidth()
-        ) {
-          Image(
-            painter = painterResource(id = com.example.slicingbcf.R.drawable.exclamation),
-            contentDescription = "Error",
-            modifier = Modifier.size(50.dp)
-          )
-        }
-        Box(
-          contentAlignment = Alignment.Center,
-          modifier = Modifier.fillMaxWidth()
-        ) {
-          FilledTonalButton(
-            onClick = {
-              showDialog = false
-            },
-            enabled = true,
-            colors = ButtonDefaults.buttonColors(
-              containerColor = ColorPalette.PrimaryColor100
-            ),
-
-            ) {
             Text(
-              text = "Tutup",
-              style = StyledText.MobileBaseMedium,
-              color = ColorPalette.PrimaryColor700
+                text = "Pengaturan",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF1F1F1F),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp),
+                textAlign = TextAlign.Center,
+                style = TextStyle(fontFamily = poppinsRegular)
             )
-          }
+
+            Text(
+                text = "Ubah Kata Sandi",
+                fontSize = 15.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF1F1F1F),
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start,
+                style = TextStyle(fontFamily = poppinsRegular)
+            )
+
+            Text(
+                text = "Kata Sandi Saat Ini",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color(0xFF1F1F1F),
+                style = TextStyle(fontFamily = poppinsRegular)
+            )
+            PasswordInputField(
+                hint = "Masukkan Kata Sandi saat ini",
+                password = currentPassword,
+                onPasswordChange = { currentPassword = it },
+                passwordVisible = currentPasswordVisible,
+                onVisibilityChange = { currentPasswordVisible = !currentPasswordVisible },
+                isError = showError
+            )
+
+            Text(
+                text = "Kata Sandi Baru",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color(0xFF1F1F1F),
+                style = TextStyle(fontFamily = poppinsRegular)
+            )
+            PasswordInputField(
+                hint = "Masukkan Kata Sandi Anda",
+                password = newPassword,
+                onPasswordChange = { newPassword = it },
+                passwordVisible = newPasswordVisible,
+                onVisibilityChange = { newPasswordVisible = !newPasswordVisible },
+                isError = showError
+            )
+
+            Text(
+                text = "Konfirmasi Kata Sandi Baru",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color(0xFF1F1F1F),
+                style = TextStyle(fontFamily = poppinsRegular)
+            )
+            PasswordInputField(
+                hint = "Masukkan Kata Sandi Anda",
+                password = confirmPassword,
+                onPasswordChange = { confirmPassword = it },
+                passwordVisible = confirmPasswordVisible,
+                onVisibilityChange = { confirmPasswordVisible = !confirmPasswordVisible },
+                isError = showError
+            )
+
+            if (showError) {
+                Text(
+                    text = "Anda hanya dapat mengganti password setiap 2 minggu sekali.",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFFDC3545),
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start,
+                    style = TextStyle(fontFamily = poppinsRegular)
+                )
+            }
+
+            Button(
+                onClick = {
+                    // Example validation logic
+                    showError = true // Show error message
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .border(1.dp, Color(0xFF0D4690), shape = RoundedCornerShape(8.dp))
+                    .background(Color(0xFF0D4690), shape = RoundedCornerShape(8.dp)),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF0D4690),
+                    contentColor = Color.White
+                )
+            ) {
+                Text(
+                    text = "Ubah Password",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.White,
+                    style = TextStyle(
+                        fontFamily = FontFamily(Font(R.font.poppins_regular)),
+                        lineHeight = 19.6.sp
+                    ),
+                    modifier = Modifier.width(110.dp)
+                )
+            }
         }
-
-      }
     }
-  }
-
 }
 
 @Composable
-private fun TextFieldWithTitle(
-  title: String,
-  placeholder: String,
-  label: String,
-  isPasswordVisible: MutableState<Boolean>,
-  value: String,
-  onValueChange: (String) -> Unit,
-  error: String?
-) {
-  Column(
-    verticalArrangement = Arrangement.spacedBy(12.dp)
-  ) {
-    Text(
-      text = title,
-      style = StyledText.MobileBaseSemibold
-    )
-    CustomOutlinedTextField(
-      value = value,
-      onValueChange = onValueChange,
-      placeholder = placeholder,
-      label = label,
-      isPassword = true,
-      isPasswordVisible = isPasswordVisible,
-      modifier = Modifier.fillMaxWidth(),
-      rounded = 40,
-      error = error,
-      labelFocusedColor = ColorPalette.OnSurfaceVariant,
-    )
+fun Navbar() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(65.dp)
+            .background(color = Color.White)
+            .shadow(elevation = 2.dp)
+            .zIndex(1f), // Added zIndex import
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "Logo",
+            modifier = Modifier
+                .size(width = 80.dp, height = 35.dp),
+            contentScale = ContentScale.Fit
+        )
 
-  }
+        IconButton(onClick = { }) {
+            Icon(
+                imageVector = Icons.Default.Menu,
+                contentDescription = "Sidebar Icon",
+                modifier = Modifier
+                    .size(width = 70.dp, height = 35.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun PasswordInputField(
+    hint: String,
+    password: String,
+    onPasswordChange: (String) -> Unit,
+    passwordVisible: Boolean,
+    onVisibilityChange: () -> Unit,
+    isError: Boolean = false
+) {
+    OutlinedTextField(
+        value = password,
+        onValueChange = onPasswordChange,
+        placeholder = {
+            Text(
+                text = hint,
+                color = Color(0xFF858585),
+                style = TextStyle(fontSize = 13.sp, fontFamily = poppinsRegular)
+            )
+        },
+        singleLine = true,
+        isError = isError,
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        trailingIcon = {
+            IconButton(onClick = onVisibilityChange) {
+                val icon = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                Icon(imageVector = icon, contentDescription = null)
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color.White)
+            .height(47.dp),
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = if (isError) Color(0xFFDC3545) else MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = if (isError) Color(0xFFDC3545) else Color.Gray,
+            textColor = Color.Black
+        )
+    )
+}
+
+@Preview
+@Composable
+fun Preview() {
+    ChangePasswordScreen()
 }
