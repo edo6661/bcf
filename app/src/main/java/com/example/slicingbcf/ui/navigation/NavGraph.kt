@@ -21,7 +21,7 @@ import com.example.slicingbcf.implementation.peserta.profil.profil_peserta.Profi
 @Composable
 fun NavGraph(
   navController : NavHostController,
-  startDestination : String = "auth",
+  startDestination : String = Screen.SplashScreen.route,
   modifier : Modifier,
 ) {
   NavHost(navController = navController, startDestination = startDestination) {
