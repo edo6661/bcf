@@ -245,6 +245,12 @@ fun NavGraphBuilder.pesertaNavGraph(
           animationSpec = tween(700)
         )
       },
+      exitTransition = {
+        slideOutHorizontally(
+          targetOffsetX = { it },
+          animationSpec = tween(700)
+        )
+      }
 
     ) { backStackEntry ->
       val id = backStackEntry.arguments?.getString("id") ?: ""

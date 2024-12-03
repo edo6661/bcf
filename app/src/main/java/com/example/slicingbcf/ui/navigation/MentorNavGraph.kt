@@ -131,17 +131,6 @@ fun NavGraphBuilder.mentorNavGraph(
 
         )
     }
-
-    composable(
-      route = Screen.Mentor.ProfilMentor.route
-    ) {
-      ProfilMentorScreen(
-        modifier = modifier,
-        mentor = mentor,
-        batches = listBatch
-      )
-    }
-
     composable(
       route = Screen.Mentor.Laporan.route
     ) {
@@ -187,6 +176,8 @@ fun NavGraphBuilder.mentorNavGraph(
         ), id = id
       )
     }
+
+
   }
 
 

@@ -88,7 +88,7 @@ fun SubmitLoadingIndicator(
 fun SubmitLoadingIndicatorDouble(
   modifier : Modifier = Modifier,
   isLoading : Boolean,
-  title : String,
+  title : String? = null,
   titleBerhasil : String,
   titleColor : Color = ColorPalette.OnSurface,
   titleStyle : TextStyle = StyledText.MobileMediumMedium,
@@ -133,7 +133,7 @@ fun SubmitLoadingIndicatorDouble(
 
 @Composable
 private fun LottieAnimationContainer(
-  title : String,
+  title : String?,
   titleBerhasil : String,
   description: String? = null,
   descriptionColor : Color,
@@ -195,18 +195,23 @@ private fun LottieAnimationContainer(
           horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
-          Text(
-            text = title,
-            style = titleStyle,
-            color = titleColor,
-            textAlign = TextAlign.Center
-          )
-          Text(
-            text = description ?: "",
-            style = descriptionStyle,
-            color = descriptionColor,
-            textAlign = TextAlign.Center
-          )
+          title?.let {
+            Text(
+              text = title,
+              style = titleStyle,
+              color = titleColor,
+              textAlign = TextAlign.Center
+            )
+          }
+          description?.let {
+            Text(
+              text = description,
+              style = descriptionStyle,
+              color = descriptionColor,
+              textAlign = TextAlign.Center
+            )
+          }
+
         }
       }
 
