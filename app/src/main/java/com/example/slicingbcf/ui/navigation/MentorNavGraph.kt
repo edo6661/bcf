@@ -35,7 +35,6 @@ fun NavGraphBuilder.mentorNavGraph(
       val onNavigateDetailPenilaianPeserta = { id : String ->
         navController.navigate("penilaian-peserta-mentor/$id")
       }
-
       PenilaianPesertaScreenMentor (
         modifier = modifier,
         onNavigateDetailPenilaianPeserta = onNavigateDetailPenilaianPeserta

@@ -33,11 +33,10 @@ import com.example.slicingbcf.ui.shared.state.ErrorWithReload
 import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 import com.example.slicingbcf.ui.shared.textfield.TextFieldWithTitle
 
-// TODO: Loading nya blm muncul
+// TODO
 @Composable
 fun DetailPenilaianPesertaScreenMentor(
   modifier : Modifier,
-  // TODO: nnti ganti klo dah ada api
   id : String = "1",
   viewModel : PenilaianPesertaViewModel = hiltViewModel()
 ) {
@@ -134,7 +133,7 @@ fun FormSection(
         heading = "Hal-Hal Yang Perlu Ditingkatkan",
         title = "Masukan Mentor Cluster",
         onChange = {},
-        value = "test text asdasd",
+        value = "",
         placeholder = "Dibahas",
         label = "Kegiatan",
         isEdit = isEdit
