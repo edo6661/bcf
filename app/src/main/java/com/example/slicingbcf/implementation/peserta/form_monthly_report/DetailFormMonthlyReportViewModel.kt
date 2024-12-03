@@ -108,6 +108,9 @@ class DetailFormMonthlyReportViewModel @Inject constructor() : ViewModel() {
       }
       is FormMonthlyReportEvent.Submit -> {
         Log.d("FormMonthlyReportViewModel", _state.value.toString())
+        _state.update {it.copy(
+          isLoading = true,
+        )}
       }
     }
   }

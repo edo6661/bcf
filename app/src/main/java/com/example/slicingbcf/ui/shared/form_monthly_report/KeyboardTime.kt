@@ -35,8 +35,7 @@ fun KeyboardTime(
 
     Column(
       verticalArrangement = Arrangement.spacedBy(8.dp),
-      horizontalAlignment = Alignment.CenterHorizontally,
-      modifier = modifier.fillMaxWidth()
+
     ) {
       CenteredCustomOutlinedTextField(
         value = value,
@@ -46,7 +45,7 @@ fun KeyboardTime(
           .height(72.dp)
       )
       Text(
-        text = "Hour",
+        text = if (isHour) "Hour" else "Minute",
         style = StyledText.Mobile2xsRegular,
         color = ColorPalette.PrimaryColor200,
       )

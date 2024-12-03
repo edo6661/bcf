@@ -4,14 +4,11 @@ import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.NavigateBefore
 import androidx.compose.material.icons.automirrored.filled.NavigateNext
@@ -26,6 +23,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -40,7 +39,11 @@ import com.example.slicingbcf.implementation.peserta.form_monthly_report.Constan
 import com.example.slicingbcf.implementation.peserta.form_monthly_report.ConstantFormMonthlyReport.Companion.statuses
 import com.example.slicingbcf.implementation.peserta.form_monthly_report.ConstantFormMonthlyReport.Companion.wilayahPenerimaManfaats
 import com.example.slicingbcf.ui.animations.AnimatedContentSlide
+import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
+import com.example.slicingbcf.ui.shared.CustomTimePicker
 import com.example.slicingbcf.ui.shared.PrimaryButton
+import com.example.slicingbcf.ui.shared.form_monthly_report.AmPmOption
+import com.example.slicingbcf.ui.shared.form_monthly_report.ClickableTextField
 import com.example.slicingbcf.ui.shared.form_monthly_report.KeyboardTime
 import com.example.slicingbcf.ui.shared.message.SecondaryButton
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
@@ -83,15 +86,15 @@ fun DetailFormMonthlyReportScreen(
       label = "Registrasi Animation Navigate Content",
     ) { targetScreen ->
       when (targetScreen) {
-//        0 -> {
-//          ScreenBasedOnId(
-//            id = id,
-//            navigateToRingkasanScreen = navigateToRingkasanScreen,
-//            onNavigateBack = onNavigateBack
-//          )
-//        }
-
         0 -> {
+          ScreenBasedOnId(
+            id = id,
+            navigateToRingkasanScreen = navigateToRingkasanScreen,
+            onNavigateBack = onNavigateBack
+          )
+        }
+
+        1 -> {
           DetailFormMonthlyReport(
             modifier = Modifier,
             id = id,
@@ -116,7 +119,6 @@ fun ScreenBasedOnId(
   if (id != "1") {
     AdaMonthlyReportScreen(
       onNavigateChangeReport = {
-        // TODO: belum ada di figma
       },
       onNavigateRingkasan = { navigateToRingkasanScreen() }
     )
@@ -638,18 +640,7 @@ private fun BottomSection(
       this[index] = expanded
     }
   }
-  var expandedJenisLembaga by remember { mutableStateOf(false) }
-  val onExpandedJenisLembagaChange = { expanded : Boolean ->
-    expandedJenisLembaga = expanded
-  }
-  var expandedStatus by remember { mutableStateOf(false) }
-  val onExpandedStatusChange = { expanded : Boolean ->
-    expandedStatus = expanded
-  }
-  var expandedMediaSosial by remember { mutableStateOf(false) }
-  val onExpandedMediaSosialChange = { expanded : Boolean ->
-    expandedMediaSosial = expanded
-  }
+
 
 
 
@@ -675,6 +666,15 @@ private fun BottomSection(
         verticalArrangement = Arrangement.spacedBy(24.dp)
 
       ) {
+        SubmitLoadingIndicatorDouble(
+          isLoading = state.isLoading,
+          onAnimationFinished = {
+            onEvent(FormMonthlyReportEvent.ClearForm)
+          },
+          titleBerhasil = "Berhasil menyimpan perubahan!",
+
+
+          )
         when (targetScreen) {
           0 -> FirstScreen(
 
@@ -720,6 +720,7 @@ private fun BottomSection(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Suppress("t")
 @Composable
 private fun FirstScreen(
@@ -734,9 +735,14 @@ private fun FirstScreen(
   onEvent : (FormMonthlyReportEvent) -> Unit
 ) {
 
+
   Column(
     verticalArrangement = Arrangement.spacedBy(16.dp)
   ) {
+
+
+
+
     Text(
       text = "Kegiatan apa saja yang lembaga anda lakukan beserta peningkatan/penambahan penerima manfaat dari kegiatan yang lembaga anda lakukan?",
       style = StyledText.MobileBaseMedium,
@@ -1241,9 +1247,7 @@ fun FourthScreen(
     )
     state.rekapanPemasaranSosialMedia.forEachIndexed { index, pemasaranSosialMedia ->
       var expandedMediaSosial by remember { mutableStateOf(false) }
-      var modalWaktu by remember { mutableStateOf(false) }
-      var hour by remember { mutableStateOf("00") }
-      var minute by remember { mutableStateOf("00") }
+
       Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxWidth(),
@@ -1269,48 +1273,22 @@ fun FourthScreen(
           dropdownItems = mediaSosials,
           modifier = Modifier.weight(0.5f)
         )
-        // TODO: bikin dropdown waktu
-
-        if(modalWaktu) {
-          BasicAlertDialog(
-            onDismissRequest = { modalWaktu = false },
-          ) {
-            Column(
-              verticalArrangement = Arrangement.spacedBy(24.dp),
-              modifier = Modifier
-                .clip(RoundedCornerShape(24.dp))
-                .background(ColorPalette.OnPrimary)
-                .padding(24.dp)
-            ) {
-              Text(
-                text = "Enter time",
-                style = StyledText.MobileSmallRegular,
-                color = ColorPalette.PrimaryColor700
+        CustomTimePicker(
+          onTimeSelected = { selectedTime ->
+            onEvent(
+              FormMonthlyReportEvent.UpdateRekapanPemasaranSosialMedia(
+                index, pemasaranSosialMedia.copy(
+                  waktu = selectedTime
+                )
               )
-              Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-              ) {
-                Row {
-                  KeyboardTime(
-                    isHour = true,
-                    value = hour,
-                    onValueChange = {
-                      hour = it
-                    },
-                    description = "Hour"
-                  )
-
-                }
-
-              }
-
-
-            }
-
-
-          }
-        }
+            )
+          },
+          modifier = Modifier
+            .weight(0.5f)
+            .padding(
+              top = 8.dp
+            )
+        )
 
       }
       CustomOutlinedTextField(
