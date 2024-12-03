@@ -19,45 +19,73 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.local.Penilaian
+import com.example.slicingbcf.data.local.headerTable
+import com.example.slicingbcf.implementation.peserta.penilaian_peserta.PenilaianPesertaEvent
+import com.example.slicingbcf.implementation.peserta.penilaian_peserta.PenilaianPesertaState
+import com.example.slicingbcf.implementation.peserta.penilaian_peserta.PenilaianPesertaViewModel
 import com.example.slicingbcf.ui.shared.PrimaryButton
 import com.example.slicingbcf.ui.shared.message.SecondaryButton
+import com.example.slicingbcf.ui.shared.state.ErrorWithReload
+import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 import com.example.slicingbcf.ui.shared.textfield.TextFieldWithTitle
 
+// TODO: Loading nya blm muncul
 @Composable
 fun DetailPenilaianPesertaScreenMentor(
   modifier : Modifier,
   // TODO: nnti ganti klo dah ada api
-  id : String = "1"
+  id : String = "1",
+  viewModel : PenilaianPesertaViewModel = hiltViewModel()
 ) {
+  val state by viewModel.state.collectAsState()
+
   val scroll = rememberScrollState()
   var isEdit by remember { mutableStateOf(false) }
-  Column(
-    modifier = modifier
-      .statusBarsPadding()
-      .padding(
-        horizontal = 16.dp,
-      )
-      .verticalScroll(scroll)
-      .fillMaxWidth(),
-    verticalArrangement = Arrangement.spacedBy(40.dp)
-  ) {
-    TopSection(
-      isEdit = isEdit,
-      toggleEdit = { isEdit = ! isEdit }
-    )
-    BottomSection(
-      penilaian = Penilaian(
-        namaLembaga = "Lembaga A",
-        batch = 1,
-        totalPenilaian = 100
-      ),
-      isEdit = isEdit,
-      toggleEdit = { isEdit = ! isEdit }
-    )
 
-  }
+    Column(
+      modifier = modifier
+        .padding(
+          horizontal = 16.dp,
+          vertical = 24.dp
+        )
+        .verticalScroll(scroll)
+        .fillMaxWidth(),
+      verticalArrangement = Arrangement.spacedBy(40.dp)
+    ) {
+      when {
+        state.error != null -> {
+          ErrorWithReload(errorMessage = state.error) {
+            viewModel.onEvent(PenilaianPesertaEvent.Refresh)
+          }
+        }
+
+        !state.loading                -> {
+          TopSection(
+            isEdit = isEdit,
+            toggleEdit = { isEdit = ! isEdit }
+          )
+          BottomSection(
+            penilaian = Penilaian(
+              namaLembaga = "Lembaga A",
+              batch = 1,
+              totalPenilaian = 100
+            ),
+            isEdit = isEdit,
+            toggleEdit = { isEdit = ! isEdit },
+            state = state
+          )
+
+        }
+      }
+
+    }
+    if (state.loading) {
+      LoadingCircularProgressIndicator()
+    }
 
 }
 
@@ -65,7 +93,8 @@ fun DetailPenilaianPesertaScreenMentor(
 fun BottomSection(
   penilaian : Penilaian,
   isEdit : Boolean,
-  toggleEdit : () -> Unit
+  toggleEdit : () -> Unit,
+  state : PenilaianPesertaState
 ) {
   Column(
     verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -77,7 +106,10 @@ fun BottomSection(
         "Total Penilaian" to penilaian.totalPenilaian.toString()
       )
     )
-    TableSection()
+    TableSection(
+      penilaianUmums = state.penilaianUmums,
+      nilaiCapaianClusters = state.nilaiCapaianClusters
+    )
     FormSection(
       isEdit = isEdit,
       toggleEdit = toggleEdit
@@ -241,7 +273,10 @@ fun InfoRow(label : String, value : String) {
 
 
 @Composable
-fun TableSection() {
+fun TableSection(
+  penilaianUmums : List<com.example.slicingbcf.data.local.PenilaianUmum>,
+  nilaiCapaianClusters : List<com.example.slicingbcf.data.local.PenilaianUmum>
+) {
   val columnWeights = listOf(0.5f, 1.5f, 1f)
   val rowsPenilaianUmum = penilaianUmums.mapIndexed { index, penilaianUmum ->
     listOf(
@@ -368,38 +403,3 @@ fun TableCell(
   )
 }
 
-
-data class Penilaian(
-  val namaLembaga : String,
-  val batch : Int,
-  val totalPenilaian : Int,
-)
-
-val headerTable = listOf(
-  "No",
-  "Aspek Penilaian",
-  "Penilaian",
-)
-
-data class PenilaianUmum(
-  val aspekPenilaian : String,
-  val penilaian : Int
-)
-
-
-val penilaianUmums = listOf(
-  PenilaianUmum("Kehadiran", 50),
-  PenilaianUmum("Keaktifan", 40),
-  PenilaianUmum("Kemandirian / Inisiatif", 30),
-  PenilaianUmum("Pitching Day", 20),
-  PenilaianUmum("Capaian pendanaan yang didapat", 10),
-  PenilaianUmum("Kerjasama dengan instansi lain", 5),
-  PenilaianUmum("Keaktifan Sosial Media", 5),
-  PenilaianUmum("Pengurangan Nilai", 5),
-)
-val nilaiCapaianClusters = listOf(
-  PenilaianUmum("Capaian Pendanaan", 10),
-  PenilaianUmum("Kerjasama dengan Instansi Lain", 5),
-  PenilaianUmum("Keaktifan Sosial Media", 5),
-  PenilaianUmum("Pengurangan Nilai", 5),
-)

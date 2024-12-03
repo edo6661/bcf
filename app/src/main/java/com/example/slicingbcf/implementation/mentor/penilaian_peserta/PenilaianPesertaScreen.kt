@@ -30,6 +30,7 @@ fun PenilaianPesertaScreenMentor(
 ) {
   Column(
     modifier = modifier
+
       .statusBarsPadding()
       .padding(
         horizontal = 16.dp,

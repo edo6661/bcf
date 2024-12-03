@@ -1,12 +1,9 @@
 package com.example.slicingbcf.ui.navigation
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.navigation.*
 import androidx.navigation.compose.composable
-import com.example.slicingbcf.data.local.listBatch
-import com.example.slicingbcf.data.local.mentor
 import com.example.slicingbcf.implementation.mentor.data_peserta.DataPesertaMentorScreen
 import com.example.slicingbcf.implementation.mentor.feedback_peserta.FeedbackPesertaScreen
 import com.example.slicingbcf.implementation.mentor.forum_diskusi.DetailForumDiskusiScreen
@@ -21,7 +18,6 @@ import com.example.slicingbcf.implementation.mentor.penilaian_peserta.DetailPeni
 import com.example.slicingbcf.implementation.mentor.penilaian_peserta.PenilaianPesertaScreenMentor
 import com.example.slicingbcf.implementation.mentor.pitchdeck.MoreDetailPitchdeckScreen
 import com.example.slicingbcf.implementation.mentor.pitchdeck.PitchdeckScreen
-import com.example.slicingbcf.implementation.mentor.profil.ProfilMentorScreen
 import com.example.slicingbcf.implementation.mentor.umpan_balik.DetailUmpanBalikMentorScreen
 import com.example.slicingbcf.implementation.mentor.umpan_balik.UmpanBalikMentorScreen
 
@@ -30,7 +26,7 @@ fun NavGraphBuilder.mentorNavGraph(
   navController : NavHostController
 ) {
   navigation(
-    startDestination = Screen.Mentor.MoreDetailPitchdeck("1").route, route = "mentor"
+    startDestination = Screen.Mentor.PenilaianPeserta.route, route = "mentor"
   ) {
     composable(
       route = Screen.Mentor.PenilaianPeserta.route
