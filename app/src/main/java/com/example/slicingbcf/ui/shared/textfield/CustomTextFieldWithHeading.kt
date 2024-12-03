@@ -20,9 +20,10 @@ fun TextFieldWithTitle(
   onChange : (String) -> Unit,
   value : String,
   placeholder : String,
-  label : String,
+  label : String? = null,
   isEdit : Boolean = true,
   styleTitle : TextStyle = StyledText.MobileBaseMedium,
+  heightTextField : Int? = null
 ) {
   Column {
     heading?.let {
@@ -49,7 +50,15 @@ fun TextFieldWithTitle(
       value = value,
       onValueChange = onChange,
       modifier = Modifier
-        .fillMaxWidth(),
+        .fillMaxWidth()
+        .then(
+          if (heightTextField != null) {
+            Modifier.height(heightTextField.dp)
+          } else {
+            Modifier
+          }
+        )
+      ,
       multiLine = true,
       maxLines = 5,
 

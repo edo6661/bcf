@@ -12,7 +12,9 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -24,76 +26,84 @@ import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.Penilaian
 import com.example.slicingbcf.data.local.headerTable
-import com.example.slicingbcf.implementation.peserta.penilaian_peserta.PenilaianPesertaEvent
-import com.example.slicingbcf.implementation.peserta.penilaian_peserta.PenilaianPesertaState
-import com.example.slicingbcf.implementation.peserta.penilaian_peserta.PenilaianPesertaViewModel
+import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
 import com.example.slicingbcf.ui.shared.PrimaryButton
 import com.example.slicingbcf.ui.shared.message.SecondaryButton
 import com.example.slicingbcf.ui.shared.state.ErrorWithReload
 import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 import com.example.slicingbcf.ui.shared.textfield.TextFieldWithTitle
 
-// TODO
+// TODO: benerin input text field nya (ui nya sesuai in ama figma)
 @Composable
 fun DetailPenilaianPesertaScreenMentor(
-  modifier : Modifier,
-  id : String = "1",
-  viewModel : PenilaianPesertaViewModel = hiltViewModel()
+  modifier: Modifier,
+  id: String = "1",
+  viewModel: DetailPenilaianPesertaScreenMentorViewModel = hiltViewModel()
 ) {
   val state by viewModel.state.collectAsState()
 
   val scroll = rememberScrollState()
-  var isEdit by remember { mutableStateOf(false) }
 
-    Column(
-      modifier = modifier
-        .padding(
-          horizontal = 16.dp,
-          vertical = 24.dp
-        )
-        .verticalScroll(scroll)
-        .fillMaxWidth(),
-      verticalArrangement = Arrangement.spacedBy(40.dp)
-    ) {
-      when {
-        state.error != null -> {
-          ErrorWithReload(errorMessage = state.error) {
-            viewModel.onEvent(PenilaianPesertaEvent.Refresh)
-          }
-        }
-
-        !state.loading                -> {
-          TopSection(
-            isEdit = isEdit,
-            toggleEdit = { isEdit = ! isEdit }
-          )
-          BottomSection(
-            penilaian = Penilaian(
-              namaLembaga = "Lembaga A",
-              batch = 1,
-              totalPenilaian = 100
-            ),
-            isEdit = isEdit,
-            toggleEdit = { isEdit = ! isEdit },
-            state = state
-          )
-
+  Column(
+    modifier = modifier
+      .padding(
+        horizontal = 16.dp,
+        vertical = 24.dp
+      )
+      .verticalScroll(scroll)
+      .fillMaxWidth(),
+    verticalArrangement = Arrangement.spacedBy(40.dp)
+  ) {
+    when {
+      state.error != null -> {
+        ErrorWithReload(errorMessage = state.error) {
+          viewModel.onEvent(DetailPenilaianEvent.Refresh)
         }
       }
 
+      !state.loadingData -> {
+        TopSection(
+          isEdit = state.isEdit,
+          toggleEdit = {
+            viewModel.onEvent(DetailPenilaianEvent.ToggleEdit)
+          }
+        )
+        BottomSection(
+          penilaian = state.penilaian,
+          isEdit = state.isEdit,
+          toggleEdit = {
+            viewModel.onEvent(DetailPenilaianEvent.ToggleEdit)
+          },
+          state = state,
+           onEvent = { event ->
+             viewModel.onEvent(event)
+           }
+        )
+      }
     }
-    if (state.loading) {
-      LoadingCircularProgressIndicator()
-    }
+  }
+
+  if (state.loadingData) {
+    LoadingCircularProgressIndicator()
+  }
+  SubmitLoadingIndicatorDouble(
+    isLoading = state.loadingSubmit,
+    title = "Memproses Umpan Balik Anda...",
+    onAnimationFinished = {
+      viewModel.onEvent(DetailPenilaianEvent.ClearState)
+    },
+    titleBerhasil = "Umpan Balik Anda Berhasil Terkirim!",
+  )
 
 }
 
 @Composable
 fun BottomSection(
-  penilaian : Penilaian,
-  isEdit : Boolean,
-  toggleEdit : () -> Unit,
-  state : PenilaianPesertaState
+  penilaian: Penilaian,
+  isEdit: Boolean,
+  toggleEdit: () -> Unit,
+  state: DetailPenilaianState,
+  onEvent: (DetailPenilaianEvent) -> Unit
 ) {
   Column(
     verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -111,18 +121,24 @@ fun BottomSection(
     )
     FormSection(
       isEdit = isEdit,
-      toggleEdit = toggleEdit
-    )
+      toggleEdit = toggleEdit,
+      state = state,
+      onEvent = onEvent
 
+    )
   }
 }
+
 
 @Composable
 fun FormSection(
   isEdit : Boolean,
-  toggleEdit : () -> Unit
+  toggleEdit : () -> Unit,
+  state: DetailPenilaianState,
+  onEvent: (DetailPenilaianEvent) -> Unit
 ) {
   Column {
+
     Column(
       modifier = Modifier.padding(
         bottom = 40.dp
@@ -131,37 +147,67 @@ fun FormSection(
     ) {
       TextFieldWithTitle(
         heading = "Hal-Hal Yang Perlu Ditingkatkan",
+        title = "Umpan Balik Mentor Cluster",
+        onChange = {
+          onEvent(DetailPenilaianEvent.PenilaianMentorClusterChanged(
+            penilaianMentorCluster = state.penilaianMentorCluster.copy(
+              umpanBalik = it
+            )
+          ))
+        },
+        value = state.penilaianMentorCluster.umpanBalik,
+
+        placeholder = "Umpan Balik yang diberikan",
+        label = null,
+        isEdit = isEdit,
+        heightTextField = 124
+      )
+      TextFieldWithTitle(
+        title = "Umpan Balik Mentor Desain Program",
+        onChange = {
+          onEvent(DetailPenilaianEvent.PenilaianMentorDesainProgramChanged(
+            penilaianMentorDesainProgram = state.penilaianMentorDesainProgram.copy(
+              umpanBalik = it
+            )
+          ))
+        },
+        value = state.penilaianMentorDesainProgram.umpanBalik,
+
+        placeholder = "Umpan Balik yang diberikan",
+        label = null,
+        isEdit = isEdit,
+        heightTextField = 124
+      )
+      TextFieldWithTitle(
+        heading = "Hal-hal Yang Perlu Ditingkatkan",
         title = "Masukan Mentor Cluster",
-        onChange = {},
-        value = "",
-        placeholder = "Dibahas",
-        label = "Kegiatan",
-        isEdit = isEdit
+        onChange = {
+          onEvent(DetailPenilaianEvent.PenilaianMentorClusterChanged(
+            penilaianMentorCluster = state.penilaianMentorCluster.copy(
+              kegiatan = it
+            )
+          ))
+        },
+        value = state.penilaianMentorCluster.kegiatan,
+        placeholder = "",
+        label = null,
+        isEdit = isEdit,
+        heightTextField = 124
       )
       TextFieldWithTitle(
-        title = "Umpan Balik Mentor Desain Program",
-        onChange = {},
-        value = "",
-        placeholder = "Umpan Balik",
-        label = "Umpan",
-        isEdit = isEdit
-      )
-      TextFieldWithTitle(
-        heading = "Hal-hal Yang Dibahas Selama Kegiatan Mentoring",
         title = "Masukan Mentor Desain Program",
-        onChange = {},
-        value = "",
-        placeholder = "Dibahas",
-        label = "Kegiatan",
-        isEdit = isEdit
-      )
-      TextFieldWithTitle(
-        title = "Umpan Balik Mentor Desain Program",
-        onChange = {},
-        value = "",
-        placeholder = "Umpan Balik",
-        label = "Umpan",
-        isEdit = isEdit
+        onChange = {
+          onEvent(DetailPenilaianEvent.PenilaianMentorDesainProgramChanged(
+            penilaianMentorDesainProgram = state.penilaianMentorDesainProgram.copy(
+              kegiatan = it
+            )
+          ))
+        },
+        value = state.penilaianMentorDesainProgram.kegiatan,
+        placeholder = "Umpan Balik yang diberikan",
+        label = null,
+        isEdit = isEdit,
+        heightTextField = 124
       )
     }
     AnimatedVisibility(isEdit) {
@@ -187,7 +233,9 @@ fun FormSection(
         )
         PrimaryButton(
           text = "Simpan",
-          onClick = {}
+          onClick = {
+            onEvent(DetailPenilaianEvent.SubmitForm)
+          }
         )
       }
     }
