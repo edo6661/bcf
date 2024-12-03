@@ -4,7 +4,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +23,7 @@ import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.KelompokMentoring
 import com.example.slicingbcf.data.local.headerKelompokMentorings
 import com.example.slicingbcf.data.local.kelompoksMentoring
+import com.example.slicingbcf.ui.shared.tabs.MainTabIndicator
 
 @Preview(showSystemUi = true)
 @Composable
@@ -72,15 +72,9 @@ fun TopSection() {
     containerColor = ColorPalette.Monochrome100,
     contentColor = ColorPalette.PrimaryColor700,
     indicator = { tabPositions ->
-      TabRowDefaults.PrimaryIndicator(
-        color = ColorPalette.PrimaryColor700,
-        width = 46.dp,
-        shape = RoundedCornerShape(
-          topStart = 16.dp,
-          topEnd = 16.dp
-        ),
-        modifier = Modifier.tabIndicatorOffset(tabPositions[currentTabIndex])
-
+      MainTabIndicator(
+          tabPositions = tabPositions,
+          currentTab = currentTabIndex,
       )
     }
 
