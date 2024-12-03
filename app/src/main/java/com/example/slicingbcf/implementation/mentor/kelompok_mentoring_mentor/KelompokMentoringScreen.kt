@@ -4,7 +4,10 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,37 +20,66 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.common.UiState
 import com.example.slicingbcf.data.local.KelompokMentoring
 import com.example.slicingbcf.data.local.headerKelompokMentorings
-import com.example.slicingbcf.data.local.kelompoksMentoring
-import com.example.slicingbcf.ui.shared.tabs.MainTabIndicator
+import com.example.slicingbcf.implementation.peserta.kelompok_mentoring.KelompokMentoringEvent
+import com.example.slicingbcf.implementation.peserta.kelompok_mentoring.KelompokMentoringViewModel
+import com.example.slicingbcf.ui.shared.state.ErrorWithReload
+import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 
 @Preview(showSystemUi = true)
 @Composable
 fun KelompokMentoringMentorScreen(
-  modifier : Modifier = Modifier
-
+  modifier: Modifier = Modifier,
+  vm: KelompokMentoringViewModel = hiltViewModel()
 ) {
+  val state by vm.state.collectAsState()
+  val currentTabIndex by vm.currentTabIndex.collectAsState()
+
   Column(
     modifier = modifier.padding(
       horizontal = 16.dp,
-      vertical = 44.dp
+      vertical = 24.dp
     ),
     verticalArrangement = Arrangement.spacedBy(40.dp),
+  ) {
+    TopSection(currentTabIndex = currentTabIndex, onTabChanged = {
+      vm.onEvent(KelompokMentoringEvent.TabChanged(it))
+    })
 
-    ) {
-    TopSection()
-    BottomSection()
+    when (state) {
+      is UiState.Loading -> {
+        LoadingCircularProgressIndicator()
+      }
+      is UiState.Success -> {
+        val data = (state as UiState.Success<List<KelompokMentoring>>).data
+        BottomSection(kelompoksMentoring = data)
+      }
+      is UiState.Error   -> {
+        val errorMessage = (state as UiState.Error).message
+        ErrorWithReload(
+          errorMessage = errorMessage,
+          onRetry = {
+            vm.onEvent(KelompokMentoringEvent.ReloadData)
+          }
+        )
+      }
+    }
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+
 @Composable
-fun TopSection() {
-  var currentTabIndex by remember { mutableIntStateOf(0) }
+fun TopSection(
+  currentTabIndex: Int,
+  onTabChanged: (Int) -> Unit
+) {
   val tabTitles = listOf("Cluster", "Desain Program")
   Column(
     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -72,32 +104,30 @@ fun TopSection() {
     containerColor = ColorPalette.Monochrome100,
     contentColor = ColorPalette.PrimaryColor700,
     indicator = { tabPositions ->
-      MainTabIndicator(
-          tabPositions = tabPositions,
-          currentTab = currentTabIndex,
+      TabRowDefaults.PrimaryIndicator(
+        color = ColorPalette.PrimaryColor700,
+        width = 46.dp,
+        shape = RoundedCornerShape(
+          topStart = 16.dp,
+          topEnd = 16.dp
+        ),
+        modifier = Modifier.tabIndicatorOffset(tabPositions[currentTabIndex])
       )
     }
-
-
   ) {
     tabTitles.forEachIndexed { index, title ->
       Tab(
         selected = currentTabIndex == index,
-        onClick = { currentTabIndex = index },
-        text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) },
-
-        )
+        onClick = { onTabChanged(index) },
+        text = { Text(text = title, maxLines = 2, overflow = TextOverflow.Ellipsis) }
+      )
     }
   }
   TabContent(currentTabIndex)
-
 }
 
 @Composable
-fun TabContent(
-  currentTabIndex : Int
-) {
-
+fun TabContent(currentTabIndex: Int) {
   val textMentor = if (currentTabIndex == 0) {
     "Mentor Cluster • Kesehatan"
   } else {
@@ -124,7 +154,6 @@ fun TabContent(
       ) {
         Text(
           text = textMentor,
-
           style = StyledText.MobileSmallRegular
         )
         Text(
@@ -132,19 +161,17 @@ fun TabContent(
           style = StyledText.Mobile2xsRegular
         )
       }
-
     }
   }
 }
 
 @Composable
-fun BottomSection() {
-  ScrollableTable(kelompoksMentoring)
-
+fun BottomSection(kelompoksMentoring: List<KelompokMentoring>) {
+  ScrollableTable(kelompoksMentoring = kelompoksMentoring)
 }
 
 @Composable
-fun ScrollableTable(kelompoksMentoring : List<KelompokMentoring>) {
+fun ScrollableTable(kelompoksMentoring: List<KelompokMentoring>) {
   val scrollState = rememberScrollState()
 
   Column(
@@ -170,7 +197,6 @@ fun ScrollableTable(kelompoksMentoring : List<KelompokMentoring>) {
     }
   }
 }
-
 
 @Composable
 private fun HeaderTable() {
@@ -200,8 +226,7 @@ private fun HeaderTable() {
 }
 
 @Composable
-fun HeaderRow(
-) {
+fun HeaderRow() {
   Row(
     modifier = Modifier
       .background(ColorPalette.F5F9FE)
@@ -211,25 +236,23 @@ fun HeaderRow(
       )
   ) {
     headerKelompokMentorings.forEach { header ->
-
       TableCell(
         text = header.name,
         isHeader = true,
         weight = header.weight,
         onClickSort = { }
       )
-
     }
   }
 }
 
 @Composable
 fun TableCell(
-  text : String,
-  isHeader : Boolean = false,
-  weight : Float,
-  color : Color = ColorPalette.Monochrome900,
-  onClickSort : () -> Unit
+  text: String,
+  isHeader: Boolean = false,
+  weight: Float,
+  color: Color = ColorPalette.Monochrome900,
+  onClickSort: () -> Unit
 ) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
@@ -242,21 +265,18 @@ fun TableCell(
       text = text,
       style = if (isHeader) StyledText.MobileXsBold else StyledText.MobileXsRegular,
       color = color,
-
-      )
-    when {
-      (isHeader && text != "No") -> {
-        IconButton(
-          onClick = onClickSort,
-          modifier = Modifier.size(9.dp)
-        ) {
-          Icon(
-            painter = painterResource(id = R.drawable.sort),
-            contentDescription = "Sort",
-            tint = ColorPalette.Monochrome900,
-            modifier = Modifier.fillMaxSize()
-          )
-        }
+    )
+    if (isHeader && text != "No") {
+      IconButton(
+        onClick = onClickSort,
+        modifier = Modifier.size(9.dp)
+      ) {
+        Icon(
+          painter = painterResource(id = R.drawable.sort),
+          contentDescription = "Sort",
+          tint = ColorPalette.Monochrome900,
+          modifier = Modifier.fillMaxSize()
+        )
       }
     }
   }
@@ -264,9 +284,9 @@ fun TableCell(
 
 @Composable
 fun KelompokMentoringRow(
-  kelompokMentoring : KelompokMentoring,
-  i : Int,
-  isLastRow : Boolean
+  kelompokMentoring: KelompokMentoring,
+  i: Int,
+  isLastRow: Boolean
 ) {
   val backgroundColor = if (i % 2 == 0) {
     MaterialTheme.colorScheme.surface
@@ -278,7 +298,7 @@ fun KelompokMentoringRow(
     modifier = Modifier
       .background(backgroundColor)
       .then(
-        if (! isLastRow) {
+        if (!isLastRow) {
           Modifier.border(
             width = 1.dp,
             color = ColorPalette.Monochrome300,
@@ -291,13 +311,13 @@ fun KelompokMentoringRow(
     headerKelompokMentorings.forEach { header ->
       TableCell(
         text = when (header.name) {
-          "No"             -> (i + 1).toString()
-          "Nama Lembaga"   -> kelompokMentoring.namaLembaga
-          "Fokus Isu"      -> kelompokMentoring.fokusIsu
+          "No" -> (i + 1).toString()
+          "Nama Lembaga" -> kelompokMentoring.namaLembaga
+          "Fokus Isu" -> kelompokMentoring.fokusIsu
           "Jumlah Peserta" -> kelompokMentoring.jumlahPeserta.toString()
-          "Jumlah Mentor"  -> kelompokMentoring.jumlahMentor.toString()
-          "Jumlah Sesi"    -> kelompokMentoring.jumlahSesi.toString()
-          else             -> ""
+          "Jumlah Mentor" -> kelompokMentoring.jumlahMentor.toString()
+          "Jumlah Sesi" -> kelompokMentoring.jumlahSesi.toString()
+          else -> ""
         },
         isHeader = false,
         weight = header.weight,
