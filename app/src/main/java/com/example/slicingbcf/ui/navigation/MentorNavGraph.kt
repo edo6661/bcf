@@ -22,6 +22,7 @@ import com.example.slicingbcf.implementation.mentor.penilaian_peserta.PenilaianP
 import com.example.slicingbcf.implementation.mentor.pitchdeck.MoreDetailPitchdeckScreen
 import com.example.slicingbcf.implementation.mentor.pitchdeck.PitchdeckScreen
 import com.example.slicingbcf.implementation.mentor.profil.ProfilMentorScreen
+import com.example.slicingbcf.implementation.mentor.umpan_balik.UmpanBalikMentorScreen
 
 fun NavGraphBuilder.mentorNavGraph(
   modifier : Modifier,
@@ -136,6 +137,19 @@ fun NavGraphBuilder.mentorNavGraph(
     ) {
       LaporanDataPesertaScreen(
         modifier = Modifier
+      )
+    }
+
+    composable(
+      route = Screen.Mentor.UmpanBalikMentor.route
+    ){
+      val onNavigateDetailUmpanBalikMentor = { id : String ->
+        navController.navigateSingleTop("umpan-balik-mentor/$id")
+      }
+
+      UmpanBalikMentorScreen(
+        modifier = modifier,
+        onNavigateDetailUmpanBalikMentor = onNavigateDetailUmpanBalikMentor
       )
     }
 
