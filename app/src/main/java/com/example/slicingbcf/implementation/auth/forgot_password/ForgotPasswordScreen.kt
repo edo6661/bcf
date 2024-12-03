@@ -143,7 +143,8 @@ fun BottomSection(
       error = emailError,
       modifier = Modifier.fillMaxWidth(),
       labelFocusedColor = ColorPalette.OnSurfaceVariant,
-      rounded = 40
+      rounded = 40,
+      labelDefaultStyle = StyledText.Mobile3xsMedium,
     )
 
   }
