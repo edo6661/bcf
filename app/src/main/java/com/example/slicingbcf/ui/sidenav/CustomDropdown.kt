@@ -190,19 +190,13 @@ fun dropdownItemsMentor_Mentor(
       },
       route = Screen.Peserta.KelompokMentoring.route
     ),
+    // ! screen sari
     DropdownItem(
       text = "Umpan Balik Mentor",
       onClick = {
-        navigateAndCloseSideNav(Screen.Mentor.UmpanBalikMentor.route)
+        Log.d("SideNav", "Umpan Balik Mentor clicked")
       },
-      route = Screen.Mentor.UmpanBalikMentor.route
-    ),
-    DropdownItem(
-      text = "Profil Mentor",
-        onClick = {
-            navigateAndCloseSideNav(Screen.Mentor.ProfilMentor.route)
-        },
-        route = Screen.Mentor.ProfilMentor.route
+      route = null
     )
   )
 }

@@ -106,7 +106,7 @@ class RegistrasiViewModel @Inject constructor(
         }
 
         userRepository.insertUser(user)
-        delay(3000)
+        delay(2000)
 
         withContext(mainDispatcher) {
           _uiState.update {
@@ -126,9 +126,12 @@ class RegistrasiViewModel @Inject constructor(
     }
   }
 
-  private suspend fun isEmailAlreadyExist(email : String) : Boolean {
-    return userRepository.isEmailExist(email).first()
+  private suspend fun isEmailAlreadyExist(email: String): Boolean {
+    return withContext(Dispatchers.IO) {
+      userRepository.isEmailExist(email).first()
+    }
   }
+
 
 
   fun onEvent(event : RegisterEvent) {
@@ -326,7 +329,9 @@ class RegistrasiViewModel @Inject constructor(
 
 
   private fun onClear() {
-    _uiState.value = RegistrasiState()
+    _uiState.update {
+      RegistrasiState()
+    }
   }
 
   @Suppress("t")

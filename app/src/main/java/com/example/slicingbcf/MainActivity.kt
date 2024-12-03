@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
             userViewModel.viewModelScope.launch {
               userViewModel.clearUserSession()
             }
-            navController.navigateAndClearStackButHome(Screen.Auth.Login.route)
+            navController.navigateAndClearStackButHome(Screen.Home.route)
 
           },
           navController = navController,

@@ -156,9 +156,14 @@ fun NavGraphBuilder.kegiatanNavGraph(
         println("ID diterima di NavHost: $id")
         if (id.isEmpty()) throw IllegalStateException("id must not be empty")
 
+        val onNavigateJadwal = { id : Int ->
+            navController.navigateSingleTop("jadwal-bulan-mentor")
+        }
+
         AddJadwalMentorScreen(
             modifier = modifier,
-            id = id
+            id = id,
+            onNavigateBeranda = onNavigateJadwal
         )
     }
 }

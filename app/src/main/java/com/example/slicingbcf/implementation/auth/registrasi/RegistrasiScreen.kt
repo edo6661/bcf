@@ -521,6 +521,7 @@ private fun FirstScreen(
     placeholder = "Pilih Provinsi",
     modifier = Modifier.fillMaxWidth(),
     labelDefaultColor = ColorPalette.Monochrome400,
+    labelFocusedColor = ColorPalette.PrimaryColor700,
     dropdownItems = provinsis,
     expanded = expandedProvinsi,
     onChangeExpanded = {
@@ -538,6 +539,7 @@ private fun FirstScreen(
     asteriskAtEnd = true,
 
     placeholder = "Pilih kota/kabupaten",
+    labelFocusedColor = ColorPalette.PrimaryColor700,
     modifier = Modifier.fillMaxWidth(),
     labelDefaultColor = ColorPalette.Monochrome400,
     dropdownItems = kotas,
@@ -553,6 +555,7 @@ private fun FirstScreen(
     placeholder = "DD/MM/YYYY",
     modifier = Modifier.fillMaxWidth(),
     labelDefaultColor = ColorPalette.Monochrome400,
+    labelFocusedColor = ColorPalette.PrimaryColor700,
     datePickerState = datePickerState,
     asteriskAtEnd = true,
     error = state.selectedDateError,
@@ -571,6 +574,7 @@ private fun FirstScreen(
     placeholder = "Pilih jenis lembaga sosial",
     modifier = Modifier.fillMaxWidth(),
     labelDefaultColor = ColorPalette.Monochrome400,
+    labelFocusedColor = ColorPalette.PrimaryColor700,
     expanded = expandedLembagaSosial,
     onChangeExpanded = {
       onExpandedLembagaSosialChange(it)
@@ -585,6 +589,7 @@ private fun FirstScreen(
       onEvent(RegisterEvent.JenisClusterLembagaSosialChanged(it))
     },
     placeholder = "Pilih jenis cluster lembaga sosial",
+    labelFocusedColor = ColorPalette.PrimaryColor700,
     modifier = Modifier.fillMaxWidth(),
     labelDefaultColor = ColorPalette.Monochrome400,
     expanded = expandedClusterLembagaSosial,
@@ -604,6 +609,7 @@ private fun FirstScreen(
     placeholder = "Pilih fokus isu",
     modifier = Modifier.fillMaxWidth(),
     labelDefaultColor = ColorPalette.Monochrome400,
+    labelFocusedColor = ColorPalette.PrimaryColor700,
     dropdownItems = fokusIsus,
     expanded = expandedFokusIsu,
     asteriskAtEnd = true,
@@ -696,6 +702,7 @@ private fun SecondScreen(
       },
       placeholder = "Pilih Jangkauan Program",
       modifier = Modifier.fillMaxWidth(),
+      labelFocusedColor = ColorPalette.PrimaryColor700,
       labelDefaultColor = ColorPalette.Monochrome400,
       dropdownItems = jangkauanPrograms,
       expanded = expandedJangkauanProgram,
@@ -714,6 +721,7 @@ private fun SecondScreen(
       placeholder = "Pilih Wilayah Jangkauan Program",
       modifier = Modifier.fillMaxWidth(),
       labelDefaultColor = ColorPalette.Monochrome400,
+      labelFocusedColor = ColorPalette.PrimaryColor700,
       dropdownItems = wilayahJangkauanPrograms,
       expanded = expandedWilayahJangkauanProgram,
       onChangeExpanded = {
@@ -1091,11 +1099,11 @@ private fun ThirdScreen(
       },
       placeholder = "Ketik alasan anda tidak bersedia mengikuti agenda tersebut",
       labelDefaultColor = ColorPalette.Monochrome400,
+      labelFocusedColor = ColorPalette.PrimaryColor700,
       modifier = Modifier
         .fillMaxWidth()
         .height(148.dp),
       rounded = 20,
-      labelFocusedColor = ColorPalette.Monochrome800,
       maxLines = 5,
       multiLine = true,
     )
@@ -1240,6 +1248,7 @@ fun FourthScreen(
       placeholder = "Pilih Jawaban",
       modifier = Modifier.fillMaxWidth(),
       labelDefaultColor = ColorPalette.Monochrome400,
+      labelFocusedColor = ColorPalette.PrimaryColor700,
       dropdownItems = pernahs,
       expanded = expandedPendidikan,
       onChangeExpanded = {
@@ -1310,6 +1319,7 @@ fun FourthScreen(
     label = "Jelaskan pengetahuanmu terkait sustainability atau keberlanjutan",
     value = state.pengetahuanSustainability,
     text = "Apakah yang anda ketahui terkait sustainability atau keberlanjutan",
+
     onValueChange = {
 
       onEvent(RegisterEvent.PengetahuanSustainabilityChanged(it))
@@ -1784,7 +1794,7 @@ private fun ColumnTextField(
 
         .height(148.dp),
       labelDefaultColor = ColorPalette.Monochrome400,
-      labelFocusedColor = ColorPalette.Monochrome800,
+      labelFocusedColor = ColorPalette.PrimaryColor700,
       rounded = 20,
       maxLines = 5,
       multiLine = true,
