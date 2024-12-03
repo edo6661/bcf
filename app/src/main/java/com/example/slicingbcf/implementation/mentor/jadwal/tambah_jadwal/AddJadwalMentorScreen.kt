@@ -13,7 +13,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,18 +30,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
 import com.example.slicingbcf.ui.shared.dropdown.CustomDropdownMenuAsterisk
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextAsterisk
+import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdownDateAsterisk
 import com.example.slicingbcf.ui.shared.textfield.TextFieldLong
+import com.example.slicingbcf.util.convertMillisToDate
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddJadwalMentorScreen(
     modifier: Modifier = Modifier,
+    onNavigateBeranda: (Int) -> Unit,
     id: String
 ){
     var tipeKegiatan by remember { mutableStateOf("") }
     var namaLembaga by remember { mutableStateOf("") }
     var namaPemateri by remember { mutableStateOf("") }
+    val datePickerState = rememberDatePickerState()
+    var expandedDate by remember { mutableStateOf(false) }
+    val selectedDate = datePickerState.selectedDateMillis?.let { convertMillisToDate(it) } ?: ""
+
+
     Column(
         modifier = modifier
             .padding(16.dp)
@@ -62,10 +75,16 @@ fun AddJadwalMentorScreen(
             namaLembagaOnValueChange = { newValue ->
                 namaLembaga = newValue
             },
+            selectedDate = selectedDate,
+            expandedDate = expandedDate,
+            datePickerState = datePickerState,
+            onExpandedDateChange = { expandedDate = it },
+            onNavigateBeranda = onNavigateBeranda
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopSection(
     onSaveFeedback: (String, String, String, String, String, String, String) -> Unit = { _, _, _, _, _, _, _ -> },
@@ -74,11 +93,13 @@ fun TopSection(
     namaLembaga: String,
     tipeKegiatanOnValueChange : (String) -> Unit,
     namaPemateriOnValueChange : (String) -> Unit,
-    namaLembagaOnValueChange : (String) -> Unit
+    namaLembagaOnValueChange : (String) -> Unit,
+    selectedDate: String,
+    datePickerState : DatePickerState,
+    expandedDate : Boolean,
+    onExpandedDateChange : (Boolean) -> Unit,
+    onNavigateBeranda: (Int) -> Unit,
 ) {
-    var tipeKegiatan by remember { mutableStateOf("") }
-    var namaPemateri by remember { mutableStateOf("") }
-    var namaLembaga by remember { mutableStateOf("") }
     var eventDate by remember { mutableStateOf(TextFieldValue("")) }
     var judulKegiatan by remember { mutableStateOf(TextFieldValue("")) }
     var waktuMulai by remember { mutableStateOf(TextFieldValue("")) }
@@ -88,6 +109,7 @@ fun TopSection(
     var expandedTipeKegiatan by remember { mutableStateOf(false) }
     var expandedNamaPemateri by remember { mutableStateOf(false) }
     var expandedNamaLembaga by remember { mutableStateOf(false) }
+    var isLoading by remember { mutableStateOf(false) }
 
     Text(
         text = "Tambah Jadwal Kegiatan",
@@ -110,12 +132,20 @@ fun TopSection(
         onChangeExpanded = { expandedTipeKegiatan = it },
         dropdownItems = listOf("Cluster", "Desain Program")
     )
-    CustomOutlinedTextAsterisk(
+    CustomOutlinedTextFieldDropdownDateAsterisk(
         label = "Tanggal Kegiatan",
-        value = eventDate,
+        value = selectedDate,
         placeholder = "DD/MM/YYYY",
-        onValueChange = { eventDate = it }
+        modifier = Modifier.fillMaxWidth(),
+        labelDefaultColor = ColorPalette.Monochrome400,
+        datePickerState = datePickerState,
+        expanded = expandedDate,
+        onChangeExpanded = {
+            onExpandedDateChange(it)
+        }
     )
+
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -201,6 +231,7 @@ fun TopSection(
                     tautanKegiatan.text,
                     deskripsiAgenda.text,
                 )
+                isLoading = true
             },
             modifier = Modifier
                 .width(120.dp)
@@ -212,6 +243,15 @@ fun TopSection(
             )
         ) {
             Text("Simpan", style = StyledText.MobileBaseSemibold)
+        }
+
+        if(isLoading){
+            SubmitLoadingIndicatorDouble(
+                isLoading = isLoading,
+                title = "Memproses Umpan Balik Anda...",
+                onAnimationFinished = {onNavigateBeranda(1)},
+                titleBerhasil = "Umpan Balik Anda Berhasil Terkirim!",
+            )
         }
     }
 }
