@@ -106,12 +106,7 @@ fun TopSection(
       .fillMaxWidth(),
     verticalArrangement = Arrangement.spacedBy(16.dp)
   ) {
-    Text(
-      text = "Data Memek",
-      style = StyledText.MobileLargeSemibold,
-      textAlign = TextAlign.Center,
-      modifier = Modifier.fillMaxWidth()
-    )
+
 
     Row(
       modifier = Modifier.fillMaxWidth(),
