@@ -36,9 +36,18 @@ class UserPreferences @Inject constructor(private val context : Context) {
   fun isLoggedIn() : Flow<Boolean> = dataStore.data.map { preferences ->
     preferences[USER_DATA_KEY] != null
   }
+  fun getToken() : Flow<String?> = context.dataStore.data.map { preferences ->
+    preferences[TOKEN_KEY]
+  }
+  suspend fun saveUserToken(token : String) {
+    context.dataStore.edit { preferences ->
+      preferences[TOKEN_KEY] = token
+    }
+  }
 
   companion object {
 
     private val USER_DATA_KEY = stringPreferencesKey("user_data")
+    private val TOKEN_KEY = stringPreferencesKey("token")
   }
 }
