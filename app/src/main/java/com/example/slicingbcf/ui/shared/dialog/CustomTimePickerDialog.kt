@@ -55,7 +55,6 @@ fun TimePickerDialog(
           verticalAlignment = Alignment.Top,
           horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-          // Time Input Section
           Row(
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.spacedBy(2.dp)

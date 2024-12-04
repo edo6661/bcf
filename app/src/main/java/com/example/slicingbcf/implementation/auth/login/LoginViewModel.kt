@@ -5,10 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.slicingbcf.data.dao.model.User
 import com.example.slicingbcf.data.local.preferences.UserPreferences
 import com.example.slicingbcf.data.repo.user.UserRepository
+import com.example.slicingbcf.di.IODispatcher
+import com.example.slicingbcf.di.MainDispatcher
 import com.example.slicingbcf.domain.validator.ValidationResult
 import com.example.slicingbcf.domain.validator.validateEmail
 import com.example.slicingbcf.domain.validator.validatePassword
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -19,7 +22,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
   private val userRepository : UserRepository,
-  private val userPreferences : UserPreferences
+  private val userPreferences : UserPreferences,
+  @IODispatcher private val ioDispatcher : CoroutineDispatcher,
+  @MainDispatcher private val mainDispatcher : CoroutineDispatcher
 
 ) : ViewModel() {
 

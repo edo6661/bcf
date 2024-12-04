@@ -186,18 +186,17 @@ fun dropdownItemsMentor_Mentor(
     DropdownItem(
       text = "Kelompok Mentoring",
       onClick = {
-        navigateAndCloseSideNav(Screen.Peserta.KelompokMentoring.route)
+        navigateAndCloseSideNav(Screen.Mentor.KelompokMentoring.route)
       },
       route = Screen.Peserta.KelompokMentoring.route
     ),
-    // ! screen sari
     DropdownItem(
       text = "Umpan Balik Mentor",
       onClick = {
-        Log.d("SideNav", "Umpan Balik Mentor clicked")
+        navigateAndCloseSideNav(Screen.Mentor.UmpanBalikMentor.route)
       },
-      route = null
-    )
+      route = Screen.Mentor.UmpanBalikMentor.route
+    ),
   )
 }
 
@@ -214,7 +213,6 @@ fun dropdownItemsTugas_Mentor(
       },
       route = null
     ),
-    // ! screen sari
     DropdownItem(
       text = "Laporan",
       onClick = {

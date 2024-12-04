@@ -144,11 +144,6 @@ fun scaffoldConfig(currentRoute : String?)
         showMainNav = false,
         showBackNav = true,
       )
-    } Screen.Peserta.DataPeserta.route        -> {
-      ScaffoldConfig(
-        showMainNav = false,
-        showBackNav = true,
-      )
     }
 
 

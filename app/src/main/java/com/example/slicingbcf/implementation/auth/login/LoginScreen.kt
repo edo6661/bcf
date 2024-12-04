@@ -173,6 +173,7 @@ fun BottomSection(
       modifier = Modifier.fillMaxWidth(),
       rounded = 40,
       labelFocusedColor = ColorPalette.OnSurfaceVariant,
+      labelDefaultStyle = StyledText.Mobile3xsMedium
     )
     CustomOutlinedTextField(
       value = password,
@@ -185,7 +186,9 @@ fun BottomSection(
       modifier = Modifier.fillMaxWidth(),
       isPasswordVisible = isPasswordVisible,
       labelFocusedColor = ColorPalette.OnSurfaceVariant,
-      rounded = 40
+      rounded = 40,
+      labelDefaultStyle = StyledText.Mobile3xsMedium
+
     )
     GotoForgotPassword(navigateToForgotPassword = onNavigateToForgotPassword)
 

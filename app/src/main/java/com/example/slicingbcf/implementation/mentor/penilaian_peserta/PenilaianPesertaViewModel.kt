@@ -1,9 +1,13 @@
-package com.example.slicingbcf.implementation.peserta.data_peserta
+package com.example.slicingbcf.implementation.mentor.penilaian_peserta
+
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.slicingbcf.data.common.UiState
-import com.example.slicingbcf.data.local.preferences.mockDataPesertaData
+import com.example.slicingbcf.data.local.KelompokMentoring
+import com.example.slicingbcf.data.local.PenilaianPeserta
+import com.example.slicingbcf.data.local.kelompoksMentoring
+import com.example.slicingbcf.data.local.penilaianPesertas
 import com.example.slicingbcf.di.IODispatcher
 import com.example.slicingbcf.di.MainDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,65 +20,61 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+
 @HiltViewModel
-class DataPesertaViewModel @Inject constructor(
+class PenilaianPesertaViewModel @Inject constructor(
   @IODispatcher private val ioDispatcher: CoroutineDispatcher,
   @MainDispatcher private val mainDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-  private val _state = MutableStateFlow<UiState<List<String>>>(UiState.Loading)
-  val state: StateFlow<UiState<List<String>>> = _state.asStateFlow()
+  private val _state = MutableStateFlow<UiState<List<PenilaianPeserta>>>(UiState.Loading)
+  val state: StateFlow<UiState<List<PenilaianPeserta>>> = _state.asStateFlow()
 
   private val _searchQuery = MutableStateFlow("")
   val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
   init {
-    loadData()
+    loadPenilaianPeserta()
   }
 
-  fun onEvent(event: DataPesertaEvent) {
+  fun onEvent(event: PenilaianPesertaEvent) {
     when (event) {
-      is DataPesertaEvent.Search -> {
+      is PenilaianPesertaEvent.Search -> {
         _searchQuery.value = event.query
         filterData(event.query)
       }
-      is DataPesertaEvent.Reload -> {
-        loadData()
+      is PenilaianPesertaEvent.Reload -> {
+        loadPenilaianPeserta()
       }
     }
   }
 
-  private fun loadData() {
+  private fun loadPenilaianPeserta() {
     viewModelScope.launch(ioDispatcher) {
       _state.value = UiState.Loading
       try {
         delay(1000)
-        val data = mockDataPesertaData
+        val data = penilaianPesertas
         withContext(mainDispatcher) {
           _state.value = UiState.Success(data)
         }
       } catch (e: Exception) {
         withContext(mainDispatcher) {
-          _state.value = UiState.Error(e.localizedMessage ?: "Unknown Error")
+          _state.value = UiState.Error(e.localizedMessage ?: "Gagal memuat data")
         }
       }
     }
   }
 
   private fun filterData(query: String) {
-    viewModelScope.launch(ioDispatcher) {
-      val originalData = mockDataPesertaData
-      val filteredData = if (query.isEmpty()) {
-        originalData
-      } else {
-        originalData.filter { it.contains(query, ignoreCase = true) }
-      }
-      _state.value = UiState.Success(filteredData)
+    val filtered = penilaianPesertas.filter {
+      it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)
     }
+    _state.value = UiState.Success(filtered)
   }
 }
 
-sealed class DataPesertaEvent {
-  data class Search(val query: String) : DataPesertaEvent()
-  object Reload : DataPesertaEvent()
+sealed class PenilaianPesertaEvent {
+  data class Search(val query: String) : PenilaianPesertaEvent()
+  object Reload : PenilaianPesertaEvent()
 }

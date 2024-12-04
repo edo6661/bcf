@@ -92,3 +92,12 @@ val headerKelompokMentorings = listOf(
     weight = 1f,
   ),
 )
+
+
+data class JenisKelompokMentoring (
+  val name: String,
+  val jenisKelompokMentoring: String,
+  val fokusIsu: String,
+)
+
+

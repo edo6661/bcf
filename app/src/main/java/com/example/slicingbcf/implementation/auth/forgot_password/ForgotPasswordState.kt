@@ -1,4 +1,4 @@
-package com.example.slicingbcf.implementation.auth.login
+package com.example.slicingbcf.implementation.auth.forgot_password
 
 data class ForgotPasswordState(
   val email : String = "",

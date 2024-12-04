@@ -14,7 +14,6 @@ import com.example.slicingbcf.implementation.LandingPageScreen
 import com.example.slicingbcf.implementation.SplashScreen
 import com.example.slicingbcf.implementation.mentor.profil.ProfilMentorScreen
 import com.example.slicingbcf.implementation.peserta.pengumuman_peserta.DetailPengumumanPesertaScreen
-import com.example.slicingbcf.implementation.peserta.pengumuman_peserta.PengumumanPesertaScreen
 import com.example.slicingbcf.implementation.peserta.profil.profil_lembaga.ProfilLembagaScreen
 import com.example.slicingbcf.implementation.peserta.profil.profil_peserta.ProfilPesertaScreen
 
