@@ -154,7 +154,12 @@ fun scaffoldConfig(currentRoute : String?)
         showBackNav = true,
       )
     }
-
+    "worksheet-mentor/{id}"-> {
+      ScaffoldConfig(
+        showMainNav = false,
+        showBackNav = true,
+      )
+    }
     Screen.Mentor.SearchForumDiskusi.route ->
       ScaffoldConfig(
       showMainNav = false,

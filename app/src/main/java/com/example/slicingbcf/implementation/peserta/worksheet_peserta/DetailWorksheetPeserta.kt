@@ -20,6 +20,7 @@ fun DetailWorksheetPesertaScreen(
   modifier : Modifier = Modifier,
   id : String
 ) {
+
   var tautanLembarKerja by remember { mutableStateOf("") }
   val onChangeTautanLembarKerja = { value : String ->
     tautanLembarKerja = value

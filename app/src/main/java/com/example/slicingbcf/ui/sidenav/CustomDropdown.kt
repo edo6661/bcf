@@ -229,13 +229,13 @@ fun dropdownItemsTugas_Mentor(
       route = null
     ),
     // TODO: REMINDER (GATAU BEDANYA SM PITCHDECK APAAN [ku comment dlu])
-//    DropdownItem(
-//      text = "Lembar Kerja",
-//      onClick = {
-//        Log.d("SideNavMentor", "Lembar Kerja clicked")
-//      },
-//      route = null
-//    ),
+    DropdownItem(
+      text = "Lembar Kerja",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Mentor.WorksheetMentor.route)
+      },
+      route = null
+    ),
     DropdownItem(
       text = "Pitch Deck",
       onClick = {

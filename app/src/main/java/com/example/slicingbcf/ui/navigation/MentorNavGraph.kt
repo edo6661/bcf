@@ -20,6 +20,8 @@ import com.example.slicingbcf.implementation.mentor.pitchdeck.MoreDetailPitchdec
 import com.example.slicingbcf.implementation.mentor.pitchdeck.PitchdeckScreen
 import com.example.slicingbcf.implementation.mentor.umpan_balik.DetailUmpanBalikMentorScreen
 import com.example.slicingbcf.implementation.mentor.umpan_balik.UmpanBalikMentorScreen
+import com.example.slicingbcf.implementation.mentor.worksheet_mentor.DetailWorksheetMentorScreen
+import com.example.slicingbcf.implementation.mentor.worksheet_mentor.WorksheetMentorScreen
 
 fun NavGraphBuilder.mentorNavGraph(
   modifier : Modifier,
@@ -194,6 +196,28 @@ fun NavGraphBuilder.mentorNavGraph(
       DetailPengumumanMentorScreen(
         modifier = modifier.padding(
         ), id = id
+      )
+    }
+    composable(
+      route = Screen.Mentor.WorksheetMentor.route
+    ) {
+      val onNavigateDetailWorksheet = { id : String ->
+        navController.navigateSingleTop("worksheet-mentor/$id")
+      }
+      WorksheetMentorScreen (
+        modifier = modifier,
+        onNavigateDetailWorksheet = onNavigateDetailWorksheet
+      )
+    }
+    composable(
+      route = "worksheet-mentor/{id}",
+      arguments = listOf(navArgument("id") { type = NavType.StringType })
+    ) { backStackEntry ->
+      val id = backStackEntry.arguments?.getString("id") ?: ""
+      if (id.isEmpty()) throw IllegalStateException("id must not be empty")
+      DetailWorksheetMentorScreen(
+        modifier = modifier,
+        id = id
       )
     }
 
