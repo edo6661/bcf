@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -38,12 +38,26 @@ class MainActivity : ComponentActivity() {
     userViewModel.viewModelScope.launch {
       userViewModel.insertDummyData()
     }
+    // TODO: UNCOMMENT KALO MAU NGE TEST API DIDEPAN KAK FAISHAL
+//    userViewModel.viewModelScope.launch {
+//      userViewModel.logRemoteUserPreferences()
+//    }
+//    userViewModel.viewModelScope.launch {
+//      userViewModel.logAccessTokenPreferences()
+//    }
+//    userViewModel.viewModelScope.launch {
+//      userViewModel.logRemoteUserPreferences()
+//    }
 
 
     setContent {
       val user by userViewModel.currentUser.collectAsState()
+//      val userRemote by userViewModel.currentUserRemote.collectAsState()
 
-      Log.d("MainActivity", "onCreate: ${user?.role}")
+      Log.d("MainActivity", "onCreate USER LOCAL: ${user?.role}")
+//      Log.d("MainActivity", "onCreate USER REMOTE: ${userRemote?.email}")
+
+
 
 
       val navController = rememberNavController()
