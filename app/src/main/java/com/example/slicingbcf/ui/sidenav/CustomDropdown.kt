@@ -54,9 +54,9 @@ fun dropdownItemsPeserta_Peserta(
     DropdownItem(
       text = "Umpan Balik Peserta",
       onClick = {
-        navigateAndCloseSideNav(Screen.Peserta.FeedbackPeserta.route)
+        navigateAndCloseSideNav(Screen.Mentor.FeedbackPeserta.route)
       },
-      route = Screen.Peserta.FeedbackPeserta.route
+      route = Screen.Mentor.FeedbackPeserta.route
     ),
 
   )
@@ -197,14 +197,7 @@ fun dropdownItemsMentor_Mentor(
       },
       route = Screen.Mentor.UmpanBalikMentor.route
     ),
-    // TODO: nanti di hapus, ini cmn buat ngejalanin form nya aja
-    DropdownItem(
-      text = "Umpan Balik Peserta",
-      onClick = {
-        navigateAndCloseSideNav(Screen.Mentor.FormFeedbackPeserta.route)
-      },
-      route = Screen.Mentor.FormFeedbackPeserta.route
-    ),
+
   )
 }
 
