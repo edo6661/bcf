@@ -600,7 +600,6 @@ private fun FirstScreen(
     dropdownItems = jenisClusterLembagaSosials,
     error = state.jenisClusterLembagaSosialError
   )
-
   CustomOutlinedTextFieldDropdown(
     label = "Fokus Isu",
     value = state.fokusIsu,
