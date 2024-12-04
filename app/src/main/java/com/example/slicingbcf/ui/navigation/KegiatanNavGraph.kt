@@ -160,10 +160,15 @@ fun NavGraphBuilder.kegiatanNavGraph(
             navController.navigateSingleTop("jadwal-bulan-mentor")
         }
 
+        val onNavigateBack = {
+            navController.popBackStack()
+        }
+
         AddJadwalMentorScreen(
             modifier = modifier,
             id = id,
-            onNavigateBeranda = onNavigateJadwal
+            onNavigateBeranda = onNavigateJadwal,
+            onNavigateBack = onNavigateBack
         )
     }
 }
