@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
@@ -23,8 +26,18 @@ fun TextFieldWithTitle(
   label : String? = null,
   isEdit : Boolean = true,
   styleTitle : TextStyle = StyledText.MobileBaseMedium,
-  heightTextField : Int? = null
+  heightTextField : Int? = null,
+  isTitleWithAsterisk : Boolean = false,
+
 ) {
+  val actualTitle = buildAnnotatedString {
+    append(title)
+    if (isTitleWithAsterisk) {
+      withStyle(SpanStyle(color = ColorPalette.Danger500)) {
+        append("*")
+      }
+    }
+  }
   Column {
     heading?.let {
       Text(
@@ -38,7 +51,7 @@ fun TextFieldWithTitle(
     }
 
     Text(
-      text = title,
+      text = actualTitle,
       style = styleTitle,
       color = ColorPalette.Black,
     )

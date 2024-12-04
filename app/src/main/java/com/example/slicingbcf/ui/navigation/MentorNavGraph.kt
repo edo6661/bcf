@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.*
 import androidx.navigation.compose.composable
 import com.example.slicingbcf.implementation.mentor.data_peserta.DataPesertaMentorScreen
-import com.example.slicingbcf.implementation.mentor.feedback_peserta.FeedbackPesertaScreen
+import com.example.slicingbcf.implementation.mentor.feedback_peserta.FormFeedbackPesertaMentorScreen
 import com.example.slicingbcf.implementation.mentor.forum_diskusi.DetailForumDiskusiScreen
 import com.example.slicingbcf.implementation.mentor.forum_diskusi.ForumDiskusiScreen
 import com.example.slicingbcf.implementation.mentor.forum_diskusi.SearchForumDiskusiScreen
@@ -54,7 +54,7 @@ fun NavGraphBuilder.mentorNavGraph(
     composable(
       route = Screen.Mentor.FormFeedbackPeserta.route
     ) {
-      FeedbackPesertaScreen(
+      FormFeedbackPesertaMentorScreen(
         modifier = modifier
       )
     }

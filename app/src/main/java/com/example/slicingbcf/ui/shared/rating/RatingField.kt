@@ -12,11 +12,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.ui.shared.TextWithAsterisk
 
 
 @Composable
 fun RatingField(
-  title : String,
+  title : String ? = null,
   description : String,
   rating : String,
   onRatingChange : (String) -> Unit,
@@ -29,13 +30,15 @@ fun RatingField(
     Column(
       verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+      title?.let {
+        Text(
+          text = title,
+          style = StyledText.MobileBaseSemibold,
+          color = ColorPalette.PrimaryColor700,
+        )
+      }
       Text(
-        text = title,
-        style = StyledText.MobileBaseSemibold,
-        color = ColorPalette.PrimaryColor700,
-      )
-      Text(
-        text = description,
+        text = TextWithAsterisk(description),
         style = StyledText.MobileSmallMedium,
       )
     }
