@@ -35,7 +35,7 @@ fun SplashScreen(
             targetValue = 1f,
             animationSpec = tween(durationMillis = 1000)
         )
-        kotlinx.coroutines.delay(2500)
+        kotlinx.coroutines.delay(2000)
         onNavigateToMain()
     }
 

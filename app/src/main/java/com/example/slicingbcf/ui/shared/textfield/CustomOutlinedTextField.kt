@@ -158,7 +158,6 @@ fun CustomOutlinedTextField(
   }
 }
 
-
 @Composable
 private fun PasswordVisibilityIcon(isPasswordVisible : MutableState<Boolean>) {
   IconButton(onClick = { isPasswordVisible.value = ! isPasswordVisible.value }) {
@@ -266,7 +265,6 @@ private fun getTextFieldColors(
     errorTrailingIconColor = ColorPalette.Error
   )
 }
-
 
 @Composable
 fun CustomOutlinedTextAsterisk(
