@@ -19,12 +19,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.local.formMentor
 import com.example.slicingbcf.implementation.peserta.form_feedback_mentor.RatingSection
 import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
 import com.example.slicingbcf.ui.shared.dialog.CustomAlertDialog
 import com.example.slicingbcf.ui.shared.dropdown.CustomDropdownMenuAsterisk
 import com.example.slicingbcf.ui.shared.dropdown.DropdownText
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextAsterisk
+import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdown
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdownDate
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdownDateAsterisk
@@ -50,6 +52,10 @@ fun FormMiniTrainingScreen(
     var ratingJawabanPemateri2 by remember { mutableStateOf(0) }
     var ratingMetodePemateri1 by remember { mutableStateOf(0) }
     var ratingMetodePemateri2 by remember { mutableStateOf(0) }
+
+
+    var speaker1Name by remember { mutableStateOf("") }
+    var speaker2Name by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
@@ -84,7 +90,13 @@ fun FormMiniTrainingScreen(
             onRatingMetodePemateri1Change = {ratingMetodePemateri1 = it},
             ratingMetodePemateri2 = ratingMetodePemateri2,
             onRatingMetodePemateri2Change = {ratingMetodePemateri2 = it},
-            onNavigateBeranda = onNavigateBeranda
+            onNavigateBeranda = onNavigateBeranda,
+
+            speaker1Name = speaker1Name,
+            onSpeaker1Change = { speaker1Name },
+            speaker2Name = speaker2Name,
+            onSpeaker2Change = { speaker2Name },
+
         )
     }
 }
@@ -117,10 +129,13 @@ fun TopSection(
     ratingMetodePemateri1: Int,
     onRatingMetodePemateri2Change: (Int) -> Unit,
     ratingMetodePemateri2: Int,
+
+    speaker1Name: String,
+    onSpeaker1Change: (TextFieldValue) -> Unit,
+    speaker2Name: String,
+    onSpeaker2Change: (TextFieldValue) -> Unit,
 ) {
 //    var hariKegiatan by remember { mutableStateOf("") }
-    var speaker1Name by remember { mutableStateOf(TextFieldValue("")) }
-    var speaker2Name by remember { mutableStateOf(TextFieldValue("")) }
     var eventDate by remember { mutableStateOf(TextFieldValue("")) }
     var kritikSaran by remember { mutableStateOf(TextFieldValue("")) }
     var expandedHariKegiatan by remember { mutableStateOf(false) }
@@ -130,7 +145,9 @@ fun TopSection(
         text = "Umpan Balik Mini Training",
         style = StyledText.MobileLargeSemibold,
         textAlign = TextAlign.Center,
-        modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 24.dp)
     )
 
     CustomDropdownMenuAsterisk(
@@ -143,19 +160,47 @@ fun TopSection(
         dropdownItems = listOf("Mini Training hari ke-1", "Mini Training hari ke-2", "Mini Training hari ke-3")
     )
 
-    CustomOutlinedTextAsterisk(
+//    CustomOutlinedTextAsterisk(
+//        label = "Nama Pemateri 1",
+//        value = speaker1Name,
+//        placeholder = "Masukkan nama pemateri",
+//        onValueChange = { speaker1Name = it }
+//    )
+
+    CustomOutlinedTextField(
         label = "Nama Pemateri 1",
         value = speaker1Name,
+        error = null,
+        onValueChange = {onSpeaker1Change
+        },
         placeholder = "Masukkan nama pemateri",
-        onValueChange = { speaker1Name = it }
+        modifier = Modifier.fillMaxWidth(),
+        labelDefaultColor = ColorPalette.Monochrome400,
+        labelFocusedColor = ColorPalette.PrimaryColor700,
+        borderColor = ColorPalette.Outline,
+        rounded = 40,
     )
 
-    CustomOutlinedTextAsterisk(
+    CustomOutlinedTextField(
         label = "Nama Pemateri 2",
         value = speaker2Name,
+        error = null,
+        onValueChange = {onSpeaker2Change
+        },
         placeholder = "Masukkan nama pemateri",
-        onValueChange = { speaker2Name = it }
+        modifier = Modifier.fillMaxWidth(),
+        labelDefaultColor = ColorPalette.Monochrome400,
+        labelFocusedColor = ColorPalette.PrimaryColor700,
+        borderColor = ColorPalette.Outline,
+        rounded = 40,
     )
+
+//    CustomOutlinedTextAsterisk(
+//        label = "Nama Pemateri 2",
+//        value = speaker2Name,
+//        placeholder = "Masukkan nama pemateri",
+//        onValueChange = { speaker2Name = it }
+//    )
 
     CustomOutlinedTextFieldDropdownDateAsterisk(
         label = "Tanggal Kegiatan",
@@ -286,13 +331,14 @@ fun TopSection(
     Button(
         onClick = {
             isLoading = true
-            onSaveFeedback(
-                hariKegiatan,
-                speaker1Name.text,
-                speaker2Name.text,
-                kritikSaran.text,
-                eventDate.text
-            ) },
+//            onSaveFeedback(
+//                hariKegiatan,
+//                speaker1Name.text,
+//                speaker2Name.text,
+//                kritikSaran.text,
+//                eventDate.text)
+            },
+
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),

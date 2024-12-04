@@ -20,11 +20,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -37,25 +34,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.FeedbackMentor
 import com.example.slicingbcf.data.local.formEvaluasiCapaianMentoring
 import com.example.slicingbcf.data.local.formMentor
-import com.example.slicingbcf.implementation.auth.registrasi.RegisterEvent
-import com.example.slicingbcf.implementation.auth.registrasi.RegistrasiState
+import com.example.slicingbcf.implementation.peserta.form_feedback_mentor.ConstantFormFeedbackMentor.Companion.evaluasiCapaians
+import com.example.slicingbcf.implementation.peserta.form_feedback_mentor.ConstantFormFeedbackMentor.Companion.periodeCapaians
 import com.example.slicingbcf.ui.animations.AnimatedContentSlide
 import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
 import com.example.slicingbcf.ui.shared.dialog.CustomAlertDialog
+import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdown
 import com.example.slicingbcf.ui.upload.FileUploadSection
 
 
 @Composable
 fun FeedbackMentorScreen(
-    modifier : Modifier = Modifier
+    modifier : Modifier = Modifier,
 ) {
 
     var currentScreen by rememberSaveable { mutableStateOf(0) }
@@ -80,6 +77,10 @@ fun FeedbackMentorScreen(
         }
     )
 
+    var namaMentor by remember { mutableStateOf("") }
+    var selectedEvaluasi by remember { mutableStateOf("") }
+    var selectedPeriode by remember { mutableStateOf("") }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -101,7 +102,7 @@ fun FeedbackMentorScreen(
         ) { targetScreen ->
             when (targetScreen) {
                 0 -> FirstScreen(
-                    onNavigateNextForm = onNavigateNextForm
+                    onNavigateNextForm = onNavigateNextForm,
                 )
                 1 -> SecondScreen(
                     onNavigateBackForm = { onChangeScreen(0) },
@@ -127,7 +128,6 @@ fun FeedbackMentorScreen(
             }
         }
     }
-
 }
 
 @Composable
@@ -135,21 +135,12 @@ fun FirstScreen(
     modifier: Modifier = Modifier,
     onNavigateNextForm: (Int) -> Unit,
 ) {
-    var selectedEvaluasi by remember { mutableStateOf("Pilih evaluasi capaian mentoring") }
-    var namaMentor by remember { mutableStateOf(TextFieldValue("")) }
-    var selectedPeriode by remember { mutableStateOf("Pilih periode capaian mentoring") }
 
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(40.dp),
     ) {
         TopSectionScreen1(
-            selectedEvaluasi = selectedEvaluasi,
-            onEvaluasiChange = { selectedEvaluasi = it },
-            namaMentor = namaMentor,
-            onNamaMentorChange = { namaMentor = it },
-            selectedPeriode = selectedPeriode,
-            onPeriodeChange = { selectedPeriode = it }
         )
         BottomSectionScreen1(
             onNavigateNextForm = onNavigateNextForm
@@ -275,18 +266,42 @@ fun FourthScreen(
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        TextSection(
-            title = formMentor[5].title,
-            hint = "Tuliskan hal yang dibahas selama mentoring disini...",
-            textValue = discussionText,
-            onTextChange = { discussionText = it }
-        )
+        CustomOutlinedTextField(
+            label = formMentor[5].title,
+            value = discussionText,
+            onValueChange = {
+                discussionText = it
+            },
+            asteriskAtEnd = true,
+            error = null,
+            placeholder = "Tuliskan hal yang dibahas selama mentoring disini...",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(148.dp),
+            multiLine = true,
+            maxLines = 5,
+            labelDefaultColor = ColorPalette.Monochrome400,
+            rounded = 20,
+            borderColor = ColorPalette.Outline,
+            )
 
-        TextSection(
-            title = formMentor[6].title,
-            hint = "Berisi uraian penjelasan mengenai kritik dan saran dari peserta...",
-            textValue = suggestionsText,
-            onTextChange = { suggestionsText = it }
+        CustomOutlinedTextField(
+            label = formMentor[6].title,
+            value = suggestionsText,
+            onValueChange = {
+                suggestionsText = it
+            },
+            asteriskAtEnd = true,
+            error = null,
+            placeholder = "Berisi uraian penjelasan mengenai kritik dan saran dari peserta...",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(148.dp),
+            multiLine = true,
+            maxLines = 5,
+            labelDefaultColor = ColorPalette.Monochrome400,
+            rounded = 20,
+            borderColor = ColorPalette.Outline,
         )
 
         FileUploadSection(
@@ -366,14 +381,11 @@ fun FourthScreen(
 
 @Composable
 fun TopSectionScreen1(
-    selectedEvaluasi: String,
-    onEvaluasiChange: (String) -> Unit,
-    namaMentor: TextFieldValue,
-    onNamaMentorChange: (TextFieldValue) -> Unit,
-    selectedPeriode: String,
-    onPeriodeChange: (String) -> Unit
 ) {
 
+    var namaMentor by remember { mutableStateOf("") }
+    var selectedEvaluasi by remember { mutableStateOf("") }
+    var selectedPeriode by remember { mutableStateOf("") }
     var expandedEvaluasiCapaian by remember { mutableStateOf(false) }
     var expandedPeriodeCapaianMentoring by remember { mutableStateOf(false) }
     Column(
@@ -381,7 +393,6 @@ fun TopSectionScreen1(
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        // Dropdown Evaluasi Capaian Mentoring
         Text(
             text = formMentor[0].title,
             style = StyledText.MobileBaseSemibold,
@@ -390,60 +401,62 @@ fun TopSectionScreen1(
         )
 
         CustomOutlinedTextFieldDropdown(
+            label = "Evaluasi Capaian",
             value = selectedEvaluasi,
-            onValueChange = onEvaluasiChange,
-            expanded = expandedEvaluasiCapaian,
-            onChangeExpanded = { expandedEvaluasiCapaian = it },
-            label = "Nama Lembaga",
-            placeholder = "Pilih Evaluasi Capaian Mentoring",
-            dropdownItems = listOf("Cluster", "Desain Program")
-        )
-
-        // Input Field Nama Mentor
-        Text(
-            text = formMentor[1].title,
-            style = StyledText.MobileBaseSemibold,
-            textAlign = TextAlign.Left,
-            color = ColorPalette.PrimaryColor700,
-        )
-        OutlinedTextField(
-            value = namaMentor,
-            onValueChange = onNamaMentorChange,
-            placeholder = {
-                Text(
-                    text = "Ketik nama mentor anda disini...",
-                    style = StyledText.MobileSmallRegular,
-                    color = ColorPalette.Monochrome400
-                )
+            asteriskAtEnd = true,
+            onValueChange = {
+                selectedEvaluasi = it
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            shape = MaterialTheme.shapes.extraLarge,
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                unfocusedIndicatorColor = ColorPalette.Monochrome900,
-                focusedIndicatorColor = ColorPalette.Monochrome900
-            ),
-            singleLine = true
+            placeholder = "Pilih Evaluasi Capaian Mentoring",
+            modifier = Modifier.fillMaxWidth(),
+            labelDefaultColor = ColorPalette.Monochrome400,
+            labelFocusedColor = ColorPalette.PrimaryColor700,
+            dropdownItems = evaluasiCapaians,
+            expanded = expandedEvaluasiCapaian,
+            onChangeExpanded = {
+                expandedEvaluasiCapaian = it
+            },
+            error = null
         )
 
-        // Dropdown Periode Capaian Mentoring
+        CustomOutlinedTextField(
+            label = formMentor[1].title,
+            value = namaMentor,
+            error = null,
+            onValueChange = {namaMentor = it
+            },
+            placeholder = "Ketik nama mentor anda disini...",
+            modifier = Modifier.fillMaxWidth(),
+            labelDefaultColor = ColorPalette.Monochrome400,
+            labelFocusedColor = ColorPalette.PrimaryColor700,
+            borderColor = ColorPalette.Outline,
+            rounded = 40,
+        )
+
         Text(
             text = formMentor[2].title,
             style = StyledText.MobileBaseSemibold,
             textAlign = TextAlign.Left,
             color = ColorPalette.PrimaryColor700,
         )
+
         CustomOutlinedTextFieldDropdown(
-            value = selectedPeriode,
-            onValueChange = onPeriodeChange,
-            expanded = expandedPeriodeCapaianMentoring,
-            onChangeExpanded = { expandedPeriodeCapaianMentoring = it },
             label = "Periode Capaian Mentoring",
+            value = selectedPeriode,
+            asteriskAtEnd = true,
+            onValueChange = {
+                selectedPeriode = it
+            },
             placeholder = "Pilih Periode Capaian Mentoring",
-            dropdownItems = listOf("Capaian Mentoring 1", "Capaian Mentoring 2", "Capaian Mentoring 3")
+            modifier = Modifier.fillMaxWidth(),
+            labelDefaultColor = ColorPalette.Monochrome400,
+            labelFocusedColor = ColorPalette.PrimaryColor700,
+            dropdownItems = periodeCapaians,
+            expanded = expandedPeriodeCapaianMentoring,
+            onChangeExpanded = {
+                expandedPeriodeCapaianMentoring = it
+            },
+            error = null
         )
     }
 }
@@ -666,101 +679,3 @@ fun RatingSection(
         }
     }
 }
-
-@Composable
-fun TextSection(
-    title: String,
-    hint: String,
-    textValue: String,
-    onTextChange: (String) -> Unit
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Row(){
-            Text(
-                text = title,
-                style = StyledText.MobileBaseSemibold,
-                color = ColorPalette.PrimaryColor700,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .width(356.dp)
-            )
-            Text(
-                text = "*",
-                style = StyledText.MobileBaseSemibold,
-                color = ColorPalette.Error,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-        OutlinedTextField(
-            value = textValue,
-            onValueChange = onTextChange,
-            placeholder = {
-                Text(
-                    text = hint,
-                    style = StyledText.MobileSmallRegular,
-                    color = ColorPalette.Monochrome400,
-                    textAlign = TextAlign.Justify,
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                unfocusedIndicatorColor = ColorPalette.Monochrome400,
-                focusedIndicatorColor = ColorPalette.Monochrome700
-            )
-        )
-    }
-}
-
-//@Composable
-//fun FileUploadSection(
-//    title: String,
-//    buttonText: String,
-//    onFileSelect: () -> Unit,
-//    selectedFileUri: Uri?
-//) {
-//    Column(
-//        verticalArrangement = Arrangement.spacedBy(8.dp)
-//    ) {
-//        Text(
-//            text = title,
-//            style = StyledText.MobileBaseSemibold,
-//            color = ColorPalette.PrimaryColor700,
-//            modifier = Modifier.fillMaxWidth()
-//        )
-//        OutlinedButton(
-//            onClick = onFileSelect,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(50.dp),
-//            shape = RoundedCornerShape(12.dp),
-//            border = BorderStroke(1.dp, ColorPalette.PrimaryColor700),
-//            colors = ButtonDefaults.outlinedButtonColors(
-//                containerColor = Color.Transparent,
-//                contentColor = ColorPalette.PrimaryColor700
-//            )
-//        ) {
-//            Text(
-//                text = buttonText,
-//                style = StyledText.MobileSmallRegular,
-//                textAlign = TextAlign.Center
-//            )
-//        }
-//
-//        selectedFileUri?.let {
-//            Text(
-//                text = "File terpilih: ${it.lastPathSegment}",
-//                style = StyledText.MobileSmallRegular,
-//                color = ColorPalette.Monochrome700,
-//                textAlign = TextAlign.Left,
-//                modifier = Modifier.padding(top = 8.dp)
-//            )
-//        }
-//    }
-//}
