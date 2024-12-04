@@ -35,12 +35,10 @@ fun CustomOutlinedTextFieldDropdown(
   labelDefaultStyle : TextStyle = StyledText.MobileSmallRegular,
   asteriskAtEnd : Boolean = false,
   borderColor : Color = ColorPalette.Outline
-
 ) {
 
   Column(
     modifier = modifier
-
   ) {
     CustomOutlinedTextField(
       modifier = Modifier
