@@ -7,6 +7,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.slicingbcf.constant.ColorPalette
 
 @Composable
 fun LoadingCircularProgressIndicator() {
@@ -15,8 +16,11 @@ fun LoadingCircularProgressIndicator() {
 
       .fillMaxWidth()
       .fillMaxHeight(),
-    contentAlignment = Alignment.Center
+    contentAlignment = Alignment.Center,
+
   ) {
-    CircularProgressIndicator()
+    CircularProgressIndicator(
+      color = ColorPalette.PrimaryColor700
+    )
   }
 }
