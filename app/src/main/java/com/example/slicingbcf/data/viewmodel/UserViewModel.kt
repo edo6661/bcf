@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.example.slicingbcf.data.dao.model.User as UserLocal
+import com.example.slicingbcf.domain.model.User as UserRemote
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
@@ -25,18 +26,14 @@ class UserViewModel @Inject constructor(
   private val _currentUser = MutableStateFlow<UserLocal?>(null)
   val currentUser : StateFlow<UserLocal?> = _currentUser
   // TODO: UNCOMMENT KALO MAU NGE TEST API DIDEPAN KAK FAISHAL
-//  private val _currentUserRemote = MutableStateFlow<UserRemote?>(null)
-//  val currentUserRemote : StateFlow<UserRemote?> = _currentUserRemote
+  private val _currentUserRemote = MutableStateFlow<UserRemote?>(null)
+  val currentUserRemote : StateFlow<UserRemote?> = _currentUserRemote
 
   init {
     viewModelScope.launch {
-      userPreferences.getUserData().collect { user ->
-        _currentUser.value = user
+      userRemotePreferences.getUserData().collect { user ->
+        _currentUserRemote.value = user
       }
-//      userRemotePreferences.getUserData().collect { user ->
-//        _currentUserRemote.value = user
-//      }
-
     }
   }
 

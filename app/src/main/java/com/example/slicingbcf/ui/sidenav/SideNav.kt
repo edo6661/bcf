@@ -32,8 +32,7 @@ import androidx.navigation.NavHostController
 import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
-import com.example.slicingbcf.data.dao.model.Role
-import com.example.slicingbcf.data.dao.model.User
+import com.example.slicingbcf.domain.model.User
 import com.example.slicingbcf.ui.animations.SubmitLoadingIndicator
 import com.example.slicingbcf.ui.navigation.Screen
 import com.example.slicingbcf.ui.navigation.navigateSingleTop
@@ -208,7 +207,7 @@ private fun BottomSideNav(
             )
           }
 
-          user.role == Role.PESERTA.name -> {
+          user.role == "USER" -> {
             SideNavDropdownPeserta(
               navigateAndCloseSideNav,
               isActiveRoute,
@@ -216,13 +215,6 @@ private fun BottomSideNav(
             )
           }
 
-          user.role == Role.MENTOR.name -> {
-            SideNavDropdownMentor(
-              navigateAndCloseSideNav,
-              isActiveRoute,
-              onNavigateModul = onNavigateModul
-            )
-          }
 
 
         }
@@ -430,6 +422,18 @@ private fun SideNavDropdownGuest(
     onClickDropdown = {
       navigateAndCloseSideNav(Screen.Home.route)
     },
+
+  )
+  SideNavDropdown(
+    "Test User Profile",
+    items = null,
+    isActiveRoute = isActiveRoute,
+    onClickDropdown = {
+      navigateAndCloseSideNav(
+        Screen.UserProfile.route
+      )
+    },
+    route = Screen.UserProfile.route
 
   )
   SideNavDropdown(

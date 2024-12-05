@@ -15,6 +15,7 @@ import com.example.slicingbcf.implementation.SplashScreen
 import com.example.slicingbcf.implementation.mentor.profil.ProfilMentorScreen
 import com.example.slicingbcf.implementation.peserta.pengumuman_peserta.DetailPengumumanPesertaScreen
 import com.example.slicingbcf.implementation.peserta.profil.profil_peserta.ProfilPesertaScreen
+import com.example.slicingbcf.implementation.user_profile.UserProfileScreen
 
 @Composable
 fun NavGraph(
@@ -26,6 +27,11 @@ fun NavGraph(
     composable("splash-screen") {
       SplashScreen(
         onNavigateToMain = { navController.navigate("home") }
+      )
+    }
+    composable(Screen.UserProfile.route) {
+      UserProfileScreen(
+        modifier = modifier,
       )
     }
     composable(

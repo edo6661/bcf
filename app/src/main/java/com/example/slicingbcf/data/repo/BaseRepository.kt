@@ -33,7 +33,7 @@ abstract class BaseRepository {
     return try {
       JSONObject(errorBody ?: "").getString("message")
     } catch (e : Exception) {
-
+      Log.e("BaseRepository", "parseErrorMessage: ${e.message}")
       "Unknown error occurred"
     }
   }

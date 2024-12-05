@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.slicingbcf.implementation.auth.forgot_password.ForgotPasswordScreen
 import com.example.slicingbcf.implementation.auth.login.LoginScreen
+import com.example.slicingbcf.implementation.auth.login.LoginScreenWithApi
 import com.example.slicingbcf.implementation.auth.registrasi.RegistrasiScreen
 import com.example.slicingbcf.implementation.auth.registrasi.RegistrasiUmpanBalikScreen
 
@@ -16,14 +17,11 @@ fun NavGraphBuilder.authNavGraph(
 ) {
   navigation(startDestination = Screen.Auth.Registrasi.route, route = "auth") {
     composable(Screen.Auth.Login.route) {
-      LoginScreen(
+
+      LoginScreenWithApi(
         modifier = modifier,
         navController = navController
       )
-//      LoginScreenWithApi(
-//        modifier = modifier,
-//        navController = navController
-//      )
     }
     composable(Screen.Auth.ForgotPassword.route) {
       ForgotPasswordScreen(

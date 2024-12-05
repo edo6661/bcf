@@ -83,11 +83,3 @@ data class 	ResponseDataLogin(
 	val refreshToken: String
 )
 
-data class Meta(
-
-	@field:SerializedName("version")
-	val version: String,
-
-	@field:SerializedName("timestamp")
-	val timestamp: String
-)

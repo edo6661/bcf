@@ -35,27 +35,10 @@ class MainActivity : ComponentActivity() {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
 
-    userViewModel.viewModelScope.launch {
-      userViewModel.insertDummyData()
-    }
-    // TODO: UNCOMMENT KALO MAU NGE TEST API DIDEPAN KAK FAISHAL
-//    userViewModel.viewModelScope.launch {
-//      userViewModel.logRemoteUserPreferences()
-//    }
-//    userViewModel.viewModelScope.launch {
-//      userViewModel.logAccessTokenPreferences()
-//    }
-//    userViewModel.viewModelScope.launch {
-//      userViewModel.logRemoteUserPreferences()
-//    }
-
 
     setContent {
-      val user by userViewModel.currentUser.collectAsState()
-//      val userRemote by userViewModel.currentUserRemote.collectAsState()
-
-      Log.d("MainActivity", "onCreate USER LOCAL: ${user?.role}")
-//      Log.d("MainActivity", "onCreate USER REMOTE: ${userRemote?.email}")
+      val user by userViewModel.currentUserRemote.collectAsState()
+      Log.d("MainActivity", "onCreate USER: ${user?.username}")
 
 
 

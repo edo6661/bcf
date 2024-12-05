@@ -22,11 +22,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
+import coil3.compose.rememberAsyncImagePainter
 import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
-import com.example.slicingbcf.data.dao.model.Role
-import com.example.slicingbcf.data.dao.model.User
+import com.example.slicingbcf.domain.model.User
 import com.example.slicingbcf.ui.navigation.Screen
 import com.example.slicingbcf.ui.navigation.navigateSingleTop
 import com.example.slicingbcf.ui.sidenav.OverlayNav
@@ -61,28 +61,14 @@ fun MainScaffold(
   }
 
   val onNavigateProfile = {
-    when (user?.role) {
-      Role.MENTOR.name -> {
-        navController.navigateSingleTop(Screen.ProfilMentor.route)
-      }
-      Role.PESERTA.name -> {
-        navController.navigateSingleTop("data-peserta/{id}")
-      }
 
+navController.navigateSingleTop(Screen.UserProfile.route)
     }
 
-  }
 
   val onNavigatePengumuman = {
-    when (user?.role) {
-      Role.MENTOR.name -> {
         navController.navigateSingleTop(Screen.Mentor.Pengumuman.route)
-      }
-      Role.PESERTA.name -> {
-        navController.navigateSingleTop(Screen.Peserta.PengumumanPeserta.route)
-      }
 
-    }
   }
 
   Box(
@@ -178,9 +164,9 @@ fun PrimaryNav(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
       ) {
-        user?.namaPeserta?.let {
+        user?.username?.let {
           Text(
-            text = user.role,
+            text = user.username,
             style = StyledText.MobileXsMedium,
             color = ColorPalette.OnSurfaceVariant
           )
@@ -196,7 +182,11 @@ fun PrimaryNav(
             onClick = onAvatarClick
           ){
             Image(
-              painter = painterResource(id = R.drawable.avatar_sampul),
+              painter = rememberAsyncImagePainter(
+                model = user.profilePicture ,
+                placeholder = painterResource(id = R.drawable.user_placeholder),
+                error = painterResource(id = R.drawable.error_image)
+              ),
               contentDescription = "Profile",
               contentScale = ContentScale.Crop,
               modifier = Modifier

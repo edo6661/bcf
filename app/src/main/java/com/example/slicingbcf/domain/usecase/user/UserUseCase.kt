@@ -1,9 +1,10 @@
-package com.example.slicingbcf.data.repo.user
+package com.example.slicingbcf.domain.usecase.user
 
 import com.example.slicingbcf.data.common.UiState
 import com.example.slicingbcf.data.remote.response.ResponseProfile
 import kotlinx.coroutines.flow.Flow
 
-interface UserRemoteRepository {
-  fun getCurrentUserProfile():Flow<UiState<ResponseProfile>>
+interface UserUseCase {
+
+  fun getCurrentUserProfile() : Flow<UiState<ResponseProfile>>
 }
