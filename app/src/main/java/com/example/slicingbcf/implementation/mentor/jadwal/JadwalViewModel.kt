@@ -1,6 +1,5 @@
-package com.example.slicingbcf.implementation.mentor.jadwal.bulan
+package com.example.slicingbcf.implementation.mentor.jadwal
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.slicingbcf.data.common.UiState
@@ -41,12 +40,10 @@ class JadwalViewModel @Inject constructor(
     private fun loadData() {
         viewModelScope.launch(ioDispatcher) {
             _state.value = UiState.Loading
-            Log.d("JadwalViewModel", "State: Loading")
             try {
                 delay(1500)
                 val data = detailJadwal
                 withContext(mainDispatcher) {
-                    Log.d("JadwalViewModel", "State: Success")
                     _state.value = UiState.Success(data)
                 }
             } catch (e: Exception) {

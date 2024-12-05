@@ -29,8 +29,6 @@ fun DetailJadwalMentorScreen(
     id : String
 ) {
     val detail = detailJadwal.find { it.id == id }
-
-    println("id di terima : $id")
     if (detail != null) {
         TopSection(detailJadwal = detail)
     } else {
