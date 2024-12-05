@@ -8,8 +8,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.slicingbcf.data.local.listBatch
-import com.example.slicingbcf.data.local.mentor
 import com.example.slicingbcf.implementation.LandingPageScreen
 import com.example.slicingbcf.implementation.SplashScreen
 import com.example.slicingbcf.implementation.mentor.profil.ProfilMentorScreen
@@ -19,7 +17,7 @@ import com.example.slicingbcf.implementation.peserta.profil.profil_peserta.Profi
 @Composable
 fun NavGraph(
   navController : NavHostController,
-  startDestination : String = "mentor",
+  startDestination : String = Screen.SplashScreen.route,
   modifier : Modifier,
 ) {
   NavHost(navController = navController, startDestination = startDestination) {
@@ -91,8 +89,7 @@ fun NavGraph(
       route = Screen.ProfilMentor.route ) {
       ProfilMentorScreen(
         modifier = modifier,
-        mentor = mentor,
-        batches = listBatch
+
       )
     }
   }

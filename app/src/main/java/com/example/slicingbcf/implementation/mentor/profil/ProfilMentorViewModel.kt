@@ -1,13 +1,13 @@
-package com.example.slicingbcf.implementation.mentor.pitchdeck
+package com.example.slicingbcf.implementation.mentor.profil
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.slicingbcf.data.local.LembarKerjaPeserta
-import com.example.slicingbcf.data.local.WorksheetPeserta
+import com.example.slicingbcf.data.local.Batch
+import com.example.slicingbcf.data.local.Mentor
+import com.example.slicingbcf.data.local.listBatch
+import com.example.slicingbcf.data.local.mentor
 import com.example.slicingbcf.di.IODispatcher
 import com.example.slicingbcf.di.MainDispatcher
-import com.example.slicingbcf.implementation.mentor.pitchdeck.PitchdeckConstant.Companion.mockUpLembarKerjaPeserta
-import com.example.slicingbcf.implementation.mentor.pitchdeck.PitchdeckConstant.Companion.mockUpPitchdeckMentor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
@@ -20,13 +20,13 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class MoreDetailPitchDeckViewModel @Inject constructor(
+class ProfilMentorViewModel @Inject constructor(
   @IODispatcher private val ioDispatcher: CoroutineDispatcher,
   @MainDispatcher private val mainDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(
-    MoreDetailPitchDeckState()
+    ProfilMentorState()
   )
   val state= _state.asStateFlow()
 
@@ -34,10 +34,10 @@ class MoreDetailPitchDeckViewModel @Inject constructor(
     loadPitchdeckData()
   }
 
-  fun onEvent(event: MoreDetailPitchDeckEvent) {
+  fun onEvent(event: ProfilMentorEvent) {
     when (event) {
 
-      is MoreDetailPitchDeckEvent.Reload -> {
+      is ProfilMentorEvent.Reload -> {
         loadPitchdeckData()
       }
     }
@@ -50,15 +50,17 @@ class MoreDetailPitchDeckViewModel @Inject constructor(
     viewModelScope.launch(ioDispatcher) {
       try {
         delay(1500)
+
+
         withContext(mainDispatcher) {
-          _state.value = MoreDetailPitchDeckState(
-            pitchDecks = mockUpPitchdeckMentor,
-            lembarKerjas = mockUpLembarKerjaPeserta
+          _state.value = ProfilMentorState(
+            mentors = mentor,
+            batches = listBatch
           )
         }
       } catch (e: Exception) {
         withContext(mainDispatcher) {
-          _state.value = MoreDetailPitchDeckState(
+          _state.value = ProfilMentorState(
             error = e.message,
             isLoading = false
           )
@@ -70,13 +72,25 @@ class MoreDetailPitchDeckViewModel @Inject constructor(
 
 }
 
-sealed class MoreDetailPitchDeckEvent {
-  object Reload : MoreDetailPitchDeckEvent()
+sealed class ProfilMentorEvent {
+  object Reload : ProfilMentorEvent()
 }
 
-data class MoreDetailPitchDeckState (
-  val pitchDecks: List<WorksheetPeserta> = emptyList(),
-  val lembarKerjas: List<LembarKerjaPeserta> = emptyList(),
+data class ProfilMentorState (
+  val mentors: Mentor = Mentor(
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    emptyList()
+  ),
+  val batches: List<Batch> = emptyList(),
   val isLoading: Boolean = false,
   val error: String? = null
 )

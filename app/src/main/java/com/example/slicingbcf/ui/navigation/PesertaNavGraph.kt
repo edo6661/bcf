@@ -34,7 +34,7 @@ fun NavGraphBuilder.pesertaNavGraph(
   navController : NavHostController
 ) {
   navigation(
-    startDestination = Screen.Peserta.DataPeserta.route, route = "peserta"
+    startDestination = Screen.Peserta.DetailWorksheetPeserta("1").route, route = "peserta"
   ) {
     // Data Peserta
     composable(Screen.Peserta.DataPeserta.route) {
