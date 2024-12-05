@@ -14,9 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
-import com.example.slicingbcf.data.local.WorksheetPeserta
 import com.example.slicingbcf.data.local.worksheetsPeserta
-
 
 @Composable
 fun MoreDetailPitchdeckScreen(
