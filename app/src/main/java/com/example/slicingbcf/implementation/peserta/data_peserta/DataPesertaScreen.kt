@@ -133,7 +133,6 @@ fun TopSection(
 
       ContainerImageCenteredShadow(
         onClick = {
-          Log.d("DataPesertaScreen", "Download")
         }
       ) {
         Icon(

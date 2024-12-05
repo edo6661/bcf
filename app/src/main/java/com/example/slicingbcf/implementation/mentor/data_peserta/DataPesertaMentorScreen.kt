@@ -97,7 +97,7 @@ fun TopSection(
       )
 
       SmallFloatingActionButton(
-        onClick = { Log.d("filter", "filter clicked") },
+        onClick = {  },
         modifier = Modifier.size(40.dp),
         containerColor = ColorPalette.PrimaryColor100
       ) {
@@ -109,7 +109,7 @@ fun TopSection(
       }
 
       SmallFloatingActionButton(
-        onClick = { Log.d("download", "download clicked") },
+        onClick = {  },
         modifier = Modifier.size(40.dp),
         containerColor = ColorPalette.PrimaryColor700
       ) {

@@ -1,6 +1,5 @@
 package com.example.slicingbcf.implementation.peserta.pusat_informasi
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -44,7 +43,7 @@ fun DetailPusatInformasiScreen(
   }
 
   DiscussionScaffold(
-    onClick = { Log.d("discussion", "discussion") }
+    onClick = {  }
   ) { innerPadding ->
     Column(
       modifier = modifier

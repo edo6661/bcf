@@ -1,6 +1,5 @@
 package com.example.slicingbcf.ui.scaffold
 
-import android.util.Log
 import com.example.slicingbcf.ui.navigation.Screen
 
 data class ScaffoldConfig(
@@ -10,7 +9,6 @@ data class ScaffoldConfig(
 
 fun scaffoldConfig(currentRoute : String?)
   : ScaffoldConfig {
-  Log.d("scaffoldConfig", "currentRoute: $currentRoute")
   return when (currentRoute) {
     Screen.SplashScreen.route -> ScaffoldConfig(
       showMainNav = false,
@@ -32,7 +30,6 @@ fun scaffoldConfig(currentRoute : String?)
     )
 
     "worksheet-peserta/{id}"         -> {
-      Log.d("scaffoldConfig", "test")
       ScaffoldConfig(
         showMainNav = false,
         showBackNav = true,

@@ -1,6 +1,5 @@
 package com.example.slicingbcf.implementation.mentor.forum_diskusi
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -39,7 +38,7 @@ fun DetailForumDiskusiScreen(
   }
 
   DiscussionScaffold(
-    onClick = { Log.d("discussion", "discussion") }
+    onClick = {  }
   ) { innerPadding ->
     Column(
       modifier = modifier
