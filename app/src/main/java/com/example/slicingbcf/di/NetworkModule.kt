@@ -22,8 +22,9 @@ class NetworkModule {
   fun provideOkHttpClient(authInterceptor : AuthInterceptor) : OkHttpClient {
     return OkHttpClient.Builder()
       .addInterceptor(
-        if (BuildConfig.DEBUG) HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-        else HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
+//        if (BuildConfig.DEBUG) HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+//        else HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
+        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
       )
       .addInterceptor(authInterceptor)
       .build()

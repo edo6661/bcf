@@ -1,5 +1,6 @@
 package com.example.slicingbcf.data.repo
 
+import android.util.Log
 import com.example.slicingbcf.data.common.UiState
 import org.json.JSONObject
 import retrofit2.Response
@@ -22,6 +23,7 @@ abstract class BaseRepository {
         UiState.Error(errorMessage)
       }
     } catch (e : Exception) {
+      Log.e("BaseRepository", "safeApiCall: ${e.message}")
       UiState.Error(e.message ?: "Unknown error")
     }
   }

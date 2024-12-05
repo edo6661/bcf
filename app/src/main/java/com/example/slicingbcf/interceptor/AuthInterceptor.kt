@@ -1,6 +1,6 @@
 package com.example.slicingbcf.interceptor
 
-import com.example.slicingbcf.data.local.preferences.UserPreferences
+import com.example.slicingbcf.data.local.preferences.UserRemotePreferences
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -9,17 +9,17 @@ import javax.inject.Inject
 
 
 class AuthInterceptor @Inject constructor(
-  private val userPreferences : UserPreferences
+  private val userRemotePreferences : UserRemotePreferences
 ) : Interceptor {
 
   override fun intercept(chain : Interceptor.Chain) : Response {
     val originalRequest = chain.request()
-    val token = runBlocking {
-      userPreferences.getToken().firstOrNull()
+    val accessToken = runBlocking {
+      userRemotePreferences.getAccessToken().firstOrNull()
     }
-    return if (! token.isNullOrEmpty()) {
+    return if (! accessToken.isNullOrEmpty()) {
       val newRequest = originalRequest.newBuilder()
-        .header("Authorization", "Bearer $token")
+        .header("Authorization", "Bearer $accessToken")
         .build()
       chain.proceed(newRequest)
     } else {

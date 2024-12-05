@@ -5,35 +5,43 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.slicingbcf.data.dao.model.JangkauanPenerimaManfaat
 import com.example.slicingbcf.data.dao.model.Role
-import com.example.slicingbcf.data.dao.model.User
 import com.example.slicingbcf.data.local.preferences.UserPreferences
+import com.example.slicingbcf.data.local.preferences.UserRemotePreferences
 import com.example.slicingbcf.data.repo.user.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.example.slicingbcf.data.dao.model.User as UserLocal
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
   private val userRepository : UserRepository,
-  private val userPreferences : UserPreferences
+  private val userPreferences : UserPreferences,
+  private val userRemotePreferences : UserRemotePreferences
 ) : ViewModel() {
 
-  private val _currentUser = MutableStateFlow<User?>(null)
-  val currentUser : StateFlow<User?> = _currentUser
+  private val _currentUser = MutableStateFlow<UserLocal?>(null)
+  val currentUser : StateFlow<UserLocal?> = _currentUser
+  // TODO: UNCOMMENT KALO MAU NGE TEST API DIDEPAN KAK FAISHAL
+//  private val _currentUserRemote = MutableStateFlow<UserRemote?>(null)
+//  val currentUserRemote : StateFlow<UserRemote?> = _currentUserRemote
 
   init {
     viewModelScope.launch {
       userPreferences.getUserData().collect { user ->
         _currentUser.value = user
       }
+//      userRemotePreferences.getUserData().collect { user ->
+//        _currentUserRemote.value = user
+//      }
 
     }
   }
 
 
-  private fun insertUser(user : User) {
+  private fun insertUser(user : UserLocal) {
     viewModelScope.launch {
       try {
         userRepository.insertUser(user)
@@ -44,8 +52,32 @@ class UserViewModel @Inject constructor(
     }
   }
 
+  fun logAccessTokenPreferences() {
+    viewModelScope.launch {
+      userRemotePreferences.getAccessToken().collect {
+        Log.d("UserViewModel", "Access Token: $it")
+      }
+    }
+  }
+  fun logRefreshTokenPreferences() {
+    viewModelScope.launch {
+      userRemotePreferences.getRefreshToken().collect {
+        Log.d("UserViewModel", "Refresh Token: $it")
+      }
+    }
+  }
+
+  fun logRemoteUserPreferences() {
+    viewModelScope.launch {
+      userRemotePreferences.getUserData().collect {
+        Log.d("UserViewModel", "Remote User: $it")
+      }
+    }
+  }
+
   suspend fun clearUserSession() {
     userPreferences.clearUserSession()
+    userRemotePreferences.clearUserSession()
   }
 
   fun insertDummyData() {
@@ -56,7 +88,7 @@ class UserViewModel @Inject constructor(
           JangkauanPenerimaManfaat("Jawa Barat", 100),
           JangkauanPenerimaManfaat("Jawa Timur", 200)
         )
-        val dummyUser = User(
+        val dummyUser = UserLocal(
           namaLembaga = "Lembaga Contoh",
           emailLembaga = "example@lembaga.com",
           alamatLembaga = "Jl. Contoh No. 123",
@@ -97,7 +129,7 @@ class UserViewModel @Inject constructor(
           pengalamanMendaftarLead = "Pernah",
           role = Role.MENTOR.name
         )
-        val dummyUser2 = User(
+        val dummyUser2 = UserLocal(
           namaLembaga = "Lembaga Contoh",
           emailLembaga = "example@lembaga.com",
           alamatLembaga = "Jl. Contoh No. 123",
