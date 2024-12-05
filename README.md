@@ -260,14 +260,57 @@ abstract class BaseRepository {
 
 ### Deskripsi Folder dan File:
 
-- **constant/**: Nilai konstan (palet warna, gaya teks).
-- **data/**: Kelas dan objek terkait data (DAO, sumber data lokal/remote, repositori, view models).
-- **di/**: Modul dependency injection (konfigurasi jaringan, database).
-- **domain/**: Model domain, use case, dan validator.
-- **implementation/**: Implementasi composables dan screens (auth, mentor, peserta).
-- **interceptor/**: AuthInterceptor untuk permintaan jaringan.
-- **ui/**: Komponen UI, animasi, navigasi, scaffold, komponen bersama, dan upload.
-- **util/**: Kelas utilitas dan ekstensi.
+- **constant/**  
+  Berisi nilai-nilai konstan yang digunakan di seluruh aplikasi (warna, gaya teks, dll).
+
+- **data/**  
+  - **common/**: Kelas dan fungsi yang digunakan secara umum di aplikasi.  
+  - **dao/**: Data access objects untuk akses ke database atau data lokal.  
+    - **helper/**: Kelas atau fungsi pembantu untuk pengelolaan data (mapper).  
+    - **model/**: Model data yang digunakan untuk menyimpan dan mengirim data.  
+    - **user/**: Data terkait pengguna.  
+  - **local/**: Penyimpanan data lokal.  
+    - **preferences/**: Menyimpan preferensi pengguna.  
+  - **remote/**: Akses data dari server atau API eksternal.  
+    - **api/**: Untuk komunikasi dengan server.  
+    - **helper/**: Kelas atau fungsi pembantu untuk pengelolaan data (mapper).  
+    - **request/**: Mengelola permintaan data ke API.  
+    - **response/**: Menangani respons API.  
+  - **repo/**: Repositori untuk akses data lokal atau remote.  
+    - **auth/**: Repositori autentikasi pengguna.  
+    - **user/**: Repositori data pengguna.  
+  - **viewmodel/**: `ViewModel` untuk mengelola state UI dan logika untuk layar tertentu.
+
+- **di/**  
+  Konfigurasi dan setup dependency injection (DI), termasuk dependensi jaringan dan database.
+
+- **domain/**  
+  - **model/**: Model yang digunakan dalam domain aplikasi.  
+  - **usecase/**: Logika aplikasi yang berfokus pada tindakan atau proses bisnis.  
+    - **auth/**: Use case autentikasi pengguna.  
+    - **user/**: Use case pengelolaan data pengguna.  
+  - **validator/**: Kelas untuk validasi input atau data.
+
+- **implementation/**  
+  - **auth/**: Implementasi terkait autentikasi (login, registrasi, reset password).  
+  - **mentor/**: Fitur untuk mentor, termasuk data peserta, feedback, forum diskusi, dan laporan.  
+  - **peserta/**: Fitur untuk peserta, termasuk data peserta, feedback, jadwal kegiatan, dan laporan.  
+  - **user_profile/**: Profil pengguna untuk menampilkan dan mengelola informasi pengguna.
+
+- **interceptor/**  
+  Kelas untuk intercept permintaan dan respons API untuk log atau pemrosesan tambahan (konfigurasi headers).
+
+- **ui/**  
+  - **animations/**: Animasi yang digunakan di berbagai bagian UI.  
+  - **navigation/**: Menangani navigasi antar layar.  
+  - **scaffold/**: Struktur dasar halaman aplikasi.  
+  - **shared/**: Komponen UI bersama, seperti dialog, dropdown, pesan, rating, tabs, dan textfield.  
+  - **sidenav/**: Sidebar navigasi.  
+  - **theme/**: Tema aplikasi, termasuk gaya dan warna.  
+  - **upload/**: Mengelola upload file.
+
+- **util/**  
+  Folder untuk utilitas atau helper function yang digunakan di berbagai bagian aplikasi.
 
 ## Lisensi
 
