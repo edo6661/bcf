@@ -4,8 +4,11 @@ import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -24,7 +27,6 @@ import com.example.slicingbcf.data.local.listOfLembaga
 import com.example.slicingbcf.ui.shared.dropdown.DropdownText
 import com.example.slicingbcf.ui.shared.textfield.SearchBarCustom
 
-// TODO: SARI
 @Composable
 fun UmpanBalikMentorScreen(
     modifier: Modifier = Modifier,
@@ -42,7 +44,7 @@ fun UmpanBalikMentorScreen(
         modifier = modifier.padding(
             horizontal = 16.dp,
             vertical = 24.dp
-        )
+        ).verticalScroll(rememberScrollState())
     ) {
         Text(
             text = "Umpan Balik Peserta",
@@ -54,7 +56,7 @@ fun UmpanBalikMentorScreen(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(20.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
             Text(
                 modifier = Modifier.padding(top = 16.dp),
@@ -85,14 +87,14 @@ fun UmpanBalikMentorScreen(
             title = "Cari Peserta",
             bgColor = ColorPalette.Monochrome150
         )
-        LazyColumn(
+        Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(listOfLembaga.size) { index ->
+            listOfLembaga.forEach { lembaga ->
                 UmpanBalikMentorItem(
-                    lembaga = listOfLembaga[index],
-                    onClick = { onNavigateDetailUmpanBalikMentor(listOfLembaga[index].namaLembaga) }
+                    lembaga = lembaga,
+                    onClick = onNavigateDetailUmpanBalikMentor
                 )
             }
         }
@@ -115,7 +117,8 @@ fun CustomDropdownMenu(
             .padding(top = 8.dp)
     ) {
         OutlinedButton(
-            onClick = { onChangeExpanded(!expanded) },
+            onClick = {
+                onChangeExpanded(!expanded) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(40.dp),
@@ -132,12 +135,12 @@ fun CustomDropdownMenu(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = if (value.isEmpty()) placeholder else value,
+                    text = value.ifEmpty { placeholder },
                     style = StyledText.MobileSmallRegular,
                     color = ColorPalette.PrimaryColor700
                 )
                 Icon(
-                    imageVector = Icons.Default.ArrowRight,
+                    imageVector = if (expanded) Icons.Default.ArrowDropDown else Icons.Default.ArrowRight,
                     contentDescription = null,
                     tint = ColorPalette.PrimaryColor700
                 )
