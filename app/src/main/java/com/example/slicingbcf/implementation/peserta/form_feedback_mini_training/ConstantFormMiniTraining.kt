@@ -9,5 +9,11 @@ class ConstantFormMiniTraining {
             "Mini Training hari ke-3",
             "Mini Training hari ke-4",
         )
+        val miniTrainingQuestion = listOf(
+            "Apakah materi yang disampaikan pembicara mudah dipahami?",
+            "Apakah pembicara mampu mengatur waktu dengan baik?",
+            "Apakah pembicara memberikan jawaban yang memuaskan atas pertanyaan peserta?",
+            "Apakah pembicara menggunakan metode yang interaktif?",
+        )
     }
 }
