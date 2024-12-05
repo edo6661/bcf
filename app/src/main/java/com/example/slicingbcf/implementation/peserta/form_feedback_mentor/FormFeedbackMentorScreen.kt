@@ -1,7 +1,5 @@
 package com.example.slicingbcf.implementation.peserta.form_feedback_mentor
 
-import android.net.Uri
-import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -24,27 +22,26 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
-import com.example.slicingbcf.data.local.FeedbackMentor
 import com.example.slicingbcf.data.local.formEvaluasiCapaianMentoring
+import com.example.slicingbcf.data.local.formEvaluasiMentor
 import com.example.slicingbcf.data.local.formMentor
 import com.example.slicingbcf.implementation.peserta.form_feedback_mentor.ConstantFormFeedbackMentor.Companion.evaluasiCapaians
 import com.example.slicingbcf.implementation.peserta.form_feedback_mentor.ConstantFormFeedbackMentor.Companion.periodeCapaians
 import com.example.slicingbcf.ui.animations.AnimatedContentSlide
 import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
 import com.example.slicingbcf.ui.shared.dialog.CustomAlertDialog
+import com.example.slicingbcf.ui.shared.rating.RatingField
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdown
 import com.example.slicingbcf.ui.upload.FileUploadSection
@@ -53,33 +50,21 @@ import com.example.slicingbcf.ui.upload.FileUploadSection
 @Composable
 fun FeedbackMentorScreen(
     modifier : Modifier = Modifier,
+    viewModel: FormFeedbackMentorViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     var currentScreen by rememberSaveable { mutableStateOf(0) }
     val onChangeScreen : (Int) -> Unit = { screen ->
         currentScreen = screen
     }
     var initialState by remember { mutableStateOf(0) }
-
-    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
-    val deleteFile = {
-        selectedFileUri = null
-    }
+//    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
 
     val onNavigateNextForm: (Int) -> Unit = { screen ->
         onChangeScreen(screen)
     }
-
-    val filePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument(),
-        onResult = { uri ->
-            selectedFileUri = uri
-        }
-    )
-
-    var namaMentor by remember { mutableStateOf("") }
-    var selectedEvaluasi by remember { mutableStateOf("") }
-    var selectedPeriode by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
@@ -92,7 +77,9 @@ fun FeedbackMentorScreen(
             text = "Umpan Balik Mentor",
             style = StyledText.MobileLargeSemibold,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
         )
 
         AnimatedContentSlide(
@@ -102,24 +89,29 @@ fun FeedbackMentorScreen(
         ) { targetScreen ->
             when (targetScreen) {
                 0 -> FirstScreen(
+                    state = uiState,
+                    onEvent = {event -> viewModel.onEvent(event)},
                     onNavigateNextForm = onNavigateNextForm,
                 )
                 1 -> SecondScreen(
+                    state = uiState,
+                    onEvent = {event -> viewModel.onEvent(event)},
                     onNavigateBackForm = { onChangeScreen(0) },
                     onNavigateNextForm = { onChangeScreen(2) },
                     id = "id",
                 )
                 2 -> ThirdScreen(
+                    state = uiState,
+                    onEvent = {event -> viewModel.onEvent(event)},
                     onNavigateBackForm = { onChangeScreen(1) },
                     onNavigateNextForm = { onChangeScreen(3) },
                     id = "id",
                 )
                 3 -> FourthScreen(
+                    state = uiState,
+                    onEvent = {event -> viewModel.onEvent(event)},
                     onNavigateBackForm = { onChangeScreen(2) },
-                    id = "id",
-                    deleteFile = deleteFile,
-                    selectedFileUri = selectedFileUri,
-                    filePickerLauncher = filePickerLauncher
+                    isLoading = isLoading
                 )
             }
 
@@ -134,13 +126,16 @@ fun FeedbackMentorScreen(
 fun FirstScreen(
     modifier: Modifier = Modifier,
     onNavigateNextForm: (Int) -> Unit,
+    state : FormFeedbackMentorState,
+    onEvent: (FormFeedbackMentorEvent) -> Unit,
 ) {
-
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(40.dp),
     ) {
         TopSectionScreen1(
+            state = state,
+            onEvent = onEvent
         )
         BottomSectionScreen1(
             onNavigateNextForm = onNavigateNextForm
@@ -151,37 +146,25 @@ fun FirstScreen(
 @Composable
 fun SecondScreen(
     modifier: Modifier = Modifier,
-    onSaveFeedback: (FeedbackMentor) -> Unit = {},
     onNavigateNextForm: (Int) -> Unit,
     onNavigateBackForm: (Int) -> Unit,
     id: String,
-) {
-    var issueSharingRating by remember { mutableStateOf(0) }
-    var stakeholderMappingRating by remember { mutableStateOf(0) }
-    var fundingStrategyRating by remember { mutableStateOf(0) }
+    state: FormFeedbackMentorState,
+    onEvent: (FormFeedbackMentorEvent) -> Unit
+){
 
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(40.dp)
     ) {
         TopSectionScreen2(
-            issueSharingRating = issueSharingRating,
-            onIssueSharingRatingChange = { issueSharingRating = it },
-            stakeholderMappingRating = stakeholderMappingRating,
-            onStakeholderMappingRatingChange = { stakeholderMappingRating = it },
-            fundingStrategyRating = fundingStrategyRating,
-            onFundingStrategyRatingChange = { fundingStrategyRating = it }
+            state = state,
+            onEvent = onEvent,
         )
         BottomSectionScreen2(
             onNavigateBackForm = {onNavigateBackForm(1)},
             onNavigateNextForm = {
                 onNavigateNextForm(1)
-                val feedback = FeedbackMentor(
-                    issueSharingRating,
-                    stakeholderMappingRating,
-                    fundingStrategyRating
-                )
-                onSaveFeedback(feedback)
             }
         )
     }
@@ -190,15 +173,12 @@ fun SecondScreen(
 @Composable
 fun ThirdScreen(
     modifier: Modifier = Modifier,
-    onSaveFeedback: (FeedbackMentor) -> Unit = {},
+    state : FormFeedbackMentorState,
+    onEvent: (FormFeedbackMentorEvent) -> Unit,
     onNavigateNextForm: (Int) -> Unit,
     onNavigateBackForm: (Int) -> Unit,
-    id: String,
+    id: String
 ) {
-    var comprehensiveExplanation by remember { mutableStateOf(0) }
-    var sessionSuitability by remember { mutableStateOf(0) }
-    var clearInstructions by remember { mutableStateOf(0) }
-
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -210,35 +190,24 @@ fun ThirdScreen(
             textAlign = TextAlign.Left,
             modifier = Modifier.fillMaxWidth()
         )
-
-        RatingSection(
-            title = "Mentor memberikan penjelasan secara komprehensif selama mentoring",
-            rating = comprehensiveExplanation,
-            onRatingSelected = { comprehensiveExplanation = it }
-        )
-
-        RatingSection(
-            title = "Sesi mentoring berlangsung sesuai dengan kebutuhan pembelajaran peserta",
-            rating = sessionSuitability,
-            onRatingSelected = { sessionSuitability = it }
-        )
-
-        RatingSection(
-            title = "Mentor memberikan instruksi dan pertanyaan dengan jelas",
-            rating = clearInstructions,
-            onRatingSelected = { clearInstructions = it }
-        )
-
+        state.evaluasiMentor.forEachIndexed { i, _ ->
+            RatingField(
+                description = formEvaluasiMentor[i].title,
+                rating = state.evaluasiMentor[i],
+                onRatingChange = {
+                    onEvent(
+                        FormFeedbackMentorEvent.EvaluasiMentorChanged(
+                            index = i,
+                            evaluasiMentor = it
+                        )
+                    )
+                }
+            )
+        }
         BottomSectionScreen2(
             onNavigateBackForm = { onNavigateBackForm(1) },
             onNavigateNextForm = {
                 onNavigateNextForm(1)
-                val feedback = FeedbackMentor(
-                    comprehensiveExplanation,
-                    sessionSuitability,
-                    clearInstructions
-                )
-                onSaveFeedback(feedback)
             }
         )
         Spacer(modifier = Modifier.height(56.dp))
@@ -248,32 +217,37 @@ fun ThirdScreen(
 @Composable
 fun FourthScreen(
     modifier: Modifier = Modifier,
-    onSaveFeedback: (String, String, Uri?) -> Unit = { _, _, _ -> },
+    state : FormFeedbackMentorState,
+    onEvent: (FormFeedbackMentorEvent) -> Unit,
+    isLoading: Boolean,
     onNavigateBackForm: (Int) -> Unit,
-    id: String,
-    deleteFile : () -> Unit,
-    selectedFileUri: Uri?,
-    filePickerLauncher: ManagedActivityResultLauncher<Array<String>, Uri?>
 ) {
-    var discussionText by remember { mutableStateOf("") }
-    var suggestionsText by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(false) }
-
+   var showDialog by remember { mutableStateOf(false) }
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument(),
+        onResult = { uri ->
+            onEvent(
+                FormFeedbackMentorEvent.SelectedFileUriChanged(
+                    uri
+                )
+            )
+        }
+    )
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
+
         CustomOutlinedTextField(
             label = formMentor[5].title,
-            value = discussionText,
+            value = state.discussionText,
             onValueChange = {
-                discussionText = it
+                onEvent(FormFeedbackMentorEvent.DiscussionTextChanged(it))
             },
             asteriskAtEnd = true,
-            error = null,
+            error = state.discussionTextError,
             placeholder = "Tuliskan hal yang dibahas selama mentoring disini...",
             modifier = Modifier
                 .fillMaxWidth()
@@ -287,12 +261,12 @@ fun FourthScreen(
 
         CustomOutlinedTextField(
             label = formMentor[6].title,
-            value = suggestionsText,
+            value = state.suggestionText,
             onValueChange = {
-                suggestionsText = it
+                onEvent(FormFeedbackMentorEvent.SuggestionTextChanged(it))
             },
             asteriskAtEnd = true,
-            error = null,
+            error = state.suggestionTextError,
             placeholder = "Berisi uraian penjelasan mengenai kritik dan saran dari peserta...",
             modifier = Modifier
                 .fillMaxWidth()
@@ -309,9 +283,9 @@ fun FourthScreen(
             asteriskAtEnd = true,
             buttonText = "Klik untuk unggah file",
             onFileSelect = { filePickerLauncher.launch(arrayOf("image/*", "application/pdf")) },
-            selectedFileUri = selectedFileUri,
-            deleteFile = deleteFile,
-            error = null
+            selectedFileUri = state.selectedFileUri,
+            deleteFile = { onEvent(FormFeedbackMentorEvent.SelectedFileUriChanged(null)) },
+            error = state.selectedFileUriError
         )
 
         Box(
@@ -340,7 +314,6 @@ fun FourthScreen(
 
                 Button(
                     onClick = {
-                        onSaveFeedback(discussionText, suggestionsText, selectedFileUri)
                         showDialog = true
                     },
                     modifier = Modifier.weight(1f),
@@ -361,8 +334,8 @@ fun FourthScreen(
             confirmButtonText = "Kirim",
             dismissButtonText = "Batal",
             onConfirm = {
+                onEvent(FormFeedbackMentorEvent.Submit)
                 showDialog = false
-                isLoading = true
             },
             onDismiss = {
                 showDialog = false
@@ -381,11 +354,9 @@ fun FourthScreen(
 
 @Composable
 fun TopSectionScreen1(
+    state : FormFeedbackMentorState,
+    onEvent: (FormFeedbackMentorEvent) -> Unit,
 ) {
-
-    var namaMentor by remember { mutableStateOf("") }
-    var selectedEvaluasi by remember { mutableStateOf("") }
-    var selectedPeriode by remember { mutableStateOf("") }
     var expandedEvaluasiCapaian by remember { mutableStateOf(false) }
     var expandedPeriodeCapaianMentoring by remember { mutableStateOf(false) }
     Column(
@@ -402,10 +373,10 @@ fun TopSectionScreen1(
 
         CustomOutlinedTextFieldDropdown(
             label = "Evaluasi Capaian",
-            value = selectedEvaluasi,
+            value = state.selectedEvaluasi,
             asteriskAtEnd = true,
             onValueChange = {
-                selectedEvaluasi = it
+                onEvent(FormFeedbackMentorEvent.SelectedEvaluasiChanged(it))
             },
             placeholder = "Pilih Evaluasi Capaian Mentoring",
             modifier = Modifier.fillMaxWidth(),
@@ -416,14 +387,15 @@ fun TopSectionScreen1(
             onChangeExpanded = {
                 expandedEvaluasiCapaian = it
             },
-            error = null
+            error = state.selectedEvaluasiError
         )
 
         CustomOutlinedTextField(
             label = formMentor[1].title,
-            value = namaMentor,
-            error = null,
-            onValueChange = {namaMentor = it
+            value = state.namaMentor,
+            error = state.namaMentorError,
+            onValueChange = {
+                onEvent(FormFeedbackMentorEvent.NamaMentorChanged(it))
             },
             placeholder = "Ketik nama mentor anda disini...",
             modifier = Modifier.fillMaxWidth(),
@@ -442,10 +414,10 @@ fun TopSectionScreen1(
 
         CustomOutlinedTextFieldDropdown(
             label = "Periode Capaian Mentoring",
-            value = selectedPeriode,
+            value = state.selectedPeriode,
             asteriskAtEnd = true,
             onValueChange = {
-                selectedPeriode = it
+                onEvent(FormFeedbackMentorEvent.SelectedPeriodeChanged(it))
             },
             placeholder = "Pilih Periode Capaian Mentoring",
             modifier = Modifier.fillMaxWidth(),
@@ -456,7 +428,7 @@ fun TopSectionScreen1(
             onChangeExpanded = {
                 expandedPeriodeCapaianMentoring = it
             },
-            error = null
+            error = state.selectedPeriodeError
         )
     }
 }
@@ -478,23 +450,6 @@ fun BottomSectionScreen1(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-//            OutlinedButton(
-//                onClick = {
-//                    onNavigateBackForm(1)
-//                },
-//                modifier = Modifier
-//                    .weight(1f)
-//                    .height(40.dp),
-//                shape = MaterialTheme.shapes.extraLarge,
-//                border = BorderStroke(1.dp, ColorPalette.PrimaryColor700),
-//                colors = ButtonDefaults.outlinedButtonColors(
-//                    containerColor = Color.Transparent,
-//                    contentColor = ColorPalette.PrimaryColor700
-//                )
-//            ) {
-//                Text(text = "Kembali", style = StyledText.MobileBaseSemibold)
-//            }
-
             Button(
                 onClick = {
                     onNavigateNextForm(1)
@@ -516,12 +471,8 @@ fun BottomSectionScreen1(
 
 @Composable
 fun TopSectionScreen2(
-    issueSharingRating: Int,
-    onIssueSharingRatingChange: (Int) -> Unit,
-    stakeholderMappingRating: Int,
-    onStakeholderMappingRatingChange: (Int) -> Unit,
-    fundingStrategyRating: Int,
-    onFundingStrategyRatingChange: (Int) -> Unit
+    state : FormFeedbackMentorState,
+    onEvent: (FormFeedbackMentorEvent) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -536,23 +487,20 @@ fun TopSectionScreen2(
             modifier = Modifier.fillMaxWidth()
         )
 
-        RatingSection(
-            title = formEvaluasiCapaianMentoring[0].title,
-            rating = issueSharingRating,
-            onRatingSelected = onIssueSharingRatingChange
-        )
-
-        RatingSection(
-            title = formEvaluasiCapaianMentoring[1].title,
-            rating = stakeholderMappingRating,
-            onRatingSelected = onStakeholderMappingRatingChange
-        )
-
-        RatingSection(
-            title = formEvaluasiCapaianMentoring[2].title,
-            rating = fundingStrategyRating,
-            onRatingSelected = onFundingStrategyRatingChange
-        )
+        state.evaluasiCapaian.forEachIndexed { i, _ ->
+            RatingField(
+                description = formEvaluasiCapaianMentoring[i].title,
+                rating = state.evaluasiCapaian[i],
+                onRatingChange = {
+                    onEvent(
+                        FormFeedbackMentorEvent.IssueSharingRatingChanged(
+                            index = i,
+                            evaluasiCapaian = it
+                        )
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -596,86 +544,6 @@ fun BottomSectionScreen2(
             ) {
                 Text(text = "Berikutnya", style = StyledText.MobileBaseSemibold)
             }
-        }
-    }
-}
-
-@Composable
-fun RatingSection(
-    title: String,
-    rating: Int,
-    onRatingSelected: (Int) -> Unit
-) {
-    Column {
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ){
-            Text(
-                text = title,
-                style = StyledText.MobileSmallRegular,
-                textAlign = TextAlign.Justify,
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .width(356.dp)
-            )
-            Text(
-                text = "*",
-                style = StyledText.MobileBaseSemibold,
-                color = ColorPalette.Error,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-        ) {
-            (1..4).forEach { value ->
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                ) {
-                    OutlinedButton(
-                        onClick = { onRatingSelected(value) },
-                        modifier = Modifier.size(78.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        border = if (rating == value)
-                            BorderStroke(2.dp, ColorPalette.PrimaryColor700)
-                        else
-                            BorderStroke(1.dp, ColorPalette.Monochrome500),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = Color.Transparent,
-                            contentColor = ColorPalette.Monochrome900
-                        )
-                    ) {
-                        Text(
-                            text = value.toString(),
-                            style = StyledText.MobileBaseSemibold,
-                            color = if (rating == value) ColorPalette.PrimaryColor700
-                            else ColorPalette.Monochrome700
-                        )
-                    }
-                }
-            }
-        }
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp)
-        ) {
-            Text(
-                text = "Sangat Tidak Baik",
-                style = StyledText.MobileSmallRegular,
-                color = ColorPalette.Monochrome500,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.padding(start = 8.dp)
-            )
-            Text(
-                text = "Sangat Baik",
-                style = StyledText.MobileSmallRegular,
-                color = ColorPalette.Monochrome500,
-                textAlign = TextAlign.End,
-                modifier = Modifier.padding(end = 8.dp)
-            )
         }
     }
 }

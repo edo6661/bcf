@@ -100,13 +100,13 @@ fun TopSection(
         onChangeExpanded = {
             expandedHariKegiatan = it
         },
-        error = null
+        error = state.hariKegiatanError
     )
 
     CustomOutlinedTextField(
         label = "Nama Pemateri 1",
         value = state.speaker1Name,
-        error = null,
+        error = state.speaker1NameError,
         onValueChange = {
             onEvent(FormMiniTrainingEvent.Speaker1NameChanged(it))
         },
@@ -121,7 +121,7 @@ fun TopSection(
     CustomOutlinedTextField(
         label = "Nama Pemateri 2",
         value = state.speaker2Name,
-        error = null,
+        error = state.speaker2NameError,
         onValueChange = {
             onEvent(FormMiniTrainingEvent.Speaker2NameChanged(it))
         },
