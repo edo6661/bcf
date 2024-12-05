@@ -14,11 +14,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
-import com.example.slicingbcf.data.local.worksheetsPeserta
+import com.example.slicingbcf.implementation.mentor.pitchdeck.PitchdeckConstant.Companion.mockUpPitchdeckMentor
 
 @Composable
 fun MoreDetailPitchdeckScreen(
   modifier : Modifier = Modifier,
+  id : String
 ) {
 
   val scrollState = rememberScrollState()
@@ -44,7 +45,7 @@ fun MoreDetailPitchdeckScreen(
     Column(
       verticalArrangement = Arrangement.spacedBy(28.dp)
     ) {
-      mockUpWorksheetPeserta.forEach {
+      mockUpPitchdeckMentor.forEach {
         KeyValueColumn(
           title = it.title,
           description = it.description
@@ -214,4 +215,3 @@ private fun KeyValueColumn(
 
 }
 
-private val mockUpWorksheetPeserta = worksheetsPeserta
