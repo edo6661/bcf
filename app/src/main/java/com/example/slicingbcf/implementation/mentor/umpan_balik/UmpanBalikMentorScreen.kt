@@ -5,12 +5,16 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material3.ButtonDefaults
@@ -80,6 +84,40 @@ fun UmpanBalikMentorScreen(
                 onChangeExpanded = { expandedCapaianMentoring = it },
                 dropdownItems = listOf("1 Februari 2023", "1 Maret 2023", "1 April 2023", "1 Mei 2023")
             )
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Capaian Mentoring",
+                style = StyledText.MobileMediumSemibold,
+                color = ColorPalette.PrimaryColor700
+            )
+            OutlinedButton(
+                onClick = { /* Handle date navigation */ },
+                modifier = Modifier
+                    .height(40.dp),
+                border = BorderStroke(1.dp, ColorPalette.PrimaryColor700),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = ColorPalette.PrimaryColor700
+                ),
+                contentPadding = PaddingValues(horizontal = 8.dp)
+            ) {
+                Text(
+                    text = "1 Februari 2023",
+                    style = StyledText.MobileSmallRegular,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+                Icon(
+                    imageVector = Icons.Default.ArrowRight,
+                    contentDescription = null,
+                    tint = ColorPalette.PrimaryColor700,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
         SearchBarCustom(
             onSearch = { Log.d("search", it) },
@@ -178,3 +216,10 @@ fun PreviewUmpanBalikMentorScreen(){
         }
     )
 }
+                    onClick = { onNavigateDetailUmpanBalikMentor(listOfLembaga[index].namaLembaga) }
+                )
+            }
+        }
+    }
+}
+

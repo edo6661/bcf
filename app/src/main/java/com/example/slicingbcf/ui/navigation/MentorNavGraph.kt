@@ -22,6 +22,8 @@ import com.example.slicingbcf.implementation.mentor.umpan_balik.DetailUmpanBalik
 import com.example.slicingbcf.implementation.mentor.umpan_balik.UmpanBalikMentorScreen
 import com.example.slicingbcf.implementation.mentor.worksheet_mentor.DetailWorksheetMentorScreen
 import com.example.slicingbcf.implementation.mentor.worksheet_mentor.WorksheetMentorScreen
+import com.example.slicingbcf.implementation.mentor.profil.ProfilMentorScreen
+import com.example.slicingbcf.implementation.mentor.umpan_balik.UmpanBalikMentorScreen
 
 fun NavGraphBuilder.mentorNavGraph(
   modifier : Modifier,

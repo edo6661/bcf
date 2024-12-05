@@ -28,6 +28,9 @@ import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.data.local.Lembaga
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.listOfLembaga
+import com.example.slicingbcf.constant.ColorPalette
+import com.example.slicingbcf.data.local.Lembaga
+import com.example.slicingbcf.constant.StyledText
 
 @Composable
 fun UmpanBalikMentorItem(
@@ -83,4 +86,49 @@ fun PreviewUmpanBalikMentorItem() {
         lembaga = listOfLembaga[1],
         onClick = {},
     )
+=======
+    onClick: () -> Unit = {},
+    isClickable: Boolean = true,
+    bgColor: Color = ColorPalette.PrimaryColor100,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .then(
+                if (isClickable) Modifier.clickable(onClick = onClick)
+                else Modifier
+            )
+            .background(
+                color = bgColor,
+                shape = RoundedCornerShape(16.dp),
+            )
+            .padding(bottom = 16.dp, top = 8.dp, start = 8.dp, end = 16.dp).
+            fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Column {
+            Text(
+                text = "Evaluasi Capaian Mentoring:",
+                style = StyledText.MobileSmallMedium,
+                modifier = Modifier.padding(horizontal = 8.dp),
+                color = ColorPalette.PrimaryColor400
+            )
+            Text(
+                text = lembaga.namaLembaga,
+                style = StyledText.MobileMediumSemibold,
+                modifier = Modifier.padding(8.dp),
+                color = ColorPalette.PrimaryColor700
+            )
+        }
+        IconButton(
+            onClick = { /*todo*/ }
+        ) {
+            Icon(
+                Icons.AutoMirrored.Default.ArrowForward,
+                contentDescription = "Lihat Detail",
+                tint = ColorPalette.PrimaryColor700,
+                modifier = Modifier.padding(end = 16.dp)
+            )
+        }
+    }
 }
