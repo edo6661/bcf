@@ -12,11 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,6 +35,7 @@ import com.example.slicingbcf.data.local.formEvaluasiCapaianMentoring
 import com.example.slicingbcf.data.local.formEvaluasiMentor
 import com.example.slicingbcf.data.local.formMentor
 import com.example.slicingbcf.implementation.peserta.form_feedback_mentor.ConstantFormFeedbackMentor.Companion.evaluasiCapaians
+import com.example.slicingbcf.implementation.peserta.form_feedback_mentor.ConstantFormFeedbackMentor.Companion.namaMentors
 import com.example.slicingbcf.implementation.peserta.form_feedback_mentor.ConstantFormFeedbackMentor.Companion.periodeCapaians
 import com.example.slicingbcf.ui.animations.AnimatedContentSlide
 import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
@@ -60,7 +59,6 @@ fun FeedbackMentorScreen(
         currentScreen = screen
     }
     var initialState by remember { mutableStateOf(0) }
-//    var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
 
     val onNavigateNextForm: (Int) -> Unit = { screen ->
         onChangeScreen(screen)
@@ -359,6 +357,7 @@ fun TopSectionScreen1(
 ) {
     var expandedEvaluasiCapaian by remember { mutableStateOf(false) }
     var expandedPeriodeCapaianMentoring by remember { mutableStateOf(false) }
+    var expandedNamaMentor by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -390,19 +389,23 @@ fun TopSectionScreen1(
             error = state.selectedEvaluasiError
         )
 
-        CustomOutlinedTextField(
+        CustomOutlinedTextFieldDropdown(
             label = formMentor[1].title,
             value = state.namaMentor,
-            error = state.namaMentorError,
+            asteriskAtEnd = true,
             onValueChange = {
                 onEvent(FormFeedbackMentorEvent.NamaMentorChanged(it))
             },
-            placeholder = "Ketik nama mentor anda disini...",
+            placeholder = "Pilih nama mentor disini...",
             modifier = Modifier.fillMaxWidth(),
             labelDefaultColor = ColorPalette.Monochrome400,
             labelFocusedColor = ColorPalette.PrimaryColor700,
-            borderColor = ColorPalette.Outline,
-            rounded = 40,
+            dropdownItems = namaMentors,
+            expanded = expandedNamaMentor,
+            onChangeExpanded = {
+                expandedNamaMentor = it
+            },
+            error = state.namaMentorError
         )
 
         Text(
