@@ -574,6 +574,17 @@ private fun SideNavDropdownPeserta(
 ) {
 
   SideNavDropdown(
+    "Test User Profile",
+    items = null,
+    isActiveRoute = isActiveRoute,
+    onClickDropdown = {
+      navigateAndCloseSideNav(
+        Screen.UserProfile.route
+      )
+    },
+    route = Screen.UserProfile.route
+  )
+  SideNavDropdown(
     "Peserta",
     items = dropdownItemsPeserta_Peserta(
       navigateAndCloseSideNav
@@ -616,7 +627,8 @@ private fun SideNavDropdownPeserta(
     },
     route = Screen.Peserta.PusatInformasi.route
   )
-  SideNavDropdown(
+
+      SideNavDropdown(
     "Pengaturan",
     items = null,
     isActiveRoute = isActiveRoute,
