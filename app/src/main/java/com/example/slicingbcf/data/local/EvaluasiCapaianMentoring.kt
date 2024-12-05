@@ -1,5 +1,7 @@
 package com.example.slicingbcf.data.local
 
+import android.net.Uri
+
 data class EvaluasiMentoring(
     val no: Int,
     val aspek_penilaian: String,
@@ -84,9 +86,9 @@ val jawabanMentoring = listOf(
 
 data class DokumentasiMentoring(
     val namaFile: String,
-    val path: String
+    val uri: String
 )
 
 val dokumentasiMentoring = listOf(
-    DokumentasiMentoring("Dokumentasi Mentoring", "path/to/mentoring_dokumentasi.png")
+    DokumentasiMentoring("Dokumentasi Mentoring", "https://media.neliti.com/media/publications/249244-none-837c3dfb.pdf")
 )
