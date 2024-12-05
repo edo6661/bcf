@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -796,6 +797,27 @@ fun TableCellEvaluasiMentoring(
     isPenilaian: Boolean = false,
     evaluasiMentoring: EvaluasiMentoring
 ) {
+    val penilaianColor = when (evaluasiMentoring.penilaian) {
+        "Sangat Baik" -> ColorPalette.Success100
+        "Tidak Baik" -> ColorPalette.Warning100
+        "Sangat Tidak Baik" -> ColorPalette.Danger100
+        else -> Color.Transparent
+    }
+
+    val borderColor = when (evaluasiMentoring.penilaian) {
+        "Sangat Baik" -> ColorPalette.Success600
+        "Tidak Baik" -> ColorPalette.Warning700
+        "Sangat Tidak Baik" -> ColorPalette.Danger200
+        else -> Color.Transparent
+    }
+
+    val textColor = when (evaluasiMentoring.penilaian) {
+        "Sangat Baik" -> ColorPalette.Success600
+        "Tidak Baik" -> ColorPalette.Warning700
+        "Sangat Tidak Baik" -> ColorPalette.Danger500
+        else -> ColorPalette.Monochrome900
+    }
+
     if(isPenilaian){
         Box(modifier = Modifier
                 .width(120.dp * weight)
@@ -803,19 +825,17 @@ fun TableCellEvaluasiMentoring(
         ) {
             Box(
                 modifier = Modifier
-                    .background(
-                        color = if (evaluasiMentoring.penilaian == "Sangat Baik") ColorPalette.Success100 else ColorPalette.Warning100,
-                    )
+                    .background(color = penilaianColor)
                     .border(
                         width = 1.dp,
-                        color = if (evaluasiMentoring.penilaian == "Sangat Baik") ColorPalette.Success600 else ColorPalette.Warning700,
+                        color = borderColor,
                     )
                     .width(72.dp)
-                    .height(20.dp)
+                    .wrapContentHeight()
             ){
                 Text(
                     text = evaluasiMentoring.penilaian,
-                    color = if (evaluasiMentoring.penilaian == "Sangat Baik") ColorPalette.Success600 else ColorPalette.Warning700,
+                    color = textColor,
                     style = StyledText.Mobile2xsRegular,
                     modifier = Modifier
                         .align(Alignment.Center)
@@ -865,7 +885,8 @@ fun TableCellEvaluasiLembaga(
                     color = if (evaluasiLembaga.penilaian == "Sangat Baik") ColorPalette.Success600 else ColorPalette.Warning700,
                     style = StyledText.Mobile2xsRegular,
                     modifier = Modifier
-                        .align(Alignment.Center)
+                        .align(Alignment.Center).padding(2.dp),
+                    textAlign = TextAlign.Center
                 )
             }
         }

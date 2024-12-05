@@ -50,6 +50,7 @@ object ColorPalette {
   val Warning700 = Color(0xFF997404) // #997404
   val PrimaryColor600 = Color(0xFF115DC0) // #115DC0
   val Danger100 = Color(0xFFFBE9EB) // #FBE9EB
+  val Danger200 = Color(0xFFF1AEB5) // #F1AEB5
   val Danger500 = Color(0xFFDC3545) // #DC3545
   val Shade1 = Color(0xFFFCFCFC) // #FCFCFC
   val Shade2 = Color(0xFFD1D1D1) // #D1D1D1
