@@ -1,4 +1,3 @@
-@file:Suppress("t")
 
 package com.example.slicingbcf.implementation.auth.forgot_password
 
