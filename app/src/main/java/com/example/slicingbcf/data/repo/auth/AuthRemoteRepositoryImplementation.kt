@@ -1,6 +1,5 @@
 package com.example.slicingbcf.data.repo.auth
 
-import android.util.Log
 import com.example.slicingbcf.data.common.UiState
 import com.example.slicingbcf.data.local.preferences.UserRemotePreferences
 import com.example.slicingbcf.data.remote.api.ApiService
@@ -21,7 +20,6 @@ class AuthRemoteRepositoryImplementation @Inject constructor(
     loginRequest : LoginRequest
   ) : Flow<UiState<ResponseLogin>> =
     flow {
-      Log.d("AuthRemoteRepository", "login: $loginRequest")
       emit(UiState.Loading)
       val result = safeApiCall {
         apiService.signIn(

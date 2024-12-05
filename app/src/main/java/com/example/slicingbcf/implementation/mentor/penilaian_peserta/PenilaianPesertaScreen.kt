@@ -1,6 +1,5 @@
 package com.example.slicingbcf.implementation.mentor.penilaian_peserta
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -102,7 +101,7 @@ fun TopSection(
       )
 
       SmallFloatingActionButton(
-        onClick = { Log.d("filter", "filter clicked") },
+        onClick = {  },
         modifier = Modifier.size(40.dp),
         containerColor = ColorPalette.PrimaryColor100
       ) {
@@ -114,7 +113,7 @@ fun TopSection(
       }
 
       SmallFloatingActionButton(
-        onClick = { Log.d("download", "download clicked") },
+        onClick = {  },
         modifier = Modifier.size(40.dp),
         containerColor = ColorPalette.PrimaryColor700
       ) {

@@ -1,6 +1,5 @@
 package com.example.slicingbcf.ui.sidenav
 
-import android.util.Log
 import com.example.slicingbcf.ui.navigation.Screen
 
 
@@ -11,14 +10,12 @@ fun dropdownItemsPendaftaran(
     DropdownItem(
       text = "Registrasi Peserta",
       onClick = {
-        Log.d("SideNav", "Registrasi Peserta clicked")
       },
       route = null
     ),
     DropdownItem(
       text = "Cek Status Peserta",
       onClick = {
-        Log.d("SideNav", "Cek Status Peserta clicked")
       },
       route = null
     )
@@ -104,14 +101,12 @@ fun dropdownItemsMentor_Guest(
     DropdownItem(
       text = "Kelompok Mentor",
       onClick = {
-        Log.d("SideNav", "Kelompok Mentor clicked")
       },
       route = null
     ),
     DropdownItem(
       text = "Umpan Balik Mentor",
       onClick = {
-        Log.d("SideNav", "Umpan Balik Mentor clicked")
       },
       route = null
     ),
@@ -160,21 +155,18 @@ fun dropdownItemsTugas_Guest(
     DropdownItem(
       text = "Modul",
       onClick = {
-        Log.d("SideNav", "Modul clicked")
       },
       route = null
     ),
     DropdownItem(
       text = "Laporan",
       onClick = {
-        Log.d("SideNav", "Laporan clicked")
       },
       route = null
     ),
     DropdownItem(
       text = "Lembar Kerja",
       onClick = {
-        Log.d("SideNav", "Lembar Kerja clicked")
       },
       route = null
     ),
@@ -195,7 +187,6 @@ fun dropdownItemsKegiatan_Guest(
     DropdownItem(
       text = "Jadwal Kegiatan",
       onClick = {
-        Log.d("SideNav", "Jadwal clicked")
         navigateAndCloseSideNav(Screen.Kegiatan.JadwalBulanPeserta.route)
       },
       route = Screen.Kegiatan.JadwalBulanPeserta.route

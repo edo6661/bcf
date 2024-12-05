@@ -27,18 +27,14 @@ import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.common.UiState
 import com.example.slicingbcf.data.local.ProfilLembaga
 import com.example.slicingbcf.data.local.WilayahJangkauan
-import com.example.slicingbcf.implementation.mentor.data_peserta.DetailDataPesertaEvent
-import com.example.slicingbcf.implementation.mentor.data_peserta.DetailDataPesertaViewModel
 import com.example.slicingbcf.ui.shared.state.ErrorWithReload
 import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 
-//@Preview(showSystemUi = true)
 @Composable
 fun ProfilLembagaScreen(
   modifier : Modifier = Modifier,
   onNextClick : () -> Unit,
-  viewModel : DetailDataPesertaViewModel = hiltViewModel()
-
+  viewModel : ProfilLembagaViewModel = hiltViewModel()
 ) {
   val uiState by viewModel.state.collectAsState()
 
@@ -69,7 +65,7 @@ fun ProfilLembagaScreen(
       ErrorWithReload(
         errorMessage = errorMessage,
         onRetry = {
-          viewModel.onEvent(DetailDataPesertaEvent.ReloadData)
+          viewModel.onEvent(ProfilLembagaEvent.ReloadData)
         }
       )
     }

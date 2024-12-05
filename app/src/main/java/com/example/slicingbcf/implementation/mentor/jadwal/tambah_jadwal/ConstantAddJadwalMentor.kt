@@ -2,7 +2,6 @@ package com.example.slicingbcf.implementation.mentor.jadwal.tambah_jadwal
 
 class ConstantAddJadwalMentor {
     companion object {
-
         val tipeKegiatans = listOf(
             "Cluster",
             "Desain Program",

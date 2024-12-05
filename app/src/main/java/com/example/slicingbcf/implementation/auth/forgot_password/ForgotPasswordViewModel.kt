@@ -1,6 +1,5 @@
 package com.example.slicingbcf.implementation.auth.forgot_password
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.slicingbcf.domain.validator.ValidationResult
 import com.example.slicingbcf.domain.validator.validateEmail
@@ -38,7 +37,6 @@ class ForgotPasswordViewModel @Inject constructor() : ViewModel() {
   }
 
   private fun onSubmit() {
-    Log.d("ForgotPasswordViewModel", "submit: ")
 //    _state.value = _state.value.copy(
 //      isSuccess = true,
 //      message = "Permintaan berhasil, silakan cek email Anda."

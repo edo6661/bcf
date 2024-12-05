@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -53,6 +54,7 @@ fun DetailUmpanBalikMentorScreen(
     id : String
 ) {
     var evaluasiMentoring by remember { mutableStateOf("") }
+
     Column(
         verticalArrangement = Arrangement.spacedBy(32.dp),
         modifier = modifier.padding(16.dp).verticalScroll(rememberScrollState())
@@ -144,13 +146,14 @@ fun PenilaianLembaga(
     batchOnValueChange : (String) -> Unit
 ){
     var expandedBatch by remember { mutableStateOf(false)}
-
+    var selectedBatch by remember { mutableStateOf("") }
+    
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.Top
     ) {
         Column {
             Text(
@@ -165,11 +168,14 @@ fun PenilaianLembaga(
             )
         }
         BatchDropdownMenu(
-            value = "Batch 3",
+            value = selectedBatch,
             placeholder = "Batch 3",
-            onValueChange = batchOnValueChange,
+            onValueChange = { newValue ->
+                selectedBatch = newValue
+                batchOnValueChange(newValue)
+            },
             expanded = expandedBatch,
-            onChangeExpanded = { expandedBatch = it},
+            onChangeExpanded = { expandedBatch = it },
             dropdownItems = listOf("Batch 1", "Batch 2", "Batch 3", "Batch 4")
         )
     }
@@ -285,6 +291,7 @@ fun BatchDropdownMenu(
                 modifier = Modifier
                     .width(150.dp)
                     .height(40.dp),
+                shape = RoundedCornerShape(50),
                 border = BorderStroke(1.dp, ColorPalette.PrimaryColor700),
                 colors = ButtonDefaults.outlinedButtonColors(
                     containerColor = Color.Transparent,
@@ -297,12 +304,12 @@ fun BatchDropdownMenu(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = if (value.isEmpty()) placeholder else value,
+                        text = value.ifEmpty { placeholder },
                         style = StyledText.MobileSmallRegular,
-                        color = if (value.isEmpty()) ColorPalette.Monochrome400 else ColorPalette.PrimaryColor700,
+                        color = ColorPalette.PrimaryColor700,
                     )
                     Icon(
-                        imageVector = Icons.Default.ArrowRight,
+                        imageVector = if (expanded) Icons.Default.ArrowDropDown else Icons.Default.ArrowRight,
                         contentDescription = null,
                         tint = ColorPalette.PrimaryColor700
                     )

@@ -36,16 +36,6 @@ import com.example.slicingbcf.implementation.mentor.data_peserta.DetailDataPeser
 import com.example.slicingbcf.ui.shared.state.ErrorWithReload
 import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 
-//@Preview(showSystemUi = true)
-@Composable
-fun PreviewProfilPesertaScreen(
-  onPreviousClick : () -> Unit
-) {
-  ProfilPesertaScreen(
-    onPreviousClick = onPreviousClick
-  )
-}
-
 @Composable
 fun ProfilPesertaScreen(
   modifier : Modifier = Modifier,
@@ -116,7 +106,7 @@ fun TopSection(
   ) {
 
     NavigationHeader(
-      currentPage = 2,
+      currentPage = currentPage,
       totalPages = totalPages,
       onPreviousClick = { onPreviousClick() },
       onNextClick = {}

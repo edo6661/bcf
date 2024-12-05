@@ -12,5 +12,10 @@ class ConstantFormFeedbackMentor {
             "Capaian Mentoring 2",
             "Capaian Mentoring 3",
         )
+        val namaMentors = listOf(
+            "Lisa Blekpink",
+            "Bruno Maret",
+            "Jukowaw"
+        )
     }
 }

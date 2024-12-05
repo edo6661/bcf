@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -20,11 +18,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.common.UiState
 import com.example.slicingbcf.data.local.detailJadwal
 import com.example.slicingbcf.data.local.profilLembaga
+import com.example.slicingbcf.implementation.mentor.jadwal.JadwalEvent
+import com.example.slicingbcf.implementation.mentor.jadwal.JadwalViewModel
 import com.example.slicingbcf.implementation.mentor.jadwal.bulan.DatePicker
+import com.example.slicingbcf.ui.shared.state.ErrorWithReload
+import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
@@ -35,27 +39,36 @@ import java.util.*
 fun JadwalMentoringBulanScreen(
     modifier: Modifier = Modifier,
     onNavigateWeeklyCalendar: (String) -> Unit = {},
-    onNavigateDetailScreen: (String) -> Unit = {}
+    onNavigateDetailScreen: (String) -> Unit = {},
+    viewModel: JadwalViewModel = hiltViewModel()
 ) {
-    val userName = profilLembaga.firstOrNull()?.name ?: "Pengguna"
-    val schedule = detailJadwal.groupBy { it.date }.mapValues { entry ->
-        entry.value.map {
-            "${it.beginTime.formatTime()} - ${it.endTime.formatTime()} WIB ${it.type}" to Color(it.color)
+    val state by viewModel.state.collectAsState()
+    when (state) {
+        is UiState.Loading -> {
+            LoadingCircularProgressIndicator()
+        }
+        is UiState.Success -> {
+            TopSection(
+                userName = profilLembaga.firstOrNull()?.name ?: "Pengguna",
+                onNavigateWeeklyCalendar = onNavigateWeeklyCalendar,
+                onNavigateDetailScreen = onNavigateDetailScreen
+            )
+        }
+        is UiState.Error -> {
+            val errorMessage = (state as UiState.Error).message
+            ErrorWithReload(
+                errorMessage = errorMessage,
+                onRetry = {
+                    viewModel.onEvent(JadwalEvent.ReloadData)
+                }
+            )
         }
     }
-
-    TopSection(
-        userName = profilLembaga.firstOrNull()?.name ?: "Pengguna",
-        schedule = schedule,
-        onNavigateWeeklyCalendar = onNavigateWeeklyCalendar,
-        onNavigateDetailScreen = onNavigateDetailScreen
-    )
 }
 
 @Composable
 fun TopSection(
     userName: String,
-    schedule: Map<LocalDate, List<Pair<String, Color>>>,
     onNavigateWeeklyCalendar: (String) -> Unit,
     onNavigateDetailScreen: (String) -> Unit,
 ) {
@@ -72,12 +85,7 @@ fun TopSection(
             )
         }
     }
-
     var expanded by remember { mutableStateOf(false) }
-
-    val scheduleWeekly = detailJadwal.groupBy { it.date }.mapValues { entry ->
-        entry.value.map { (it.beginTime to it.endTime) to it.title }
-    }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -201,6 +209,7 @@ fun TopSection(
         )
     }
 }
+
 @Composable
 fun MonthlyCalendarView(
     currentMonth: YearMonth,
@@ -300,7 +309,7 @@ fun MonthlyCalendarView(
                             }
 
                             schedule[date]?.forEach { (event, title, color) ->
-                                val id = detailJadwal.find { it.title == title }?.id ?: "GA DAPET ID NYA"
+                                val id = detailJadwal.find { it.title == title }?.id ?: "id tidak dapat diidentifikasi"
                                 Box(
                                     modifier = Modifier
                                         .padding(top = 2.dp)
@@ -308,8 +317,6 @@ fun MonthlyCalendarView(
                                         .height(16.dp)
                                         .background(color, RoundedCornerShape(4.dp))
                                         .clickable {
-                                            println("id di kirim : $id")
-                                            println("judul di klik: $title")
                                             onNavigateDetailScreen(id)
                                         }
 

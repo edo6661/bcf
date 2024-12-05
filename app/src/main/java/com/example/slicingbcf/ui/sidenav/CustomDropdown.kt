@@ -1,6 +1,5 @@
 package com.example.slicingbcf.ui.sidenav
 
-import android.util.Log
 import com.example.slicingbcf.ui.navigation.Screen
 
 data class DropdownItem(
@@ -127,7 +126,6 @@ fun dropdownItemsKegiatan_Peserta(
     DropdownItem(
       text = "Jadwal Kegiatan",
       onClick = {
-        Log.d("SideNav", "Jadwal clicked")
         navigateAndCloseSideNav(Screen.Kegiatan.JadwalBulanPeserta.route)
       },
       route = Screen.Kegiatan.JadwalBulanPeserta.route
