@@ -18,30 +18,26 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.implementation.mentor.jadwal.tambah_jadwal.ConstantAddJadwalMentor.Companion.namaLembagas
 import com.example.slicingbcf.implementation.mentor.jadwal.tambah_jadwal.ConstantAddJadwalMentor.Companion.namaPemateris
 import com.example.slicingbcf.implementation.mentor.jadwal.tambah_jadwal.ConstantAddJadwalMentor.Companion.tipeKegiatans
-import com.example.slicingbcf.implementation.peserta.form_feedback_mini_training.ConstantFormMiniTraining.Companion.hariKegiatans
 import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
-import com.example.slicingbcf.ui.shared.dropdown.CustomDropdownMenuAsterisk
-import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextAsterisk
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdown
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdownDate
-import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdownDateAsterisk
-import com.example.slicingbcf.ui.shared.textfield.TextFieldLong
 import com.example.slicingbcf.util.convertMillisToDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,12 +46,21 @@ fun AddJadwalMentorScreen(
     modifier: Modifier = Modifier,
     onNavigateBeranda: (Int) -> Unit,
     onNavigateBack: () -> Boolean,
-    id: String
+    id: String,
+    viewModel: AddJadwalMentorViewModel = hiltViewModel()
 ){
-    val datePickerState = rememberDatePickerState()
+    val uiState by viewModel.uiState.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
     var expandedDate by remember { mutableStateOf(false) }
-    val selectedDate = datePickerState.selectedDateMillis?.let { convertMillisToDate(it) } ?: ""
-
+    val datePickerState = rememberDatePickerState()
+    LaunchedEffect(datePickerState.selectedDateMillis) {
+        datePickerState.selectedDateMillis?.let { millis ->
+            val formattedDate = convertMillisToDate(millis)
+            if (formattedDate != uiState.selectedDate) {
+                viewModel.onEvent(AddJadwalMentorEvent.SelectedDateChanged(formattedDate))
+            }
+        }
+    }
 
     Column(
         modifier = modifier
@@ -65,15 +70,14 @@ fun AddJadwalMentorScreen(
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         TopSection(
-            onSaveFeedback = { tipeKegiatan, namaPemateri, namaLembaga, eventDate, judulKegiatan, tautanKegiatan, deskripsiAgenda ->
-                // TODO simpan data
-            },
-            selectedDate = selectedDate,
+            state = uiState,
+            onEvent = {event -> viewModel.onEvent(event)},
             expandedDate = expandedDate,
             datePickerState = datePickerState,
             onExpandedDateChange = { expandedDate = it },
             onNavigateBeranda = onNavigateBeranda,
-            onNavigateBack = onNavigateBack
+            onNavigateBack = onNavigateBack,
+            isLoading = isLoading
         )
     }
 }
@@ -81,27 +85,18 @@ fun AddJadwalMentorScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopSection(
-    onSaveFeedback: (String, String, String, String, String, String, String) -> Unit = { _, _, _, _, _, _, _ -> },
-    selectedDate: String,
+    state : AddJadwalMentorState,
+    onEvent: (AddJadwalMentorEvent) -> Unit,
+    isLoading: Boolean,
     datePickerState : DatePickerState,
     expandedDate : Boolean,
     onExpandedDateChange : (Boolean) -> Unit,
     onNavigateBeranda: (Int) -> Unit,
     onNavigateBack: () -> Boolean
 ) {
-    var eventDate by remember { mutableStateOf(TextFieldValue("")) }
-    var judulKegiatan by remember { mutableStateOf("") }
-    var tipeKegiatan by remember { mutableStateOf("") }
-    var namaPemateri by remember { mutableStateOf("") }
-    var namaLembaga by remember { mutableStateOf("") }
-    var waktuMulai by remember { mutableStateOf("") }
-    var waktuSelesai by remember { mutableStateOf("") }
-    var tautanKegiatan by remember { mutableStateOf("") }
-    var deskripsiAgenda by remember { mutableStateOf("") }
     var expandedTipeKegiatan by remember { mutableStateOf(false) }
     var expandedNamaPemateri by remember { mutableStateOf(false) }
     var expandedNamaLembaga by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(false) }
 
     Text(
         text = "Tambah Jadwal Kegiatan",
@@ -114,9 +109,10 @@ fun TopSection(
 
     CustomOutlinedTextField(
         label = "Judul Kegiatan",
-        value = judulKegiatan,
-        error = null,
-        onValueChange = {judulKegiatan = it
+        value = state.judulKegiatan,
+        error = state.judulKegiatanError,
+        onValueChange = {
+            onEvent(AddJadwalMentorEvent.JudulKegiatanChanged(it))
         },
         placeholder = "Masukkan judul kegiatan",
         modifier = Modifier.fillMaxWidth(),
@@ -128,10 +124,10 @@ fun TopSection(
 
     CustomOutlinedTextFieldDropdown(
         label = "Tipe Kegiatan",
-        value = tipeKegiatan,
+        value = state.tipeKegiatan,
         asteriskAtEnd = true,
         onValueChange = {
-            tipeKegiatan = it
+            onEvent(AddJadwalMentorEvent.TipeKegiatanChanged(it))
         },
         placeholder = "Pilih Tipe Kegiatan",
         modifier = Modifier.fillMaxWidth(),
@@ -142,25 +138,24 @@ fun TopSection(
         onChangeExpanded = {
             expandedTipeKegiatan = it
         },
-        error = null
+        error = state.tipeKegiatanError
     )
 
     CustomOutlinedTextFieldDropdownDate(
         label = "Tanggal Kegiatan",
-        value = selectedDate,
+        value = state.selectedDate,
         placeholder = "DD/MM/YYYY",
         modifier = Modifier.fillMaxWidth(),
         labelDefaultColor = ColorPalette.Monochrome400,
         labelFocusedColor = ColorPalette.PrimaryColor700,
         datePickerState = datePickerState,
         asteriskAtEnd = true,
-        error = null,
+        error = state.selectedDateError,
         expanded = expandedDate,
         onChangeExpanded = {
             onExpandedDateChange(it)
         },
     )
-
 
     Row(
         modifier = Modifier
@@ -170,9 +165,10 @@ fun TopSection(
     ) {
         CustomOutlinedTextField(
             label = "Waktu Mulai",
-            value = waktuMulai,
-            error = null,
-            onValueChange = {waktuMulai = it
+            value = state.waktuMulai,
+            error = state.waktuMulaiError,
+            onValueChange = {
+                onEvent(AddJadwalMentorEvent.WaktuMulaiChanged(it))
             },
             placeholder = "HH:MM",
             modifier = Modifier.width(180.dp),
@@ -183,9 +179,10 @@ fun TopSection(
         )
         CustomOutlinedTextField(
             label = "Waktu Selesai",
-            value = waktuSelesai,
-            error = null,
-            onValueChange = {waktuSelesai = it
+            value = state.waktuSelesai,
+            error = state.waktuSelesaiError,
+            onValueChange = {
+                onEvent(AddJadwalMentorEvent.WaktuSelesaiChanged(it))
             },
             placeholder = "HH:MM",
             modifier = Modifier
@@ -198,10 +195,10 @@ fun TopSection(
     }
     CustomOutlinedTextFieldDropdown(
         label = "Nama Pemateri",
-        value = namaPemateri,
+        value = state.namaPemateri,
         asteriskAtEnd = true,
         onValueChange = {
-            namaPemateri = it
+            onEvent(AddJadwalMentorEvent.NamaPemateriChanged(it))
         },
         placeholder = "Pilih Nama Pemateri",
         modifier = Modifier.fillMaxWidth(),
@@ -212,14 +209,14 @@ fun TopSection(
         onChangeExpanded = {
             expandedNamaPemateri = it
         },
-        error = null
+        error = state.namaPemateriError
     )
     CustomOutlinedTextFieldDropdown(
         label = "Nama Lembaga",
-        value = namaLembaga,
+        value = state.namaLembaga,
         asteriskAtEnd = true,
         onValueChange = {
-            namaLembaga = it
+            onEvent(AddJadwalMentorEvent.NamaLembagaChanged(it))
         },
         placeholder = "Pilih Nama Lembaga",
         modifier = Modifier.fillMaxWidth(),
@@ -230,17 +227,17 @@ fun TopSection(
         onChangeExpanded = {
             expandedNamaLembaga = it
         },
-        error = null
+        error = state.namaLembagaError
     )
 
     CustomOutlinedTextField(
         label = "Deskripsi Agenda",
-        value = deskripsiAgenda,
+        value = state.deskripsiAgenda,
         onValueChange = {
-            deskripsiAgenda = it
+            onEvent(AddJadwalMentorEvent.DeskripsiAgendaChanged(it))
         },
         asteriskAtEnd = true,
-        error = null,
+        error = state.deskripsiAgendaError,
         placeholder = "Isi detail acara disini",
         modifier = Modifier
             .fillMaxWidth()
@@ -253,9 +250,10 @@ fun TopSection(
     )
     CustomOutlinedTextField(
         label = "Tautan Kegiatan",
-        value = tautanKegiatan,
-        error = null,
-        onValueChange = {tautanKegiatan = it
+        value = state.tautanKegiatan,
+        error = state.tautanKegiatanError,
+        onValueChange = {
+            onEvent(AddJadwalMentorEvent.TautanKegiatanChanged(it))
         },
         placeholder = "Masukkan Tautan Kegiatan",
         modifier = Modifier.fillMaxWidth(),
@@ -286,16 +284,7 @@ fun TopSection(
         }
         Button(
             onClick = {
-                onSaveFeedback(
-                    tipeKegiatan,
-                    namaPemateri,
-                    namaLembaga,
-                    eventDate.text,
-                    judulKegiatan,
-                    tautanKegiatan,
-                    deskripsiAgenda,
-                )
-                isLoading = true
+                onEvent(AddJadwalMentorEvent.Submit)
             },
             modifier = Modifier
                 .width(120.dp)

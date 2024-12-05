@@ -32,6 +32,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,10 +43,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.common.UiState
 import com.example.slicingbcf.data.local.detailJadwal
 import com.example.slicingbcf.data.local.profilLembaga
+import com.example.slicingbcf.implementation.mentor.jadwal.JadwalEvent
+import com.example.slicingbcf.implementation.mentor.jadwal.JadwalViewModel
+import com.example.slicingbcf.ui.shared.state.ErrorWithReload
+import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.YearMonth
@@ -58,20 +65,36 @@ fun JadwalMingguMentorScreen(
     onNavigateMonthlyCalendar: (String) -> Unit = {},
     onNavigateDetailCalendar: (String) -> Unit = {},
     onNavigateAddCalendar: (String) -> Unit,
-    id : String
+    id : String,
+    viewModel: JadwalViewModel = hiltViewModel()
 ) {
-    val userName = profilLembaga.firstOrNull()?.name ?: "Pengguna"
     val schedule = detailJadwal.groupBy { it.date }.mapValues { entry ->
         entry.value.map { (it.beginTime to it.endTime) to it.title }
     }
-
-    TopSection(
-        userName = profilLembaga.firstOrNull()?.name ?: "Pengguna",
-        schedule = schedule,
-        onNavigateMonthlyCalendar = onNavigateMonthlyCalendar,
-        onNavigateDetailCalendar = onNavigateDetailCalendar,
-        onNavigateAddCalendar = onNavigateAddCalendar
-    )
+    val state by viewModel.state.collectAsState()
+    when (state) {
+        is UiState.Loading -> {
+            LoadingCircularProgressIndicator()
+        }
+        is UiState.Success -> {
+            TopSection(
+                userName = profilLembaga.firstOrNull()?.name ?: "Pengguna",
+                schedule = schedule,
+                onNavigateMonthlyCalendar = onNavigateMonthlyCalendar,
+                onNavigateDetailCalendar = onNavigateDetailCalendar,
+                onNavigateAddCalendar = onNavigateAddCalendar
+            )
+        }
+        is UiState.Error -> {
+            val errorMessage = (state as UiState.Error).message
+            ErrorWithReload(
+                errorMessage = errorMessage,
+                onRetry = {
+                    viewModel.onEvent(JadwalEvent.ReloadData)
+                }
+            )
+        }
+    }
 }
 
 @Composable
