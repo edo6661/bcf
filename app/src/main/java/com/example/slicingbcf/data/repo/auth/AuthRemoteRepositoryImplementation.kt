@@ -21,7 +21,7 @@ class AuthRemoteRepositoryImplementation @Inject constructor(
   ) : Flow<UiState<ResponseLogin>> =
     flow {
       emit(UiState.Loading)
-      val result = safeApiCall {
+      val result   = safeApiCall {
         apiService.signIn(
           loginRequest
         )
