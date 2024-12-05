@@ -32,7 +32,7 @@ fun SearchForumDiskusiScreen(
   val scrollState = rememberScrollState()
 
   DiscussionScaffold(
-    onClick = { Log.d("discussion", "discussion") }
+    onClick = {  }
   ) { innerPadding ->
     Column(
       modifier = modifier
@@ -62,7 +62,6 @@ private fun TopSection() {
     ) {
     SearchBarCustom(
       onSearch = {
-        Log.d("search", it)
         query = it
       },
       query = query,
@@ -75,7 +74,7 @@ private fun TopSection() {
     )
 
     SmallFloatingActionButton(
-      onClick = { Log.d("filter", "filter clicked") },
+      onClick = {  },
       modifier = Modifier.size(40.dp),
       containerColor = ColorPalette.PrimaryColor100
     ) {
