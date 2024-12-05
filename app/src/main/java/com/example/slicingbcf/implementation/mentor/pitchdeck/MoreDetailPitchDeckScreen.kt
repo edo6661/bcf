@@ -22,6 +22,7 @@ import com.example.slicingbcf.data.local.worksheetsPeserta
 fun MoreDetailPitchdeckScreen(
   modifier : Modifier = Modifier,
 ) {
+
   val scrollState = rememberScrollState()
   Column(
     modifier = modifier

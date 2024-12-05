@@ -13,7 +13,6 @@ import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
 import com.example.slicingbcf.ui.shared.PrimaryButton
 import com.example.slicingbcf.ui.shared.message.SecondaryButton
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
-import kotlinx.coroutines.delay
 
 // TODO: RAPIHIN LAYOUT + TAMBAHIN ITEMS ITEMS LAINNYA YANG ADA DI COLUMN JUDUL DLL
 @Composable
@@ -21,6 +20,7 @@ fun DetailWorksheetPesertaScreen(
   modifier : Modifier = Modifier,
   id : String
 ) {
+
   var tautanLembarKerja by remember { mutableStateOf("") }
   val onChangeTautanLembarKerja = { value : String ->
     tautanLembarKerja = value
@@ -32,16 +32,17 @@ fun DetailWorksheetPesertaScreen(
   Column(
     modifier = modifier.padding(
       horizontal = 16.dp,
+      vertical = 24.dp
     ),
     verticalArrangement = Arrangement.spacedBy(36.dp),
   ) {
-//    Text(
-//      text = "Submisi Lembar Kerja",
-//      style = StyledText.MobileLargeMedium,
-//      color = ColorPalette.Black,
-//      modifier = Modifier.fillMaxWidth(),
-//      textAlign = TextAlign.Center,
-//    )
+    Text(
+      text = "Submisi Lembar Kerja",
+      style = StyledText.MobileLargeMedium,
+      color = ColorPalette.Black,
+      modifier = Modifier.fillMaxWidth(),
+      textAlign = TextAlign.Center,
+    )
     Column(
       verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {

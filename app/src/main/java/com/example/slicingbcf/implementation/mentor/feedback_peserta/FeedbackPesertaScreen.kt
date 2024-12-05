@@ -1,43 +1,59 @@
 package com.example.slicingbcf.implementation.mentor.feedback_peserta
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import android.net.Uri
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.slicingbcf.R
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.ui.animations.AnimatedContentSlide
+import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
 import com.example.slicingbcf.ui.shared.PrimaryButton
 import com.example.slicingbcf.ui.shared.rating.RatingField
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdown
 import com.example.slicingbcf.ui.shared.textfield.TextFieldWithTitle
+import com.example.slicingbcf.ui.upload.FileUploadSection
+import kotlinx.coroutines.launch
 
-// TODO: jadiin best practice tentang animasi dan suruh jelasin tentang animasi nya
-@Preview
 @Composable
-fun FeedbackPesertaScreen(
-  modifier : Modifier = Modifier,
+fun FormFeedbackPesertaMentorScreen(
+  modifier: Modifier = Modifier,
+  viewModel: FeedbackPesertaViewModel = hiltViewModel()
 ) {
-  var currentScreen by rememberSaveable { mutableStateOf(0) }
-  val onChangeScreen : (Int) -> Unit = { screen ->
-    currentScreen = screen
-  }
+  val uiState by viewModel.uiState.collectAsState()
+  val currentScreen by viewModel.currentScreen.collectAsState()
   val scrollState = rememberScrollState()
 
-  var initialState by remember { mutableStateOf(0) }
+
+  var initialState by remember { mutableIntStateOf(0) }
+
+  val filePickerLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.OpenDocument(),
+    onResult = { uri ->
+      viewModel.onEvent(FeedbackPesertaEvent.DokumentasiSesiMentoringClusterChanged(uri))
+    }
+  )
+  val deleteFile = {
+    viewModel.onEvent(FeedbackPesertaEvent.DokumentasiSesiMentoringClusterChanged(null))
+  }
+  val coroutineScope = rememberCoroutineScope()
+  LaunchedEffect(currentScreen) {
+    coroutineScope.launch {
+      scrollState.scrollTo(0)
+    }
+  }
+
 
   Column(
     modifier = modifier
@@ -51,19 +67,25 @@ fun FeedbackPesertaScreen(
     AnimatedContentSlide(
       currentScreen = currentScreen,
       initialState = initialState,
-      label = "Feedback Peserta Animation Content ",
+      label = "Feedback Peserta Animation Content",
     ) { targetScreen ->
       when (targetScreen) {
         0 -> FirstScreen(
-          onChangeScreen = onChangeScreen,
-          namaLembaga = "",
-          namaLembagaOnValueChange = {},
-          periodeCapaianMentoring = "",
-          periodeCapaianMentoringOnValueChange = {}
+          onChangeScreen = { viewModel.onEvent(FeedbackPesertaEvent.ChangeScreen(1)) },
+          state = uiState,
+          onEvent = { event ->
+            viewModel.onEvent(event)
+          }
         )
 
         1 -> SecondScreen(
-          onBackClick = { onChangeScreen(0) }
+          onBackClick = { viewModel.onEvent(FeedbackPesertaEvent.ChangeScreen(0)) },
+          state = uiState,
+          onEvent = { event ->
+            viewModel.onEvent(event)
+          },
+          filePickerLauncher = filePickerLauncher,
+          deleteFile = deleteFile
         )
       }
 
@@ -72,27 +94,34 @@ fun FeedbackPesertaScreen(
       }
     }
   }
+  SubmitLoadingIndicatorDouble(
+    isLoading = uiState.isLoading,
+    onAnimationFinished = {
+      viewModel.onEvent(FeedbackPesertaEvent.ClearState)
+    },
+    title = "Mengirimkan Feedback",
+    titleBerhasil = "Feedback Berhasil Dikirim",
+  )
 }
+
 
 @Composable
 fun FirstScreen(
-  namaLembaga : String,
-  namaLembagaOnValueChange : (String) -> Unit,
-  periodeCapaianMentoring : String,
-  periodeCapaianMentoringOnValueChange : (String) -> Unit,
   onChangeScreen : (Int) -> Unit,
+  state: FeedbackPesertaState,
+  onEvent: (FeedbackPesertaEvent) -> Unit
 ) {
   Column(
     verticalArrangement = Arrangement.spacedBy(24.dp)
   ) {
     FirstScreenTopSection(
-      namaLembaga = namaLembaga,
-      namaLembagaOnValueChange = namaLembagaOnValueChange,
-      periodeCapaianMentoring = periodeCapaianMentoring,
-      periodeCapaianMentoringOnValueChange = periodeCapaianMentoringOnValueChange
+      state = state,
+      onEvent = onEvent
     )
     FirstBottomSection(
       onChangeScreen = onChangeScreen,
+      state = state,
+      onEvent = onEvent
 
       )
   }
@@ -101,14 +130,25 @@ fun FirstScreen(
 
 @Composable
 fun SecondScreen(
-  onBackClick : () -> Unit
+  onBackClick : () -> Unit,
+  state: FeedbackPesertaState,
+  onEvent: (FeedbackPesertaEvent) -> Unit,
+  filePickerLauncher: ManagedActivityResultLauncher<Array<String>, Uri?>,
+  deleteFile: () -> Unit
 ) {
   Column(
     verticalArrangement = Arrangement.spacedBy(24.dp)
   ) {
-    SecondScreenTopSection()
+    SecondScreenTopSection(
+      state = state,
+      onEvent = onEvent
+    )
     SecondBottomSection(
-      onBackClick = onBackClick
+      onBackClick = onBackClick,
+      state = state,
+      onEvent = onEvent,
+      filePickerLauncher = filePickerLauncher,
+      deleteFile = deleteFile
     )
 
 
@@ -118,10 +158,8 @@ fun SecondScreen(
 
 @Composable
 fun FirstScreenTopSection(
-  namaLembaga : String,
-  namaLembagaOnValueChange : (String) -> Unit,
-  periodeCapaianMentoring : String,
-  periodeCapaianMentoringOnValueChange : (String) -> Unit
+  state: FeedbackPesertaState,
+  onEvent: (FeedbackPesertaEvent) -> Unit
 ) {
   var expandedNamaLembaga by remember { mutableStateOf(false) }
   var expandedPeriodeCapaianMentoring by remember { mutableStateOf(false) }
@@ -130,8 +168,10 @@ fun FirstScreenTopSection(
     verticalArrangement = Arrangement.spacedBy(24.dp)
   ) {
     CustomOutlinedTextFieldDropdown(
-      value = namaLembaga,
-      onValueChange = namaLembagaOnValueChange,
+      value = state.namaLembaga,
+      onValueChange = {
+        onEvent(FeedbackPesertaEvent.NamaLembagaChanged(it))
+      },
       expanded = expandedNamaLembaga,
       onChangeExpanded = { expandedNamaLembaga = it },
       label = "Nama Lembaga",
@@ -139,8 +179,10 @@ fun FirstScreenTopSection(
       dropdownItems = listOf("Lembaga 1", "Lembaga 2", "Lembaga 3")
     )
     CustomOutlinedTextFieldDropdown(
-      value = periodeCapaianMentoring,
-      onValueChange = periodeCapaianMentoringOnValueChange,
+      value = state.periodeCapaianMentoring,
+      onValueChange = {
+        onEvent(FeedbackPesertaEvent.PeriodeCapaianMentoringChanged(it))
+      },
       expanded = expandedPeriodeCapaianMentoring,
       onChangeExpanded = { expandedPeriodeCapaianMentoring = it },
       label = "Periode Capaian Mentoring",
@@ -168,22 +210,31 @@ private fun Title() {
 @Composable
 fun FirstBottomSection(
   onChangeScreen : (Int) -> Unit,
+  state : FeedbackPesertaState,
+  onEvent: (FeedbackPesertaEvent) -> Unit
 ) {
   Column(
     verticalArrangement = Arrangement.spacedBy(24.dp)
   ) {
-    RatingField(
-      title = "Kualitas Materi",
-      description = "Seberapa baik kualitas materi yang diberikan?",
-      rating = "1",
-      onRatingChange = {}
+    Text(
+      text = "Evaluasi Capaian Mentoring Lembaga",
+      style = StyledText.MobileBaseSemibold,
+      color = ColorPalette.PrimaryColor700,
     )
-    RatingField(
-      title = "Kualitas Materi",
-      description = "Seberapa baik kualitas materi yang diberikan?",
-      rating = "1",
-      onRatingChange = {}
-    )
+    ConstantFeedbackPeserta.evaluasiCapaianMentorings.forEachIndexed{i, evaluasiCapaianMentoring ->
+      RatingField(
+        description = evaluasiCapaianMentoring,
+        rating = state.evaluasiCapaianMentoring[i],
+        onRatingChange = {
+          onEvent(
+            FeedbackPesertaEvent.EvaluasiCapaianMentoringChanged(
+              index = i,
+              evaluasiKepuasan = it
+            )
+          )
+        }
+      )
+    }
     Box(
       modifier = Modifier
         .fillMaxWidth(),
@@ -202,21 +253,28 @@ fun FirstBottomSection(
 
 
 @Composable
-fun SecondScreenTopSection() {
+fun SecondScreenTopSection(
+  state : FeedbackPesertaState,
+  onEvent: (FeedbackPesertaEvent) -> Unit
+) {
   Column(
     verticalArrangement = Arrangement.spacedBy(24.dp)
   ) {
     RatingField(
       title = "Evaluasi Lembaga",
       description = "Apakah setiap lembaga on the track untuk mencapai tujuannya)",
-      rating = "1",
-      onRatingChange = {}
+      rating = state.evaluasiLembaga,
+      onRatingChange = {
+        onEvent(FeedbackPesertaEvent.EvaluasiLembagaChanged(it))
+      }
     )
     RatingField(
       title = "Evaluasi Kepuasan",
       description = "Apakah Anda puas dalam sesi mentoring yang telah dilakukan?*",
-      rating = "1",
-      onRatingChange = {}
+      rating = state.evaluasiKepuasan,
+      onRatingChange = {
+        onEvent(FeedbackPesertaEvent.EvaluasiKepuasanChanged(it))
+      }
     )
 
   }
@@ -224,12 +282,21 @@ fun SecondScreenTopSection() {
 
 @Composable
 fun SecondBottomSection(
-  onBackClick : () -> Unit
+  onBackClick : () -> Unit,
+  state : FeedbackPesertaState,
+  onEvent: (FeedbackPesertaEvent) -> Unit,
+  filePickerLauncher: ManagedActivityResultLauncher<Array<String>, Uri?>,
+  deleteFile: () -> Unit
 ) {
   Column(
     verticalArrangement = Arrangement.spacedBy(24.dp)
   ) {
-    FormSection()
+    FormSection(
+      state = state,
+      onEvent = onEvent,
+      filePickerLauncher = filePickerLauncher,
+      deleteFile = deleteFile
+    )
     Row(
       modifier = Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.End
@@ -243,7 +310,7 @@ fun SecondBottomSection(
       )
       PrimaryButton(
         text = "Kirim",
-        onClick = onBackClick,
+        onClick = { onEvent(FeedbackPesertaEvent.Submit) },
         style = StyledText.MobileBaseMedium,
         textColor = ColorPalette.Monochrome10,
       )
@@ -254,70 +321,56 @@ fun SecondBottomSection(
 
 @Composable
 fun FormSection(
-) {
+  state : FeedbackPesertaState,
+  onEvent: (FeedbackPesertaEvent) -> Unit,
+  filePickerLauncher: ManagedActivityResultLauncher<Array<String>, Uri?>,
+  deleteFile: () -> Unit
+  ) {
+
   Column(
     verticalArrangement = Arrangement.spacedBy(20.dp)
   ) {
     TextFieldWithTitle(
       heading = "Hal-hal yang dibahas selama kegiatan mentoring",
-      title = "Hal-hal yang Dibahas Selama Kegiatan Mentoring*",
-      onChange = {},
-      value = "",
-      placeholder = "Dibahas",
-      label = "Kegiatan",
-      styleTitle = StyledText.MobileSmallMedium
+      isTitleWithAsterisk = true,
+      title = "Hal-hal yang Dibahas Selama Kegiatan Mentoring",
+      onChange = {
+        onEvent(FeedbackPesertaEvent.HalHalYangDibahasChanged(it))
+      },
+      value = state.halhalYangDibahas,
+      placeholder = "Kegiatan Yang Dibahas",
+      label = null,
+      styleTitle = StyledText.MobileSmallMedium,
+      heightTextField = 124
     )
     TextFieldWithTitle(
       title = "Silakan sampaikan tantangan utama yang dihadapi dari setiap lembaga*",
-      onChange = {},
-      value = "",
-      placeholder = "Umpan Balik",
-      label = "Umpan",
-      styleTitle = StyledText.MobileSmallMedium
+      isTitleWithAsterisk = true,
+      onChange = {
+        onEvent(FeedbackPesertaEvent.TantanganUtamaChanged(it))
+      },
+      value = state.tantanganUtama,
+      placeholder = "Tantangan Utama",
+      label = null,
+      styleTitle = StyledText.MobileSmallMedium,
+      heightTextField = 124
     )
     Column(
       verticalArrangement = Arrangement.spacedBy(12.dp),
 
       ) {
-      Text(
-        text = "Dokumentasi Sesi Mentoring Cluster*",
-        style = StyledText.MobileSmallMedium,
-        color = ColorPalette.Black,
+
+      FileUploadSection(
+        title = "Dokumentasi Sesi Mentoring Cluster",
+        asteriskAtEnd = true,
+        onFileSelect = {
+          filePickerLauncher.launch(arrayOf("image/*", "application/pdf"))
+        },
+        buttonText = "Klik untuk unggah file",
+        deleteFile = deleteFile,
+        selectedFileUri = state.dokumentasiSesiMentoringCluster,
+
       )
-      Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-          .fillMaxWidth()
-          .border(
-            width = 1.dp,
-            color = ColorPalette.Monochrome500,
-            shape = RoundedCornerShape(16.dp)
-          )
-          .padding(
-            16.dp
-          )
-      ) {
-        Image(
-          painter = painterResource(
-            R.drawable.icon_wrapper
-          ),
-          contentDescription = "",
-          modifier = Modifier.size(48.dp)
-        )
-        Text(
-          text = "Klik atau tarik file ke area ini untuk mengunggahnya",
-
-          style = StyledText.MobileXsMedium,
-        )
-        Text(
-          text = "Format file yang dapat diunggah hanya PDF, dengan ukuran maksimal 5 MB",
-          style = StyledText.Mobile2xsRegular,
-          color = ColorPalette.Monochrome300,
-          textAlign = TextAlign.Center
-        )
-
-      }
     }
 
   }

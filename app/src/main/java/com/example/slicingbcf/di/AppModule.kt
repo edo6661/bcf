@@ -2,6 +2,7 @@ package com.example.slicingbcf.di
 
 import android.content.Context
 import com.example.slicingbcf.data.local.preferences.UserPreferences
+import com.example.slicingbcf.data.local.preferences.UserRemotePreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,6 +20,11 @@ class AppModule {
   @Singleton
   fun provideUserPreferences(@ApplicationContext context : Context) : UserPreferences {
     return UserPreferences(context)
+  }
+  @Provides
+  @Singleton
+  fun provideRemoteUserPreferences (@ApplicationContext context : Context) : UserRemotePreferences {
+    return UserRemotePreferences(context)
   }
 
 

@@ -39,7 +39,7 @@ sealed class Screen(val route : String) {
 
   sealed class Mentor(route : String) : Screen(route) {
     object PenilaianPeserta : Mentor("penilaian-peserta-mentor")
-    data class DetailPenilaianPeserta(val id : String) : Mentor("penilaian-peserta/$id")
+    data class DetailPenilaianPeserta(val id : String) : Mentor("penilaian-peserta-mentor/$id")
     object FormFeedbackPeserta : Mentor("form-feedback-peserta")
     object Pitchdeck : Mentor("pitchdeck-mentor")
     data class DetailPitchdeck(val id : String) : Mentor("pitchdeck-mentor/$id")
@@ -54,6 +54,8 @@ sealed class Screen(val route : String) {
     object Pengumuman : Mentor("pengumuman-mentor")
     data class DetailPengumumanPeserta(val id : String) : Peserta("pengumuman-mentor/$id")
     object KelompokMentoring : Mentor("kelompok-mentoring-mentor")
+    object WorksheetMentor : Mentor("worksheet-mentor")
+    data class DetailWorksheetMentor(val id : String) : Mentor("worksheet-mentor/$id")
 
     object Laporan : Mentor("laporan")
     object ProfilMentor : Mentor("profil-mentor")

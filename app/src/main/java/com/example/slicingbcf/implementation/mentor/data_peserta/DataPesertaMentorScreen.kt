@@ -27,13 +27,11 @@ import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.Participant
 import com.example.slicingbcf.data.local.toColor
 import com.example.slicingbcf.data.local.toDisplayText
-import com.example.slicingbcf.implementation.peserta.data_peserta.DataPesertaEvent
-import com.example.slicingbcf.implementation.peserta.data_peserta.DataPesertaViewModel
 import com.example.slicingbcf.ui.shared.textfield.SearchBarCustom
 
 @Composable
 fun DataPesertaMentorScreen(
-  viewModel : DataPesertaViewModel = hiltViewModel(),
+  viewModel : DataPesertaMentorViewModel = hiltViewModel(),
   modifier : Modifier = Modifier
 ) {
   // Menggunakan collectAsState untuk mengamati perubahan uiState

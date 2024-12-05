@@ -1,5 +1,7 @@
 package com.example.slicingbcf.di
 
+import com.example.slicingbcf.data.repo.auth.AuthRemoteRepository
+import com.example.slicingbcf.data.repo.auth.AuthRemoteRepositoryImplementation
 import com.example.slicingbcf.data.repo.user.UserRepository
 import com.example.slicingbcf.data.repo.user.UserRepositoryImpl
 import dagger.Binds
@@ -18,6 +20,11 @@ abstract class RepositoryModule {
   abstract fun bindUserRepository(
     userRepositoryImpl : UserRepositoryImpl
   ) : UserRepository
+  @Binds
+  @Singleton
+  abstract fun bindAuthRepository(
+    authRepositoryImpl : AuthRemoteRepositoryImplementation
+  ) : AuthRemoteRepository
 
 
 }

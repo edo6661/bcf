@@ -8,6 +8,12 @@ data class WorksheetPeserta(
   val submissionDeadline: String
 )
 
+data class LembarKerjaPeserta(
+  val namaPeserta : String,
+  val waktuSubmisi : String,
+)
+
+
 val worksheetsPeserta = listOf(
   WorksheetPeserta(
     title = "[Capacity Building] Hari ke-4 Lembar Kerja - Topik:",

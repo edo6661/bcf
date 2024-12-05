@@ -1,14 +1,15 @@
 package com.example.slicingbcf.implementation.peserta.form_monthly_report
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.NavigateBefore
 import androidx.compose.material.icons.automirrored.filled.NavigateNext
@@ -17,15 +18,17 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,9 +45,6 @@ import com.example.slicingbcf.ui.animations.AnimatedContentSlide
 import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
 import com.example.slicingbcf.ui.shared.CustomTimePicker
 import com.example.slicingbcf.ui.shared.PrimaryButton
-import com.example.slicingbcf.ui.shared.form_monthly_report.AmPmOption
-import com.example.slicingbcf.ui.shared.form_monthly_report.ClickableTextField
-import com.example.slicingbcf.ui.shared.form_monthly_report.KeyboardTime
 import com.example.slicingbcf.ui.shared.message.SecondaryButton
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdown
@@ -77,7 +77,10 @@ fun DetailFormMonthlyReportScreen(
   Column(
     modifier = modifier
       .fillMaxWidth()
-      .padding(horizontal = 16.dp),
+      .padding(
+        horizontal = 16.dp,
+        vertical = 24.dp
+      ),
     verticalArrangement = Arrangement.spacedBy(40.dp),
   ) {
     AnimatedContentSlide(
@@ -754,8 +757,9 @@ private fun FirstScreen(
       onValueChange = { newValue ->
         onEvent(FormMonthlyReportEvent.UpdatePeningkatanPenerimaManfaat(newValue))
       },
+      labelFocusedColor = ColorPalette.Monochrome400,
       placeholder = "Ketik Kegiatan",
-      labelDefaultColor = ColorPalette.Monochrome300,
+      labelDefaultColor = ColorPalette.Monochrome400,
       modifier = Modifier.fillMaxWidth(),
       rounded = 40
     )
@@ -789,6 +793,7 @@ private fun FirstScreen(
           )
         },
         dropdownPlaceholder = "Pilih Wilayah",
+
         dropdownItems = wilayahPenerimaManfaats,
         expanded = expandedWilayahPenerimaManfaat,
         onExpandedChange = {
@@ -853,7 +858,7 @@ private fun FirstScreen(
             )
           )
         },
-        dropdownPlaceholder = "Pilih Jenis Platform",
+        dropdownPlaceholder = null,
         dropdownItems = platforms,
         expanded = expandedPlatformDonasi[i],
         onExpandedChange = {
@@ -869,7 +874,7 @@ private fun FirstScreen(
             )
           )
         },
-        text = if (i == 0) "Donasi Online" else "Donasi Offline"
+        text = if (i == 0) "Online" else "Offline"
       )
     }
 
@@ -890,7 +895,7 @@ private fun FirstScreen(
             )
           )
         },
-        dropdownPlaceholder = "Pilih Jenis Platform",
+        dropdownPlaceholder = null,
         dropdownItems = platforms,
         expanded = expandedPlatformSponsorship[i],
         onExpandedChange = {
@@ -906,7 +911,7 @@ private fun FirstScreen(
             )
           )
         },
-        text = if (i == 0) "Sponsorship Online" else "Sponsorship Offline"
+        text = if (i == 0) "Online" else "Offline"
       )
 
     }
@@ -931,7 +936,7 @@ private fun FirstScreen(
             )
           )
         },
-        dropdownPlaceholder = "Pilih Jenis Platform",
+        dropdownPlaceholder = null,
         dropdownItems = platforms,
         expanded = expandedPlatformDonasiMitra[index],
         onExpandedChange = {
@@ -947,7 +952,7 @@ private fun FirstScreen(
             )
           )
         },
-        text = if (index == 0) "Donasi Online" else if (index == 1) "Donasi Offline" else "Dukungan Lainnya",
+        text = if (index == 0) "Online" else if (index == 1) "Offline" else "Lainnya",
         isMitra = true
       )
     }
@@ -956,8 +961,8 @@ private fun FirstScreen(
     title = "Bagaimana proses open recruitment relawan yang dilakukan (secara online maupun offline) selama periode LEAD Indonesia (periode Juli 2024)?*"
   ) {
     CustomOutlinedTextField(
-      label = "Jumlah Penambahan Relawan",
-      placeholder = "Jumlah",
+      label = "Jumlah",
+      placeholder = null,
       value = state.prosesOpenRecruitmentRelawan.jumlah,
       onValueChange = {
         onEvent(
@@ -968,13 +973,15 @@ private fun FirstScreen(
           )
         )
       },
+      keyboardType = KeyboardType.Number,
+      labelFocusedColor = ColorPalette.Monochrome400,
       labelDefaultColor = ColorPalette.Monochrome400,
       rounded = 40,
       modifier = Modifier.fillMaxWidth()
     )
     CustomOutlinedTextField(
       label = "Jelaskan proses open recruitment",
-      placeholder = "Jelaskan proses open recruitment yang anda lakukan selama periode LEAD Indonesia periode Juli 2024\",",
+      placeholder = null,
 
       value = state.prosesOpenRecruitmentRelawan.prosesYangDilakukan,
       onValueChange = {
@@ -986,6 +993,7 @@ private fun FirstScreen(
           )
         )
       },
+      labelFocusedColor = ColorPalette.Monochrome400,
       labelDefaultColor = ColorPalette.Monochrome400,
       rounded = 20,
       modifier = Modifier
@@ -1017,7 +1025,7 @@ private fun SecondScreen(
   Text(
     text = "Bagian ini berisi capaian peserta dalam menyusun Proposal Desain Program Sosial dan Impact Report Lembaga selama mengikuti LEAD Indonesia.",
     style = StyledText.MobileBaseRegular,
-    color = ColorPalette.Monochrome300
+    color = ColorPalette.Monochrome400
   )
   HorizontalDivider(
     modifier = Modifier.fillMaxWidth()
@@ -1026,13 +1034,14 @@ private fun SecondScreen(
     title = "Bagaimana progress rancangan desain program dan penyusunan impact report lembaga Anda selama periode LEAD Indonesia (periode Juli 2024)?*"
   ) {
     CustomOutlinedTextField(
-      placeholder = null,
-      label = "Deskripsikan proses dan capaian selama melakukan diskusi internal kelompok/mentoring",
+      label = null,
+      placeholder = "Deskripsikan proses dan capaian selama melakukan diskusi internal kelompok/mentoring",
       value = state.prosesRancanganDesainProgram,
       onValueChange = {
         onEvent(FormMonthlyReportEvent.UpdateProsesRancanganDesainProgram(it))
       },
       labelDefaultColor = ColorPalette.Monochrome400,
+      labelFocusedColor = ColorPalette.Monochrome400,
       rounded = 20,
       modifier = Modifier
         .fillMaxWidth()
@@ -1045,13 +1054,14 @@ private fun SecondScreen(
     title = "Apa tantangan maupun hambatan yang terjadi dalam merancang desain program dan menyusun impact report lembaga Anda selama periode LEAD Indonesia (periode Juli 2024)?*"
   ) {
     CustomOutlinedTextField(
-      placeholder = null,
-      label = "Jelaskan tantangan dan kendala yang dihadapi, serta strategi penyelesaiannya",
+      label = null,
+      placeholder = "Jelaskan tantangan dan kendala yang dihadapi, serta strategi penyelesaiannya",
       value = state.tantanganHambatanMerancangDesainProgram,
       onValueChange = {
         onEvent(FormMonthlyReportEvent.UpdateTantanganHambatan(it))
       },
       labelDefaultColor = ColorPalette.Monochrome400,
+      labelFocusedColor = ColorPalette.Monochrome400,
       rounded = 20,
       modifier = Modifier
         .fillMaxWidth()
@@ -1082,7 +1092,17 @@ private fun ThirdScreen(
     color = ColorPalette.Monochrome600
   )
   Text(
-    text = "Dapat berupa kerja sama untuk mendapatkan pendanaan maupun kerja sama untuk supporting program/kegiatan (media partner, publikasi, narasumber, terlibat dalam kegiatan yang dilakukan, dsb).",
+    text = buildAnnotatedString {
+      append("Dapat berupa kerja sama untuk mendapatkan")
+      withStyle(
+        style = SpanStyle(
+          fontWeight = FontWeight.SemiBold
+        )
+      ) {
+        append(" pendanaan maupun kerja sama untuk supporting program/kegiatan ")
+      }
+      append(" (media partner, publikasi, narasumber, terlibat dalam kegiatan yang dilakukan, dsb) ")
+    },
     style = StyledText.MobileBaseRegular,
     color = ColorPalette.Monochrome600
   )
@@ -1129,6 +1149,7 @@ private fun ThirdScreen(
           onChangeExpanded = {
             expandedJenisLembaga = it
           },
+          labelFocusedColor = ColorPalette.Monochrome400,
           placeholder = null,
           dropdownItems = jenisLembagas,
           modifier = Modifier.weight(0.5f)
@@ -1150,6 +1171,7 @@ private fun ThirdScreen(
           onChangeExpanded = {
             expandedStatus = it
           },
+          labelFocusedColor = ColorPalette.Monochrome400,
           placeholder = null,
           dropdownItems = statuses,
           modifier = Modifier.weight(0.5f)
@@ -1169,6 +1191,7 @@ private fun ThirdScreen(
             )
           )
         },
+        labelFocusedColor = ColorPalette.Monochrome400,
         placeholder = null,
         modifier = Modifier.fillMaxWidth(),
         labelDefaultColor = ColorPalette.Monochrome400,
@@ -1265,6 +1288,7 @@ fun FourthScreen(
               )
             )
           },
+          labelFocusedColor = ColorPalette.Monochrome400,
           expanded = expandedMediaSosial,
           onChangeExpanded = {
             expandedMediaSosial = it
@@ -1303,6 +1327,7 @@ fun FourthScreen(
             )
           )
         },
+        labelFocusedColor = ColorPalette.Monochrome400,
         placeholder = null,
         modifier = Modifier.fillMaxWidth(),
         labelDefaultColor = ColorPalette.Monochrome400,
@@ -1320,6 +1345,7 @@ fun FourthScreen(
             )
           )
         },
+        labelFocusedColor = ColorPalette.Monochrome400,
         placeholder = null,
         modifier = Modifier.fillMaxWidth(),
         labelDefaultColor = ColorPalette.Monochrome400,
@@ -1515,7 +1541,7 @@ fun TableRow(
           end = Offset(size.width, size.height)
         )
       }
-      .padding(horizontal = 16.dp, vertical = 8.dp)
+      .padding(horizontal = 16.dp, vertical = 16.dp)
       .fillMaxWidth()
   ) {
     content()
@@ -1684,7 +1710,8 @@ private fun CustomRowLeftDropdownField(
       labelDefaultColor = ColorPalette.Monochrome400,
       dropdownItems = dropdownItems,
       expanded = expanded,
-      onChangeExpanded = onExpandedChange
+      onChangeExpanded = onExpandedChange,
+      labelFocusedColor = ColorPalette.Monochrome400
     )
     CustomOutlinedTextFieldJumlah(
       value = jumlahValue,
@@ -1700,7 +1727,7 @@ private fun CustomRowRightDropdownField(
   dropdownLabel : String,
   dropdownValue : String,
   onDropdownValueChange : (String) -> Unit,
-  dropdownPlaceholder : String,
+  dropdownPlaceholder : String ? = null,
   dropdownItems : List<String>,
   expanded : Boolean,
   text : String,
@@ -1727,15 +1754,12 @@ private fun CustomRowRightDropdownField(
         )
 
       },
+      keyboardOptions = KeyboardOptions(
+        keyboardType = KeyboardType.Number
+      ),
       modifier = Modifier.weight(0.5f),
       shape = RoundedCornerShape(40.dp),
-      placeholder = {
-        Text(
-          text = text,
-          style = StyledText.MobileSmallRegular,
-          color = ColorPalette.Monochrome400
-        )
-      },
+
       label = {
         Text(
           text = text,
@@ -1743,7 +1767,14 @@ private fun CustomRowRightDropdownField(
           color = ColorPalette.Monochrome400
         )
       },
-      textStyle = StyledText.MobileSmallRegular
+      textStyle = StyledText.MobileSmallRegular,
+       colors = OutlinedTextFieldDefaults.colors(
+        unfocusedBorderColor = ColorPalette.Monochrome400,
+        focusedBorderColor = ColorPalette.Monochrome400,
+        disabledBorderColor = ColorPalette.Monochrome400,
+        unfocusedLabelColor = ColorPalette.Monochrome400,
+        focusedLabelColor = ColorPalette.Monochrome400
+       )
 
 
     )
@@ -1755,11 +1786,13 @@ private fun CustomRowRightDropdownField(
           modifier = Modifier.weight(0.5f),
           shape = RoundedCornerShape(40.dp),
           placeholder = {
-            Text(
-              text = dropdownPlaceholder,
-              style = StyledText.MobileSmallRegular,
-              color = ColorPalette.Monochrome400
-            )
+            dropdownPlaceholder?.let {
+              Text(
+                text = dropdownPlaceholder,
+                style = StyledText.MobileSmallRegular,
+                color = ColorPalette.Monochrome400
+              )
+            }
           },
           label = {
             Text(
@@ -1768,13 +1801,22 @@ private fun CustomRowRightDropdownField(
               color = ColorPalette.Monochrome400
             )
           },
-          textStyle = StyledText.MobileSmallRegular
+          textStyle = StyledText.MobileSmallRegular,
+          colors = OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = ColorPalette.Monochrome400,
+            focusedBorderColor = ColorPalette.Monochrome400,
+            disabledBorderColor = ColorPalette.Monochrome400,
+            unfocusedLabelColor = ColorPalette.Monochrome400,
+            focusedLabelColor = ColorPalette.Monochrome400
+          ),
         )
       }
 
       else    -> {
         CustomOutlinedTextFieldDropdown(
           label = dropdownLabel,
+          labelFocusedColor = ColorPalette.Monochrome400,
+          labelDefaultStyle = StyledText.MobileSmallRegular,
           value = dropdownValue,
           onValueChange = onDropdownValueChange,
           placeholder = dropdownPlaceholder,
@@ -1783,7 +1825,7 @@ private fun CustomRowRightDropdownField(
           labelDefaultColor = ColorPalette.Monochrome400,
           dropdownItems = dropdownItems,
           expanded = expanded,
-          onChangeExpanded = onExpandedChange
+          onChangeExpanded = onExpandedChange,
         )
 
       }
@@ -1798,15 +1840,20 @@ private fun CustomOutlinedTextFieldJumlah(
   onValueChange : (String) -> Unit,
   placeholder : String,
   modifier : Modifier = Modifier,
-  size : Dp = 62.dp,
+  size : Dp = 56.dp,
   textStyle : TextStyle = StyledText.MobileSmallRegular,
   borderColor : Color = ColorPalette.Monochrome400,
-  focusedBorderColor : Color = ColorPalette.PrimaryColor700
+  focusedBorderColor : Color = ColorPalette.Monochrome400
 ) {
   OutlinedTextField(
     value = value,
     onValueChange = onValueChange,
-    modifier = modifier.size(size),
+    modifier = modifier
+      .padding(
+        top = 8.dp,
+      )
+      .size(size)
+    ,
     shape = RoundedCornerShape(40.dp),
     textStyle = textStyle.copy(
       textAlign = TextAlign.Center,

@@ -11,6 +11,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,36 +20,62 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.common.UiState
+import com.example.slicingbcf.data.local.PenilaianPeserta
+import com.example.slicingbcf.ui.shared.state.ErrorWithReload
+import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 import com.example.slicingbcf.ui.shared.textfield.SearchBarCustom
 
 @Composable
 fun PenilaianPesertaScreenMentor(
-  modifier : Modifier,
-  onNavigateDetailPenilaianPeserta : (String) -> Unit
+  modifier: Modifier = Modifier,
+  viewModel: PenilaianPesertaViewModel = hiltViewModel(),
+  onNavigateDetailPenilaianPeserta: (String) -> Unit
 ) {
+  val state by viewModel.state.collectAsState()
+  val searchQuery by viewModel.searchQuery.collectAsState()
+
   Column(
     modifier = modifier
-      .statusBarsPadding()
       .padding(
         horizontal = 16.dp,
+        vertical = 24.dp
       ),
     verticalArrangement = Arrangement.spacedBy(28.dp)
   ) {
     TopSection(
-      onSearch = { Log.d("search", it) }
+      onSearch = { query -> viewModel.onEvent(PenilaianPesertaEvent.Search(query)) },
+      query = searchQuery
     )
-    BottomSection(
-      onNavigateDetailPenilaianPeserta
-    )
+    when (state) {
+      is UiState.Loading -> LoadingCircularProgressIndicator()
+      is UiState.Success -> {
+        val data = (state as UiState.Success<List<PenilaianPeserta>>).data
+        BottomSection(
+          penilaianPesertas = data,
+          onNavigateDetailPenilaianPeserta = onNavigateDetailPenilaianPeserta
+        )
+      }
+      is UiState.Error -> {
+        val errorMessage = (state as UiState.Error).message
+        ErrorWithReload(
+          errorMessage = errorMessage,
+          onRetry = { viewModel.onEvent(PenilaianPesertaEvent.Reload) }
+        )
+      }
+    }
   }
 }
 
+
 @Composable
 fun TopSection(
-  onSearch : (String) -> Unit
+  onSearch : (String) -> Unit,
+  query : String,
 ) {
   Column(
     modifier = Modifier
@@ -69,6 +97,8 @@ fun TopSection(
       SearchBarCustom(
         onSearch = onSearch,
         title = "Cari Penilaian",
+        query = query,
+        bgColor = ColorPalette.PrimaryColor100
       )
 
       SmallFloatingActionButton(
@@ -97,14 +127,13 @@ fun TopSection(
     }
   }
 }
-
 @Composable
 fun BottomSection(
-  onNavigateDetailPenilaianPeserta : (String) -> Unit
+  penilaianPesertas: List<PenilaianPeserta>,
+  onNavigateDetailPenilaianPeserta: (String) -> Unit
 ) {
   LazyColumn(
-    verticalArrangement =
-    Arrangement.spacedBy(16.dp),
+    verticalArrangement = Arrangement.spacedBy(16.dp)
   ) {
     items(penilaianPesertas.size) { index ->
       PenilaianPesertaItem(
@@ -114,6 +143,7 @@ fun BottomSection(
     }
   }
 }
+
 
 @Composable
 fun PenilaianPesertaItem(
@@ -160,57 +190,3 @@ fun PenilaianPesertaItem(
     )
   }
 }
-
-
-data class PenilaianPeserta(
-  val title : String,
-  val description : String,
-)
-
-val penilaianPesertas = listOf(
-  PenilaianPeserta(
-    title = "Penilaian 1",
-    description = "Deskripsi Penilaian 1"
-  ),
-  PenilaianPeserta(
-    title = "Penilaian 2",
-    description = "Deskripsi Penilaian 2"
-  ),
-  PenilaianPeserta(
-    title = "Penilaian 3",
-    description = "Deskripsi Penilaian 3"
-  ),
-  PenilaianPeserta(
-    title = "Penilaian 4",
-    description = "Deskripsi Penilaian 4"
-  ),
-  PenilaianPeserta(
-    title = "Penilaian 5",
-    description = "Deskripsi Penilaian 5"
-  ),
-  PenilaianPeserta(
-    title = "Penilaian 6",
-    description = "Deskripsi Penilaian 6"
-  ),
-  PenilaianPeserta(
-    title = "Penilaian 7",
-    description = "Deskripsi Penilaian 7"
-  ),
-  PenilaianPeserta(
-    title = "Penilaian 8",
-    description = "Deskripsi Penilaian 8"
-  ),
-  PenilaianPeserta(
-    title = "Penilaian 9",
-    description = "Deskripsi Penilaian 9"
-  ),
-  PenilaianPeserta(
-    title = "Penilaian 10",
-    description = "Deskripsi Penilaian 10"
-  ),
-  PenilaianPeserta(
-    title = "Penilaian 11",
-    description = "Deskripsi Penilaian 11"
-  ),
-
-  )

@@ -1,81 +1,90 @@
 package com.example.slicingbcf.implementation.peserta.penilaian_peserta
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Inbox
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
-import com.example.slicingbcf.ui.shared.PrimaryButton
-import com.example.slicingbcf.ui.shared.message.SecondaryButton
+import com.example.slicingbcf.data.local.PenilaianUmum
+import com.example.slicingbcf.data.local.headerTable
+import com.example.slicingbcf.ui.shared.state.ErrorWithReload
+import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 import com.example.slicingbcf.ui.shared.textfield.TextFieldWithTitle
 
+// TODO: Loading nya blm muncul
 
 @Composable
 fun PenilaianPesertaScreen(
-  modifier : Modifier,
-
-  ) {
+  modifier: Modifier,
+  viewModel: PenilaianPesertaViewModel = hiltViewModel()
+) {
+  val state by viewModel.state.collectAsState()
   val scroll = rememberScrollState()
-  Column(
-    modifier = modifier
-      .statusBarsPadding()
-      .padding(
-        horizontal = 16.dp,
-      )
-      .verticalScroll(scroll)
-      .fillMaxWidth(),
-    verticalArrangement = Arrangement.spacedBy(40.dp)
-  ) {
-    TopSection(
-    )
-    BottomSection(
-      penilaian = Penilaian(
-        namaLembaga = "Lembaga A",
-        batch = 1,
-        totalPenilaian = 100
-      ),
-    )
 
-  }
 
+    Column(
+      modifier = modifier
+        .padding(
+          horizontal = 16.dp,
+          vertical = 24.dp
+        )
+        .verticalScroll(scroll)
+        .fillMaxSize(),
+      verticalArrangement = Arrangement.spacedBy(40.dp)
+    ) {
+      when {
+        state.error != null -> {
+          ErrorWithReload(errorMessage = state.error) {
+            viewModel.onEvent(PenilaianPesertaEvent.Refresh)
+          }
+        }
+        !state.loading -> {
+          TopSection()
+          BottomSection(state = state)
+        }
+      }
+    }
+
+    if (state.loading) {
+      LoadingCircularProgressIndicator()
+    }
 }
 
 @Composable
 fun BottomSection(
-  penilaian : Penilaian,
+  state : PenilaianPesertaState,
 ) {
   val maxPenilaian = 100
   Column(
     verticalArrangement = Arrangement.spacedBy(24.dp)
   ) {
     Text(
-      text = "Total Penilaian: ${penilaian.totalPenilaian}/$maxPenilaian",
+      text = "Total Penilaian: ${state.penilaian.totalPenilaian}/$maxPenilaian",
       style = StyledText.MobileBaseSemibold,
       color = ColorPalette.PrimaryColor700,
     )
 
-    TableSection()
-    FormSection(
-    )
+    TableSection(
+      penilaianUmums = state.penilaianUmums,
+      nilaiCapaianClusters = state.nilaiCapaianClusters
 
+
+    )
+    FormSection()
   }
 }
+
 
 @Composable
 fun FormSection(
@@ -91,7 +100,7 @@ fun FormSection(
         heading = "Hal-hal Yang Dibahas Selama Kegiatan Mentoring",
         title = "Umpan Balik Mentor Cluster",
         onChange = {},
-        value = "test text asdasd",
+        value = "",
         placeholder = "Dibahas",
         label = "Kegiatan",
       )
@@ -138,7 +147,10 @@ fun TopSection(
 
 
 @Composable
-fun TableSection() {
+fun TableSection(
+  penilaianUmums : List<PenilaianUmum>,
+  nilaiCapaianClusters : List<PenilaianUmum>
+) {
   val columnWeights = listOf(0.5f, 1.5f, 1f)
   val rowsPenilaianUmum = penilaianUmums.mapIndexed { index, penilaianUmum ->
     listOf(
@@ -160,8 +172,8 @@ fun TableSection() {
   ) {
     Text(
       text = "Penilaian Umum Peserta",
-
       style = StyledText.MobileBaseMedium,
+      color = ColorPalette.Monochrome800
     )
     Table(
       headers = headerTable,
@@ -177,6 +189,8 @@ fun TableSection() {
       text = "Evaluasi Capaian Desain Program",
 
       style = StyledText.MobileBaseMedium,
+      color = ColorPalette.Monochrome800
+
     )
     Table(
       headers = headerTable,
@@ -192,6 +206,8 @@ fun TableSection() {
       text = "Evaluasi Capaian Cluster",
 
       style = StyledText.MobileBaseMedium,
+      color = ColorPalette.Monochrome800
+
     )
     Table(
       headers = headerTable,
@@ -282,38 +298,3 @@ fun TableCell(
   )
 }
 
-
-data class Penilaian(
-  val namaLembaga : String,
-  val batch : Int,
-  val totalPenilaian : Int,
-)
-
-val headerTable = listOf(
-  "No",
-  "Aspek Penilaian",
-  "Penilaian",
-)
-
-data class PenilaianUmum(
-  val aspekPenilaian : String,
-  val penilaian : Int
-)
-
-
-val penilaianUmums = listOf(
-  PenilaianUmum("Kehadiran", 50),
-  PenilaianUmum("Keaktifan", 40),
-  PenilaianUmum("Kemandirian / Inisiatif", 30),
-  PenilaianUmum("Pitching Day", 20),
-  PenilaianUmum("Capaian pendanaan yang didapat", 10),
-  PenilaianUmum("Kerjasama dengan instansi lain", 5),
-  PenilaianUmum("Keaktifan Sosial Media", 5),
-  PenilaianUmum("Pengurangan Nilai", 5),
-)
-val nilaiCapaianClusters = listOf(
-  PenilaianUmum("Capaian Pendanaan", 10),
-  PenilaianUmum("Kerjasama dengan Instansi Lain", 5),
-  PenilaianUmum("Keaktifan Sosial Media", 5),
-  PenilaianUmum("Pengurangan Nilai", 5),
-)

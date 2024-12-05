@@ -144,11 +144,6 @@ fun scaffoldConfig(currentRoute : String?)
         showMainNav = false,
         showBackNav = true,
       )
-    } Screen.Peserta.DataPeserta.route        -> {
-      ScaffoldConfig(
-        showMainNav = false,
-        showBackNav = true,
-      )
     }
 
 
@@ -159,7 +154,12 @@ fun scaffoldConfig(currentRoute : String?)
         showBackNav = true,
       )
     }
-
+    "worksheet-mentor/{id}"-> {
+      ScaffoldConfig(
+        showMainNav = false,
+        showBackNav = true,
+      )
+    }
     Screen.Mentor.SearchForumDiskusi.route ->
       ScaffoldConfig(
       showMainNav = false,

@@ -66,7 +66,7 @@ fun MainScaffold(
         navController.navigateSingleTop(Screen.ProfilMentor.route)
       }
       Role.PESERTA.name -> {
-        navController.navigateSingleTop(Screen.ProfilLembaga.route)
+        navController.navigateSingleTop("data-peserta/{id}")
       }
 
     }

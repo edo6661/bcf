@@ -54,9 +54,9 @@ fun dropdownItemsPeserta_Peserta(
     DropdownItem(
       text = "Umpan Balik Peserta",
       onClick = {
-        navigateAndCloseSideNav(Screen.Peserta.FeedbackPeserta.route)
+        navigateAndCloseSideNav(Screen.Mentor.FeedbackPeserta.route)
       },
-      route = Screen.Peserta.FeedbackPeserta.route
+      route = Screen.Mentor.FeedbackPeserta.route
     ),
 
   )
@@ -186,18 +186,18 @@ fun dropdownItemsMentor_Mentor(
     DropdownItem(
       text = "Kelompok Mentoring",
       onClick = {
-        navigateAndCloseSideNav(Screen.Peserta.KelompokMentoring.route)
+        navigateAndCloseSideNav(Screen.Mentor.KelompokMentoring.route)
       },
       route = Screen.Peserta.KelompokMentoring.route
     ),
-    // ! screen sari
     DropdownItem(
       text = "Umpan Balik Mentor",
       onClick = {
-        Log.d("SideNav", "Umpan Balik Mentor clicked")
+        navigateAndCloseSideNav(Screen.Mentor.UmpanBalikMentor.route)
       },
-      route = null
-    )
+      route = Screen.Mentor.UmpanBalikMentor.route
+    ),
+
   )
 }
 
@@ -214,7 +214,6 @@ fun dropdownItemsTugas_Mentor(
       },
       route = null
     ),
-    // ! screen sari
     DropdownItem(
       text = "Laporan",
       onClick = {
@@ -223,13 +222,13 @@ fun dropdownItemsTugas_Mentor(
       route = null
     ),
     // TODO: REMINDER (GATAU BEDANYA SM PITCHDECK APAAN [ku comment dlu])
-//    DropdownItem(
-//      text = "Lembar Kerja",
-//      onClick = {
-//        Log.d("SideNavMentor", "Lembar Kerja clicked")
-//      },
-//      route = null
-//    ),
+    DropdownItem(
+      text = "Lembar Kerja",
+      onClick = {
+        navigateAndCloseSideNav(Screen.Mentor.WorksheetMentor.route)
+      },
+      route = null
+    ),
     DropdownItem(
       text = "Pitch Deck",
       onClick = {

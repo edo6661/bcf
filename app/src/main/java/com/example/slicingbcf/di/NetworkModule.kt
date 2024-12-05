@@ -1,12 +1,16 @@
 package com.example.slicingbcf.di
 
 import com.example.slicingbcf.BuildConfig
+import com.example.slicingbcf.data.remote.api.ApiService
+import com.example.slicingbcf.interceptor.AuthInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -15,15 +19,28 @@ class NetworkModule {
 
   @Provides
   @Singleton
-//  TODO: add interceptor
-  fun provideOkHttpClient() : OkHttpClient {
-    return OkHttpClient
-      .Builder()
+  fun provideOkHttpClient(authInterceptor : AuthInterceptor) : OkHttpClient {
+    return OkHttpClient.Builder()
       .addInterceptor(
-        if (BuildConfig.DEBUG) HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-        else HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
+//        if (BuildConfig.DEBUG) HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+//        else HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
+        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
       )
+      .addInterceptor(authInterceptor)
       .build()
   }
-//  TODO: add api service
+
+  @Provides
+  @Singleton
+  fun provideApiService(okHttpClient : OkHttpClient) : ApiService {
+    val retrofit = Retrofit.Builder()
+      .baseUrl(
+        BuildConfig.API_BASE_URL
+      )
+      .addConverterFactory(GsonConverterFactory.create())
+      .client(okHttpClient)
+      .build()
+    return retrofit.create(ApiService::class.java)
+  }
+
 }

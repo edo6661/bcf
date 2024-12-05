@@ -25,7 +25,7 @@ android {
     versionName = "1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    buildConfigField("String", "API_BASE_URL", "\"https://\"")
+    buildConfigField("String", "API_BASE_URL", "\"https://straight-dareen-happiness-overload-7d6989f4.koyeb.app/api/\"")
     vectorDrawables {
       useSupportLibrary = true
     }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
@@ -19,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
-import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
+import com.example.slicingbcf.util.isValidTimeInput
 
 @Composable
 @Preview(showSystemUi = true)
@@ -39,7 +40,11 @@ fun KeyboardTime(
     ) {
       CenteredCustomOutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = {newValue ->
+          if (isValidTimeInput(newValue, isHour)) {
+            onValueChange(newValue)
+          }
+        },
         modifier = modifier
           .width(96.dp)
           .height(72.dp)
@@ -77,7 +82,8 @@ fun CenteredCustomOutlinedTextField(
       onValueChange = onValueChange,
       singleLine = true,
       textStyle = textStyle,
-      modifier = Modifier.fillMaxSize()
+      modifier = Modifier.fillMaxSize(),
+      keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
     )
   }
 }
@@ -98,7 +104,7 @@ fun ClickableTextField(
       label = { if (label != null) Text(label) },
       placeholder = { if (placeholder != null) Text(placeholder) },
       modifier = Modifier.fillMaxWidth(),
-      readOnly = true // Agar hanya bisa diklik, bukan diubah langsung
+      readOnly = true
     )
   }
 }

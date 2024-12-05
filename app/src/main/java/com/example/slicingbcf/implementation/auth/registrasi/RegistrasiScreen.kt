@@ -760,6 +760,7 @@ private fun SecondScreen(
           },
           labelFocusedColor = ColorPalette.Monochrome800,
           dropdownPlaceholder = "",
+          error = state.jumlahAngkaPenerimaanManfaatError,
           dropdownItems = kotas,
           expanded = expandedPilihKota,
           onExpandedChange = { expandedPilihKota = it },
@@ -1086,18 +1087,18 @@ private fun ThirdScreen(
     verticalArrangement = Arrangement.spacedBy(20.dp)
   ) {
     Text(
-      text = TextWithAsterisk("Apakah ada pengurus lain yang akan diikutsertakan sebagai peserta?"),
+      text = TextWithAsterisk("Apakah alasan anda bersedia mengikuti agenda tersebut?"),
       style = StyledText.MobileSmallMedium,
       color = ColorPalette.PrimaryColor700
     )
     CustomOutlinedTextField(
-      label = "Masukkan alasan anda bersedia mengikuti agenda tersebut",
+      placeholder = "Masukkan alasan anda bersedia mengikuti agenda tersebut",
       value = state.alasanTidakMengikutiAgenda,
       error = state.alasanTidakMengikutiAgendaError,
       onValueChange = {
         onEvent(RegisterEvent.AlasanTidakMengikutiAgendaChanged(it))
       },
-      placeholder = "Ketik alasan anda tidak bersedia mengikuti agenda tersebut",
+      label = null,
       labelDefaultColor = ColorPalette.Monochrome400,
       labelFocusedColor = ColorPalette.PrimaryColor700,
       modifier = Modifier
@@ -1297,8 +1298,6 @@ fun FourthScreen(
     )
 
     CustomOutlinedTextField(
-      label = "Jelaskan pengetahuan mu terkait Desain Program",
-
       value = state.pengetahuanDesainProgram,
       onValueChange = {
         onEvent(RegisterEvent.PengetahuanDesainProgramChanged(it))
@@ -1306,7 +1305,8 @@ fun FourthScreen(
       multiLine = true,
       maxLines = 5,
       error = state.pengetahuanDesainProgramError,
-      placeholder = "Ketik pengetahuanmu terkait Desain Program",
+      placeholder = "Jelaskan pengetahuan mu terkait Desain Program",
+      label = null,
       modifier = Modifier
         .fillMaxWidth()
         .height(148.dp),
@@ -1316,7 +1316,7 @@ fun FourthScreen(
       )
   }
   ColumnTextField(
-    label = "Jelaskan pengetahuanmu terkait sustainability atau keberlanjutan",
+    placeholder = "Jelaskan pengetahuanmu terkait sustainability atau keberlanjutan",
     value = state.pengetahuanSustainability,
     text = "Apakah yang anda ketahui terkait sustainability atau keberlanjutan",
 
@@ -1331,7 +1331,7 @@ fun FourthScreen(
   ColumnTextField(
     text = "Apakah yang anda ketahui terkait social report atau laporan social?",
     value = state.pengetahuanSocialReport,
-    label = "Jelaskan pengetahuanmu terkait social report atau laporan social",
+    placeholder = "Jelaskan pengetahuanmu terkait social report atau laporan social",
     onValueChange = {
       onEvent(RegisterEvent.PengetahuanSocialReportChanged(it))
     },
@@ -1350,7 +1350,7 @@ fun FourthScreen(
     asteriskAtEnd = true
   )
   ColumnTextField(
-    label = "Jelaskan ekspetasi anda setelah mengikuti kegiatan LEAD Indonesia 2023?",
+    placeholder = "Jelaskan ekspetasi anda setelah mengikuti kegiatan LEAD Indonesia 2023?",
     value = state.ekspetasiSetelahLEAD,
     text = "Jelaskan ekspetasi anda setelah mengikuti kegiatan LEAD Indonesia 2023",
     onValueChange = {
@@ -1362,7 +1362,7 @@ fun FourthScreen(
   ColumnTextField(
     text = "Apakah ada hal lain yang ingin anda tanyakan atau sampaikan terkait LEAD Indonesia 2023?",
     value = state.halLainYangInginDisampaikan,
-    label = "Tuliskan pertanyaan anda disini",
+    placeholder = "Tuliskan pertanyaan anda disini",
     onValueChange = {
       onEvent(RegisterEvent.HalLainYangInginDisampaikanChanged(it))
     },
@@ -1474,8 +1474,9 @@ fun FifthScreen(
     when (state.jumlahAngkaPenerimaanManfaat.isEmpty() || state.jumlahAngkaPenerimaanManfaat.all { it.kota.isEmpty() }) {
       true  -> {
         ColumnKeyValue(
-          key = "Jumlah Angka Penerimaan Manfaat",
-          value = "Belum diisi",
+          key = "Wilayah Jangkauan Program",
+          value = "",
+          error = state.jumlahAngkaPenerimaanManfaatError
         )
       }
 
@@ -1591,15 +1592,20 @@ fun Table(
       TableRow {
         row.forEachIndexed { index, cell ->
           if (cell == "Rincian") {
-            IconButton(
-              onClick = { },
-              modifier = Modifier.size(24.dp)
+            Box(
+              modifier = Modifier.weight(columnWeights.getOrElse(index) { 1f }),
+              contentAlignment = Alignment.CenterStart
             ) {
-              Icon(
-                imageVector = Icons.Default.Edit,
-                contentDescription = "Rincian",
-                tint = ColorPalette.PrimaryColor700
-              )
+              IconButton(
+                onClick = { },
+                modifier = Modifier.size(24.dp)
+              ) {
+                Icon(
+                  imageVector = Icons.Default.Edit,
+                  contentDescription = "Rincian",
+                  tint = ColorPalette.PrimaryColor700
+                )
+              }
             }
           } else {
             TableCell(
@@ -1768,12 +1774,13 @@ private fun NextPrevButton(
 
 @Composable
 private fun ColumnTextField(
-  label : String,
+  label : String? = null,
   value : String,
   text : String,
   onValueChange : (String) -> Unit,
   modifier : Modifier = Modifier,
-  error : String? = null
+  error : String? = null,
+  placeholder : String? = null
 ) {
   Column(
     verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -1788,6 +1795,7 @@ private fun ColumnTextField(
       label = label,
       value = value,
       onValueChange = onValueChange,
+      placeholder = placeholder,
       modifier = Modifier
 
         .fillMaxWidth()
@@ -1816,7 +1824,8 @@ private fun CustomRowWithFields(
   jumlahValue : String,
   onJumlahValueChange : (String) -> Unit,
   modifier : Modifier = Modifier,
-  labelFocusedColor : Color = ColorPalette.PrimaryColor700
+  labelFocusedColor : Color = ColorPalette.PrimaryColor700,
+  error : String? = null
 ) {
   Row(
     horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -1835,7 +1844,8 @@ private fun CustomRowWithFields(
         labelDefaultColor = ColorPalette.Monochrome400,
         dropdownItems = dropdownItems,
         expanded = expanded,
-        onChangeExpanded = onExpandedChange
+        onChangeExpanded = onExpandedChange,
+         error = error
       )
     }
 
@@ -1847,7 +1857,7 @@ private fun CustomRowWithFields(
         value = jumlahValue,
         onValueChange = onJumlahValueChange,
         placeholder = "Jumlah",
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
       )
     }
   }

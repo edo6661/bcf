@@ -1,14 +1,11 @@
 package com.example.slicingbcf.ui.navigation
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.navigation.*
 import androidx.navigation.compose.composable
-import com.example.slicingbcf.data.local.listBatch
-import com.example.slicingbcf.data.local.mentor
 import com.example.slicingbcf.implementation.mentor.data_peserta.DataPesertaMentorScreen
-import com.example.slicingbcf.implementation.mentor.feedback_peserta.FeedbackPesertaScreen
+import com.example.slicingbcf.implementation.mentor.feedback_peserta.FormFeedbackPesertaMentorScreen
 import com.example.slicingbcf.implementation.mentor.forum_diskusi.DetailForumDiskusiScreen
 import com.example.slicingbcf.implementation.mentor.forum_diskusi.ForumDiskusiScreen
 import com.example.slicingbcf.implementation.mentor.forum_diskusi.SearchForumDiskusiScreen
@@ -21,6 +18,10 @@ import com.example.slicingbcf.implementation.mentor.penilaian_peserta.DetailPeni
 import com.example.slicingbcf.implementation.mentor.penilaian_peserta.PenilaianPesertaScreenMentor
 import com.example.slicingbcf.implementation.mentor.pitchdeck.MoreDetailPitchdeckScreen
 import com.example.slicingbcf.implementation.mentor.pitchdeck.PitchdeckScreen
+import com.example.slicingbcf.implementation.mentor.umpan_balik.DetailUmpanBalikMentorScreen
+import com.example.slicingbcf.implementation.mentor.umpan_balik.UmpanBalikMentorScreen
+import com.example.slicingbcf.implementation.mentor.worksheet_mentor.DetailWorksheetMentorScreen
+import com.example.slicingbcf.implementation.mentor.worksheet_mentor.WorksheetMentorScreen
 import com.example.slicingbcf.implementation.mentor.profil.ProfilMentorScreen
 import com.example.slicingbcf.implementation.mentor.umpan_balik.UmpanBalikMentorScreen
 
@@ -29,7 +30,7 @@ fun NavGraphBuilder.mentorNavGraph(
   navController : NavHostController
 ) {
   navigation(
-    startDestination = Screen.Mentor.MoreDetailPitchdeck("1").route, route = "mentor"
+    startDestination = Screen.Mentor.PenilaianPeserta.route, route = "mentor"
   ) {
     composable(
       route = Screen.Mentor.PenilaianPeserta.route
@@ -38,7 +39,6 @@ fun NavGraphBuilder.mentorNavGraph(
       val onNavigateDetailPenilaianPeserta = { id : String ->
         navController.navigate("penilaian-peserta-mentor/$id")
       }
-
       PenilaianPesertaScreenMentor (
         modifier = modifier,
         onNavigateDetailPenilaianPeserta = onNavigateDetailPenilaianPeserta
@@ -58,7 +58,7 @@ fun NavGraphBuilder.mentorNavGraph(
     composable(
       route = Screen.Mentor.FormFeedbackPeserta.route
     ) {
-      FeedbackPesertaScreen(
+      FormFeedbackPesertaMentorScreen(
         modifier = modifier
       )
     }
@@ -154,6 +154,16 @@ fun NavGraphBuilder.mentorNavGraph(
     }
 
     composable(
+      route = "umpan-balik-mentor/{id}",
+      arguments = listOf(navArgument("id"){type = NavType.StringType})
+    ) {
+      DetailUmpanBalikMentorScreen(
+        modifier = modifier,
+        id = it.arguments?.getString("id") ?: "1"
+      )
+    }
+
+    composable(
       route = Screen.Mentor.KelompokMentoring.route,
     ) {
       KelompokMentoringMentorScreen(
@@ -188,6 +198,28 @@ fun NavGraphBuilder.mentorNavGraph(
       DetailPengumumanMentorScreen(
         modifier = modifier.padding(
         ), id = id
+      )
+    }
+    composable(
+      route = Screen.Mentor.WorksheetMentor.route
+    ) {
+      val onNavigateDetailWorksheet = { id : String ->
+        navController.navigateSingleTop("worksheet-mentor/$id")
+      }
+      WorksheetMentorScreen (
+        modifier = modifier,
+        onNavigateDetailWorksheet = onNavigateDetailWorksheet
+      )
+    }
+    composable(
+      route = "worksheet-mentor/{id}",
+      arguments = listOf(navArgument("id") { type = NavType.StringType })
+    ) { backStackEntry ->
+      val id = backStackEntry.arguments?.getString("id") ?: ""
+      if (id.isEmpty()) throw IllegalStateException("id must not be empty")
+      DetailWorksheetMentorScreen(
+        modifier = modifier,
+        id = id
       )
     }
 

@@ -2,7 +2,6 @@ package com.example.slicingbcf.ui.sidenav
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
@@ -12,7 +11,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material3.*
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -307,9 +309,9 @@ private fun SideNavDropdown(
     ColorPalette.OnSurface
   }
   val textStyle = if (isActiveRoute(route ?: title)) {
-    StyledText.MobileBaseMedium
+    StyledText.MobileBaseSemibold
   } else {
-    StyledText.MobileBaseRegular
+    StyledText.MobileBaseMedium
   }
 
 

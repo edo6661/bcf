@@ -12,7 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,21 +73,42 @@ fun LandingPageScreen(
 
 private data class SectionData(
   val title : String,
-  val description : String
+  val description : AnnotatedString
 )
 
 private val sections = listOf(
   SectionData(
     title = "Deskripsi Program",
-    description = "LEAD Indonesia merupakan program intensif pengembangan Kepemimpinan dan penguatan kapasitas bagi profesional muda terhadap pemecahan masalah sosial yang terjadi di Indonesia demi terwujudnya masa depan Pembangunan dan Pertumbuhan Ekonomi Indonesia.",
+    description = buildAnnotatedString {
+      withStyle(
+        style = SpanStyle(
+          fontWeight = FontWeight.SemiBold
+        )
+      ) {
+        append("LEAD Indonesia")
+      }
+      append(" merupakan program intensif pengembangan Kepemimpinan dan penguatan kapasitas bagi profesional muda terhadap pemecahan masalah sosial yang terjadi di Indonesia demi terwujudnya masa depan Pembangunan dan Pertumbuhan Ekonomi Indonesia.")
+
+    },
   ),
   SectionData(
-    "Tema Kegiatan",
-    "Tahun 2023, LEAD Indonesia mengusung tema “Meningkatkan Kemampuan Desain Program untuk Keberhasilan dan Keberlanjutan Organisasi dalam Menghimpun Dana” dalam rangka mencapai Sustainable Development Goals (SDGs)."
+    "Tema Kegiatan", buildAnnotatedString {
+      append("Tahun 2023, LEAD Indonesia mengusung tema")
+      withStyle(
+        style = SpanStyle(
+          fontWeight = FontWeight.SemiBold
+        )
+      ) {
+        append("“Meningkatkan Kemampuan Desain Program untuk Keberhasilan dan Keberlanjutan Organisasi dalam Menghimpun Dana”")
+      }
+      append("dalam rangka mencapai Sustainable Development Goals (SDGs).")
+    }
   ),
   SectionData(
     "Cluster Kesehatan",
-    "Gerakan/komunitas/lembaga sosial yang berfokus pada isu kesehatan, seperti identifikasi, pendampingan, hingga pemulihan pasien yang mengidap tuberkulosis (TBC), HIV/AIDS, dan stunting."
+    buildAnnotatedString {
+      append("Gerakan/komunitas/lembaga sosial yang berfokus pada isu kesehatan, seperti identifikasi, pendampingan, hingga pemulihan pasien yang mengidap tuberkulosis (TBC), HIV/AIDS, dan stunting.")
+    }
   ),
 )
 private val images = listOf(
@@ -94,7 +120,7 @@ private val images = listOf(
 @Composable
 private fun Section(
   title : String,
-  description : String
+  description : AnnotatedString
 ) {
   Column(
     verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
