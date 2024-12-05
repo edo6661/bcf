@@ -1,5 +1,13 @@
 package com.example.slicingbcf.ui.shared.pitchdeck_worksheet
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,8 +42,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -46,7 +56,7 @@ import com.example.slicingbcf.ui.shared.message.SecondaryButton
 @Composable
 fun PitchDeckItem(
     data: PitchDeck,
-    onNavigateDetailPitchdeck : (String) -> Unit,
+    onClick : (String) -> Unit,
     bgColor: Color,
     id : String
 ) {
@@ -107,7 +117,8 @@ fun PitchDeckItem(
                     }
                 }
                 Icon(
-                    imageVector = if (isExpanded.value) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                    imageVector = if (isExpanded.value) Icons.Default.MoreVert else
+                        Icons.AutoMirrored.Default.NavigateNext,
                     contentDescription = null,
                     tint = Color.Black,
                     modifier = Modifier.size(16.dp)
@@ -115,7 +126,11 @@ fun PitchDeckItem(
             }
         }
 
-        if (isExpanded.value) {
+        AnimatedVisibility(
+            visible = isExpanded.value,
+            enter = expandVertically(animationSpec = tween(durationMillis = 300)) + fadeIn(),
+            exit = shrinkVertically(animationSpec = tween(durationMillis = 300)) + fadeOut()
+        ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier
@@ -128,9 +143,6 @@ fun PitchDeckItem(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.clickable {
-                        // Handle link click
-                    }
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.icon_link_45deg),
@@ -160,17 +172,23 @@ fun PitchDeckItem(
                     },
                     style = StyledText.MobileSmallMedium
                 )
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    SecondaryButton(
-                        text = "Lihat Detail",
-                        onClick = {onNavigateDetailPitchdeck(id)},
-                        style = StyledText.MobileSmallMedium
-                    )
-                }
             }
+        }
+    }
+    AnimatedVisibility(
+        visible = isExpanded.value,
+        enter = slideInHorizontally(initialOffsetX = { 1000 }) + fadeIn(),
+        exit = slideOutHorizontally(targetOffsetX = { 1000 }) + fadeOut()
+    ) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            SecondaryButton(
+                text = "Lihat Detail",
+                onClick = { onClick(id) },
+                style = StyledText.MobileSmallMedium
+            )
         }
     }
 }

@@ -7,9 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-//import androidx.compose.foundation.layout.FlowColumnScopeInstance.weight
 import androidx.compose.material3.*
-import androidx.compose.material3.ButtonDefaults.shape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,14 +16,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.PitchDeck
 import com.example.slicingbcf.data.local.pitchDeck
 import com.example.slicingbcf.ui.animations.SubmitLoadingIndicatorDouble
-import com.example.slicingbcf.ui.shared.dialog.CustomAlertDialog
+import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,8 +32,9 @@ fun PitchDeckDetailScreen(
     modifier: Modifier = Modifier,
     id: String = "1",
     onNavigateBeranda: (Int) -> Unit,
+    viewModel: PitchDeckPesertaViewModel = hiltViewModel()
 ) {
-    var tautanPeserta by remember { mutableStateOf(TextFieldValue("")) }
+    val uiState by viewModel.uiState.collectAsState()
 
     Column(
         modifier = modifier
@@ -47,9 +46,9 @@ fun PitchDeckDetailScreen(
         val currentPitchDeck = pitchDeck.first()
 
         TopSection(
+            state = uiState,
+            onEvent = { event -> viewModel.onEvent(event)},
             pitchDeck = currentPitchDeck,
-            tautanPeserta = tautanPeserta,
-            onTautanChange = { tautanPeserta = it },
             onNavigateBeranda = onNavigateBeranda
             )
     }
@@ -57,9 +56,9 @@ fun PitchDeckDetailScreen(
 
 @Composable
 fun TopSection(
-    tautanPeserta: TextFieldValue,
+    state : PitchDeckState,
+    onEvent: (PitchDeckEvent) -> Unit,
     pitchDeck: PitchDeck,
-    onTautanChange: (TextFieldValue) -> Unit,
     onNavigateBeranda: (Int) -> Unit,
 ) {
     var lastModified by remember { mutableStateOf(getCurrentTimePitchDeck()) }
@@ -119,27 +118,20 @@ fun TopSection(
         textAlign = TextAlign.Left,
         color = ColorPalette.PrimaryColor700,
     )
-    OutlinedTextField(
-        value = tautanPeserta,
-        onValueChange = onTautanChange,
-        placeholder = {
-            Text(
-                text = "Lampirkan link pith deck anda disini...",
-                style = StyledText.MobileSmallRegular,
-                color = ColorPalette.Monochrome400
-            )
+
+    CustomOutlinedTextField(
+        label = "Tautan Pitch Deck Peserta",
+        value = state.tautanKegiatan,
+        error = state.tautanKegiatanError,
+        onValueChange = {
+            onEvent(PitchDeckEvent.TautanKegiatanChanged(it))
         },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp),
-        shape = MaterialTheme.shapes.extraLarge,
-        colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color.Transparent,
-            focusedContainerColor = Color.Transparent,
-            unfocusedIndicatorColor = ColorPalette.Monochrome400,
-            focusedIndicatorColor = ColorPalette.Monochrome400
-        ),
-        singleLine = true
+        placeholder = "Lampirkan link pith deck anda disini...",
+        modifier = Modifier.fillMaxWidth(),
+        labelDefaultColor = ColorPalette.Monochrome400,
+        labelFocusedColor = ColorPalette.PrimaryColor700,
+        borderColor = ColorPalette.Outline,
+        rounded = 40,
     )
 
     Text(
@@ -150,7 +142,7 @@ fun TopSection(
         """.trimIndent(),
         style = StyledText.MobileSmallRegular,
         color = ColorPalette.PrimaryColor700,
-        modifier = Modifier.padding(bottom = 16.dp)
+        modifier = Modifier.padding(16.dp)
     )
 
     Row(
@@ -161,7 +153,9 @@ fun TopSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Button(
-            onClick = { isLoading = true },
+            onClick = {
+                onEvent(PitchDeckEvent.Submit)
+                      },
             shape = MaterialTheme.shapes.extraLarge,
             colors = ButtonDefaults.buttonColors(
                 containerColor = ColorPalette.PrimaryColor700,
