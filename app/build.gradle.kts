@@ -81,7 +81,6 @@ dependencies {
 
   // test
   testImplementation("io.mockk:mockk:1.13.5")
-  testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
   // image
   implementation("io.coil-kt.coil3:coil-compose:3.0.0")
