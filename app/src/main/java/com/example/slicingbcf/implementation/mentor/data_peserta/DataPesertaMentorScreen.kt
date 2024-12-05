@@ -1,7 +1,6 @@
 package com.example.slicingbcf.implementation.mentor.data_peserta
 
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -34,7 +33,6 @@ fun DataPesertaMentorScreen(
   viewModel : DataPesertaMentorViewModel = hiltViewModel(),
   modifier : Modifier = Modifier
 ) {
-  // Menggunakan collectAsState untuk mengamati perubahan uiState
   val uiState by viewModel.uiState.collectAsState()
 
   val currentPageItems = uiState.currentPageItems
@@ -51,7 +49,8 @@ fun DataPesertaMentorScreen(
     TopSection(
       onSearch = { q ->
         viewModel.onEvent(DataPesertaEvent.Search(q))
-      }
+      },
+      query = uiState.searchQuery
 
     )
     BottomSection(
@@ -72,7 +71,8 @@ fun DataPesertaMentorScreen(
 
 @Composable
 fun TopSection(
-  onSearch : (String) -> Unit
+  onSearch : (String) -> Unit,
+  query: String
 ) {
   Column(
     modifier = Modifier
@@ -94,6 +94,7 @@ fun TopSection(
       SearchBarCustom(
         onSearch = onSearch,
         title = "Cari Peserta",
+        query = query
       )
 
       SmallFloatingActionButton(
