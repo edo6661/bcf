@@ -1,23 +1,39 @@
 package com.example.slicingbcf.interceptor.helper
 
 import com.example.slicingbcf.data.local.preferences.UserRemotePreferences
-import com.example.slicingbcf.data.remote.api.ApiService
+import com.example.slicingbcf.data.remote.api.RefreshTokenService
 import com.example.slicingbcf.data.remote.request.auth.RefreshTokenRequest
+import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class TokenRefresher @Inject constructor(
-  private val apiService: ApiService,
-  private val userRemotePreferences: UserRemotePreferences
+@Singleton
+class TokenManager @Inject constructor(
+  private val userRemotePreferences: UserRemotePreferences,
+  private val refreshTokenService: RefreshTokenService
 ) {
 
-  suspend fun refreshAccessToken(refreshToken: String): String? {
-    val result = apiService.getNewAccessToken(RefreshTokenRequest(refreshToken))
-    return if (result.isSuccessful) {
-      val newAccessToken = result.body()?.data?.accessToken
-      newAccessToken?.let {
-        userRemotePreferences.saveUserAccessToken(it)
+  suspend fun refreshToken(): String? {
+    val refreshToken = userRemotePreferences.getRefreshToken().firstOrNull()
+    val accessToken = userRemotePreferences.getAccessToken().firstOrNull()
+
+    if (!refreshToken.isNullOrEmpty() && !accessToken.isNullOrEmpty()) {
+      try {
+        val response = refreshTokenService.getNewAccessToken(
+          "Bearer $accessToken",
+          RefreshTokenRequest(refreshToken)
+        )
+        if (response.isSuccessful) {
+          val newAccessToken = response.body()?.data?.accessToken
+          if (!newAccessToken.isNullOrEmpty()) {
+            userRemotePreferences.saveUserAccessToken(newAccessToken)
+            return newAccessToken
+          }
+        }
+      } catch (e: Exception) {
+        e.printStackTrace()
       }
-      newAccessToken
-    } else null
+    }
+    return null
   }
 }
