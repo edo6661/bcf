@@ -22,95 +22,97 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PitchDeckPesertaViewModel @Inject constructor(
-    @IODispatcher private val ioDispatcher: CoroutineDispatcher,
-    @MainDispatcher private val mainDispatcher: CoroutineDispatcher
+  @IODispatcher private val ioDispatcher : CoroutineDispatcher,
+  @MainDispatcher private val mainDispatcher : CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(PitchDeckState())
-    val uiState: StateFlow<PitchDeckState> = _uiState.asStateFlow()
+  private val _uiState = MutableStateFlow(PitchDeckState())
+  val uiState : StateFlow<PitchDeckState> = _uiState.asStateFlow()
 
-    private val _state = MutableStateFlow<UiState<List<PitchDeck>>>(UiState.Loading)
-    val state: StateFlow<UiState<List<PitchDeck>>> = _state.asStateFlow()
+  private val _state = MutableStateFlow<UiState<List<PitchDeck>>>(UiState.Loading)
+  val state : StateFlow<UiState<List<PitchDeck>>> = _state.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading
+  private val _isLoading = MutableStateFlow(false)
+  val isLoading : StateFlow<Boolean> = _isLoading
 
-    init {
+  init {
+    loadData()
+  }
+
+  fun onEvent(event : PitchDeckEvent) {
+    when (event) {
+      is PitchDeckEvent.TautanKegiatanChanged -> {
+        _uiState.update { it.copy(tautanKegiatan = event.tautanKegiatan) }
+      }
+
+      is PitchDeckEvent.ClearState            -> {
+        _uiState.update { PitchDeckState() }
+      }
+
+      is PitchDeckEvent.Submit                -> {
+        submitFeedback()
+      }
+
+      is PitchDeckEvent.ReloadData            -> {
         loadData()
+      }
+
     }
+  }
 
-    fun onEvent(event: PitchDeckEvent){
-        when(event){
-            is PitchDeckEvent.TautanKegiatanChanged -> {
-                _uiState.update { it.copy(tautanKegiatan = event.tautanKegiatan) }
-            }
-            is PitchDeckEvent.ClearState ->{
-                _uiState.update { PitchDeckState() }
-            }
-            is PitchDeckEvent.Submit -> {
-                submitFeedback()
-            }
-            is PitchDeckEvent.ReloadData -> {
-                loadData()
-            }
-
+  private fun loadData() {
+    viewModelScope.launch(ioDispatcher) {
+      _state.value = UiState.Loading
+      try {
+        delay(1500)
+        val data = pitchDeck
+        withContext(mainDispatcher) {
+          _state.value = UiState.Success(data)
         }
-    }
-
-    private fun loadData() {
-        viewModelScope.launch(ioDispatcher) {
-            _state.value = UiState.Loading
-            try {
-                delay(1500)
-                val data = pitchDeck
-                withContext(mainDispatcher) {
-                    _state.value = UiState.Success(data)
-                }
-            } catch (e: Exception) {
-                withContext(mainDispatcher) {
-                    _state.value = UiState.Error(e.localizedMessage ?: "Unknown Error")
-                }
-            }
+      } catch (e : Exception) {
+        withContext(mainDispatcher) {
+          _state.value = UiState.Error(e.localizedMessage ?: "Unknown Error")
         }
+      }
     }
+  }
 
-    @Suppress("t")
-    private fun validate() : Boolean {
-        val state = _uiState.value
-        val validationsString = listOf(
-            state.tautanKegiatan to "Tautan Kegiatan tidak boleh kosong"
+  @Suppress("t")
+  private fun validate() : Boolean {
+    val state = _uiState.value
+    val validationsString = listOf(
+      state.tautanKegiatan to "Tautan Kegiatan tidak boleh kosong"
+    )
+    val errorMapString = validationsString.mapNotNull { (field, errorMessage) ->
+      if (field.isBlankOrEmpty()) errorMessage else null
+    }
+    _uiState.update { it ->
+      it.copy(
+        tautanKegiatanError = errorMapString.find { it == "Tautan Kegiatan tidak boleh kosong" },
+      )
+    }
+    return errorMapString.isEmpty()
+  }
+
+  private fun submitFeedback() {
+    if (! validate()) {
+      _uiState.update {
+        it.copy(
+          error = "Mohon isi semua field yang wajib diisi dan dengan format yang benar",
         )
-        val errorMapString = validationsString.mapNotNull { (field, errorMessage) ->
-            if (field.isBlankOrEmpty()) errorMessage else null
-        }
-        _uiState.update { it ->
-            it.copy(
-                tautanKegiatanError = errorMapString.find { it == "Tautan Kegiatan tidak boleh kosong" },
-            )
-        }
-        return errorMapString.isEmpty()
+      }
+      return
     }
-
-    private fun submitFeedback() {
-        if (! validate()) {
-            _uiState.update {
-                it.copy(
-                    error = "Mohon isi semua field yang wajib diisi dan dengan format yang benar",
-                )
-            }
-            return
+    _uiState.update { it.copy(isLoading = true, error = null) }
+    viewModelScope.launch(ioDispatcher) {
+      try {
+        Log.d("PitchDeckViewModel", "submitFeedback: ${uiState.value}")
+      } catch (e : Exception) {
+        withContext(mainDispatcher) {
+          _uiState.update { it.copy(isLoading = false, error = e.message) }
         }
-        viewModelScope.launch(ioDispatcher) {
-            _uiState.update { it.copy(isLoading = true, error = null) }
-            try {
-                Log.d("PitchDeckViewModel", "submitFeedback: ${uiState.value}")
-                _isLoading.value = true
-            } catch (e: Exception) {
-                withContext(mainDispatcher) {
-                    _uiState.update { it.copy(isLoading = false, error = e.message) }
-                }
-            }
-        }
+      }
     }
+  }
 
 }

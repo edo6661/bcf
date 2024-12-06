@@ -1,5 +1,7 @@
 package com.example.slicingbcf.data.local
 
+import androidx.room.Entity
+
 data class Mentor(
     val namaLengkap: String,
     val tanggalLahir: String,
@@ -29,8 +31,6 @@ data class Lembaga(
     val fokusIsu: String,
     val provinsi: String,
     val namaPeserta: String? = null,
-
-
 )
 
 val listOfLembaga = listOf(
