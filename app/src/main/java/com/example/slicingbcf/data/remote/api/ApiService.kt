@@ -1,24 +1,32 @@
 package com.example.slicingbcf.data.remote.api
 
-import com.example.slicingbcf.data.remote.request.LoginRequest
-import com.example.slicingbcf.data.remote.response.ResponseLogin
-import com.example.slicingbcf.data.remote.response.ResponseProfile
+import com.example.slicingbcf.data.remote.request.auth.LoginRequest
+import com.example.slicingbcf.data.remote.request.auth.RefreshTokenRequest
+import com.example.slicingbcf.data.remote.response.auth.ResponseLogin
+import com.example.slicingbcf.data.remote.response.auth.ResponseLogout
+import com.example.slicingbcf.data.remote.response.auth.ResponseRefreshToken
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.GET
+import retrofit2.http.DELETE
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 
 interface ApiService {
 
   // AUTH
-  @POST(ApiConfig.SIGN_IN)
+  @POST(ApiConfig.AUTH)
   suspend fun signIn(
     @Body loginRequest : LoginRequest
   ) : Response<ResponseLogin>
+  @DELETE(ApiConfig.AUTH)
+  suspend fun logout(
+    @Body refreshToken: String
+  ) : Response<ResponseLogout>
 
-  // USER
-  @GET(ApiConfig.CURRENT_USER_PROFILE)
-  suspend fun getCurrentUserProfile() : Response<ResponseProfile>
+  @PUT(ApiConfig.AUTH)
+  suspend fun getNewAccessToken(
+    @Body refreshTokenRequest: RefreshTokenRequest
+  ) : Response<ResponseRefreshToken>
 
 }

@@ -25,7 +25,7 @@ android {
     versionName = "1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    buildConfigField("String", "API_BASE_URL", "\"https://straight-dareen-happiness-overload-7d6989f4.koyeb.app/api/\"")
+    buildConfigField("String", "API_BASE_URL", "\"https://be-ils-staging.up.railway.app:443/\"")
     vectorDrawables {
       useSupportLibrary = true
     }

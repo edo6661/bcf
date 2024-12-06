@@ -82,7 +82,8 @@ fun SideNavContent(
   closeSideNavVisible : () -> Unit,
   isActiveRoute : (String) -> Boolean,
   logout : () -> Unit,
-  user : User?
+  user : User?,
+  getNewAccessToken : () -> Unit
 
 ) {
   val navigateAndCloseSideNav : (String) -> Unit = { route ->
@@ -113,6 +114,7 @@ fun SideNavContent(
         navigateAndCloseSideNav = navigateAndCloseSideNav,
         isActiveRoute = isActiveRoute,
         logout = logout,
+        getNewAccessToken = getNewAccessToken,
         closeSideNavVisible = closeSideNavVisible,
         user = user
       )
@@ -159,7 +161,8 @@ private fun BottomSideNav(
   isActiveRoute : (String) -> Boolean,
   logout : () -> Unit,
   closeSideNavVisible : () -> Unit,
-  user : User?
+  user : User?,
+  getNewAccessToken : () -> Unit
 ) {
 
   val scroll = rememberScrollState()
@@ -199,6 +202,12 @@ private fun BottomSideNav(
       Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
       ) {
+        PrimaryButton(
+          text = "New Access Token",
+          onClick = {
+            getNewAccessToken()
+          }
+        )
         when {
           user == null -> {
             SideNavDropdownGuest(
@@ -424,18 +433,7 @@ private fun SideNavDropdownGuest(
     },
 
   )
-  SideNavDropdown(
-    "Test User Profile",
-    items = null,
-    isActiveRoute = isActiveRoute,
-    onClickDropdown = {
-      navigateAndCloseSideNav(
-        Screen.UserProfile.route
-      )
-    },
-    route = Screen.UserProfile.route
 
-  )
   SideNavDropdown(
     "Pendaftaran",
     items = dropdownItemsPendaftaran_Guest(
@@ -573,17 +571,6 @@ private fun SideNavDropdownPeserta(
   onNavigateModul : () -> Unit
 ) {
 
-  SideNavDropdown(
-    "Test User Profile",
-    items = null,
-    isActiveRoute = isActiveRoute,
-    onClickDropdown = {
-      navigateAndCloseSideNav(
-        Screen.UserProfile.route
-      )
-    },
-    route = Screen.UserProfile.route
-  )
   SideNavDropdown(
     "Peserta",
     items = dropdownItemsPeserta_Peserta(

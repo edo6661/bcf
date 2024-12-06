@@ -3,7 +3,7 @@ package com.example.slicingbcf.implementation.auth.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.slicingbcf.data.common.UiState
-import com.example.slicingbcf.data.remote.request.LoginRequest
+import com.example.slicingbcf.data.remote.request.auth.LoginRequest
 import com.example.slicingbcf.di.IODispatcher
 import com.example.slicingbcf.di.MainDispatcher
 import com.example.slicingbcf.domain.usecase.auth.LoginUseCaseImplementation
@@ -26,6 +26,9 @@ class LoginViewModelWithApi @Inject constructor(
   @IODispatcher private val ioDispatcher : CoroutineDispatcher,
   @MainDispatcher private val mainDispatcher : CoroutineDispatcher
 ) : ViewModel() {
+
+  // ! EMAIL: mzulfanabdillah@gmail.com
+  // ! PASSWORD: randomDummy1234
 
   private val _uiState = MutableStateFlow(LoginState())
   val uiState get() = _uiState.asStateFlow()

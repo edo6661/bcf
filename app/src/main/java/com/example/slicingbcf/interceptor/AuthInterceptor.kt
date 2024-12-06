@@ -17,6 +17,9 @@ class AuthInterceptor @Inject constructor(
     val accessToken = runBlocking {
       userRemotePreferences.getAccessToken().firstOrNull()
     }
+    val refreshToken = runBlocking {
+      userRemotePreferences.getRefreshToken().firstOrNull()
+    }
     return if (! accessToken.isNullOrEmpty()) {
       val newRequest = originalRequest.newBuilder()
         .header("Authorization", "Bearer $accessToken")

@@ -3,178 +3,152 @@ package com.example.slicingbcf.data.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.slicingbcf.data.dao.model.JangkauanPenerimaManfaat
-import com.example.slicingbcf.data.dao.model.Role
-import com.example.slicingbcf.data.local.preferences.UserPreferences
+import com.example.slicingbcf.data.common.UiState
 import com.example.slicingbcf.data.local.preferences.UserRemotePreferences
-import com.example.slicingbcf.data.repo.user.UserRepository
+import com.example.slicingbcf.data.remote.request.auth.RefreshTokenRequest
+import com.example.slicingbcf.di.IODispatcher
+import com.example.slicingbcf.di.MainDispatcher
+import com.example.slicingbcf.domain.usecase.auth.LogoutUseCaseImplementation
+import com.example.slicingbcf.domain.usecase.auth.RefreshTokenUseCaseImplementation
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import com.example.slicingbcf.data.dao.model.User as UserLocal
 import com.example.slicingbcf.domain.model.User as UserRemote
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
-  private val userRepository : UserRepository,
-  private val userPreferences : UserPreferences,
-  private val userRemotePreferences : UserRemotePreferences
+  private val refreshTokenUseCase : RefreshTokenUseCaseImplementation,
+  private val logoutUseCase : LogoutUseCaseImplementation,
+  private val userRemotePreferences : UserRemotePreferences,
+  @IODispatcher private val ioDispatcher : CoroutineDispatcher,
+  @MainDispatcher private val mainDispatcher : CoroutineDispatcher
 ) : ViewModel() {
 
-  private val _currentUser = MutableStateFlow<UserLocal?>(null)
-  val currentUser : StateFlow<UserLocal?> = _currentUser
-  // TODO: UNCOMMENT KALO MAU NGE TEST API DIDEPAN KAK FAISHAL
-  private val _currentUserRemote = MutableStateFlow<UserRemote?>(null)
-  val currentUserRemote : StateFlow<UserRemote?> = _currentUserRemote
+  //
+  private val _state = MutableStateFlow(UserState())
+  val state : StateFlow<UserState> = _state.asStateFlow()
 
   init {
     viewModelScope.launch {
       userRemotePreferences.getUserData().collect { user ->
-        _currentUserRemote.value = user
-      }
-    }
-  }
-
-
-  private fun insertUser(user : UserLocal) {
-    viewModelScope.launch {
-      try {
-        userRepository.insertUser(user)
-      } catch (e : Exception) {
-        e.printStackTrace()
-        Log.e("UserViewModel", "insertUser: ${e.message}")
-      }
-    }
-  }
-
-  fun logAccessTokenPreferences() {
-    viewModelScope.launch {
-      userRemotePreferences.getAccessToken().collect {
-        Log.d("UserViewModel", "Access Token: $it")
-      }
-    }
-  }
-  fun logRefreshTokenPreferences() {
-    viewModelScope.launch {
-      userRemotePreferences.getRefreshToken().collect {
-        Log.d("UserViewModel", "Refresh Token: $it")
-      }
-    }
-  }
-
-  fun logRemoteUserPreferences() {
-    viewModelScope.launch {
-      userRemotePreferences.getUserData().collect {
-        Log.d("UserViewModel", "Remote User: $it")
-      }
-    }
-  }
-
-  suspend fun clearUserSession() {
-    userPreferences.clearUserSession()
-    userRemotePreferences.clearUserSession()
-  }
-
-  fun insertDummyData() {
-    viewModelScope.launch {
-      try {
-
-        val dataList = listOf(
-          JangkauanPenerimaManfaat("Jawa Barat", 100),
-          JangkauanPenerimaManfaat("Jawa Timur", 200)
+        _state.value = UserState(
+          user = user
         )
-        val dummyUser = UserLocal(
-          namaLembaga = "Lembaga Contoh",
-          emailLembaga = "example@lembaga.com",
-          alamatLembaga = "Jl. Contoh No. 123",
-          provinsi = "Jawa Barat",
-          kota = "Bandung",
-          tanggalBerdiri = "2024-01-01",
-          jenisLembagaSosial = "Non-Profit",
-          jenisClusterLembagaSosial = "Pendidikan",
-          fokusIsu = "Kesejahteraan Anak",
-          profilSingkatLembaga = "Lembaga yang fokus pada pendidikan anak",
-          alasanMengikutiLead = "Pengembangan Lembaga",
-          dokumenProfilPerusahaan = "Profil.pdf",
-          jangkauanProgram = "Nasional",
-          wilayahJangkauanProgram = "Perkotaan",
-          jumlahAngkaPenerimaanManfaat = dataList,
-          targetUtamaProgram = "Anak-anak",
-          proposalProgramMitra = "Proposal.pdf",
-          namaPeserta = "mentor",
-          posisi = "Manajer",
-          pendidikanTerakhir = "S1",
-          jenisKelamin = "Laki-laki",
-          nomorWhatsapp = "081234567890",
-          emailPeserta = "mentor@gmail.com",
-          password = "mentor123",
-          ktp = "1234567890123456",
-          cv = "CV_JohnDoe.pdf",
-          adaPengurusLainYangAkanDiikutSertakanSebagaiPeserta = false,
-          alasanMengikutiAgenda = "Belajar dan Networking",
-          pernahMengikutiPelatihan = true,
-          darimanaMengetahuiLead = "Media Sosial",
-          yangDiketahuiTerkaitDesainProgram = "Peningkatan Dampak",
-          yangDiketahuiTerkaitKeberlanjutan = "Keberlanjutan Program",
-          yangDiketahuiTerkaitLaporanSosial = "Pelaporan",
-          laporanAkhirTahun = "Laporan2024.pdf",
-          ekspetasiMengikutiLead = "Jaringan dan Ilmu Baru",
-          halYangInginDitanyakanKeLead = "Peluang Kolaborasi",
-          umpanBalik = "Program bermanfaat",
-          pengalamanMendaftarLead = "Pernah",
-          role = Role.MENTOR.name
-        )
-        val dummyUser2 = UserLocal(
-          namaLembaga = "Lembaga Contoh",
-          emailLembaga = "example@lembaga.com",
-          alamatLembaga = "Jl. Contoh No. 123",
-          provinsi = "Jawa Barat",
-          kota = "Bandung",
-          tanggalBerdiri = "2024-01-01",
-          jenisLembagaSosial = "Non-Profit",
-          jenisClusterLembagaSosial = "Pendidikan",
-          fokusIsu = "Kesejahteraan Anak",
-          profilSingkatLembaga = "Lembaga yang fokus pada pendidikan anak",
-          alasanMengikutiLead = "Pengembangan Lembaga",
-          dokumenProfilPerusahaan = "Profil.pdf",
-          jangkauanProgram = "Nasional",
-          wilayahJangkauanProgram = "Perkotaan",
-          jumlahAngkaPenerimaanManfaat = dataList,
-          targetUtamaProgram = "Anak-anak",
-          proposalProgramMitra = "Proposal.pdf",
-          namaPeserta = "peserta",
-          posisi = "Manajer",
-          pendidikanTerakhir = "S1",
-          jenisKelamin = "Laki-laki",
-          nomorWhatsapp = "081234567890",
-          emailPeserta = "peserta@gmail.com",
-          password = "peserta123",
-          ktp = "1234567890123456",
-          cv = "CV_JohnDoe.pdf",
-          adaPengurusLainYangAkanDiikutSertakanSebagaiPeserta = false,
-          alasanMengikutiAgenda = "Belajar dan Networking",
-          pernahMengikutiPelatihan = true,
-          darimanaMengetahuiLead = "Media Sosial",
-          yangDiketahuiTerkaitDesainProgram = "Peningkatan Dampak",
-          yangDiketahuiTerkaitKeberlanjutan = "Keberlanjutan Program",
-          yangDiketahuiTerkaitLaporanSosial = "Pelaporan",
-          laporanAkhirTahun = "Laporan2024.pdf",
-          ekspetasiMengikutiLead = "Jaringan dan Ilmu Baru",
-          halYangInginDitanyakanKeLead = "Peluang Kolaborasi",
-          umpanBalik = "Program bermanfaat",
-          pengalamanMendaftarLead = "Pernah",
-          role = Role.PESERTA .name
-        )
-        insertUser(dummyUser)
-        insertUser(dummyUser2)
-        Log.d("UserViewModel", "Dummy user inserted")
-      } catch (e : Exception) {
-        Log.e("UserViewModel", "Error inserting dummy data: ${e.message}")
+      }
+    }
+    viewModelScope.launch {
+      userRemotePreferences.getAccessToken().collect { accessToken ->
+        Log.d("UserViewModel", "Access Token: $accessToken")
       }
     }
   }
 
+  fun onEvent(event : UserEvent) {
+    when (event) {
+      is UserEvent.Logout -> logout()
+      is UserEvent.GetNewAccessToken -> getNewAccessToken()
+    }
+  }
+  private fun logout() {
+    viewModelScope.launch(ioDispatcher) {
+      val refreshToken = userRemotePreferences.getRefreshToken().first()
 
+      logoutUseCase(refreshToken ?: "Empty Refresh Token")
+        .onStart {
+          updateLoadingState(true)
+        }
+        .collect{
+          when (it) {
+            is UiState.Success -> {
+              updateSuccessState("Logout Success")
+            }
+            is UiState.Error -> {
+              updateErrorState(it.message)
+            }
+            is UiState.Loading -> {
+              updateLoadingState(true)
+            }
+          }
+        }
+    }
+  }
+  private fun getNewAccessToken() {
+    viewModelScope.launch(ioDispatcher) {
+      val refreshToken = userRemotePreferences.getRefreshToken().first()
+
+      refreshTokenUseCase(
+        RefreshTokenRequest(
+          refreshToken = refreshToken ?: "Empty Refresh Token"
+        )
+      )
+        .onStart {
+          updateLoadingState(true)
+        }
+        .collect {
+          when (it) {
+            is UiState.Success -> {
+              updateSuccessState("Get New Access Token Success")
+            }
+
+            is UiState.Error   -> {
+              updateErrorState(it.message)
+            }
+
+            is UiState.Loading -> {
+              updateLoadingState(true)
+            }
+          }
+        }
+    }
+  }
+  private suspend fun updateLoadingState(isLoading : Boolean) {
+    withContext(mainDispatcher) {
+      _state.update { it.copy(isLoading = isLoading) }
+    }
+  }
+
+  private suspend fun updateSuccessState(message : String) {
+    withContext(mainDispatcher) {
+      _state.update {
+        it.copy(
+          isLoading = false,
+          error = null,
+          message = message
+        )
+      }
+    }
+  }
+
+  private suspend fun updateErrorState(error : String?) {
+    withContext(mainDispatcher) {
+      _state.update {
+        it.copy(
+          isLoading = false,
+          error = error
+        )
+      }
+    }
+    delay(5000)
+    withContext(mainDispatcher) {
+      _state.update {
+        it.copy(
+          error = null
+        )
+      }
+    }
+  }
 }
+sealed class UserEvent {
+  object Logout : UserEvent()
+  object GetNewAccessToken : UserEvent()
+}
+data class UserState(
+  val user : UserRemote? = null,
+  val message : String? = null,
+  val isLoading : Boolean = false,
+  val error : String? = null
+)

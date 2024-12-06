@@ -41,6 +41,7 @@ fun MainScaffold(
   isActiveRoute : (String) -> Boolean,
   user : User?,
   logout : () -> Unit,
+  getNewAccessToken : () -> Unit,
   content : @Composable (PaddingValues) -> Unit,
 ) {
 
@@ -60,10 +61,7 @@ fun MainScaffold(
     navController.popBackStack()
   }
 
-  val onNavigateProfile = {
 
-navController.navigateSingleTop(Screen.UserProfile.route)
-    }
 
 
   val onNavigatePengumuman = {
@@ -83,7 +81,9 @@ navController.navigateSingleTop(Screen.UserProfile.route)
               isSideNavVisible = ! isSideNavVisible
             },
             onNavigateHome = onNavigateHome,
-            onAvatarClick = onNavigateProfile,
+            onAvatarClick = {
+              navController.navigateSingleTop(Screen.ProfilPeserta.route)
+            },
             onAnnouncementClick = onNavigatePengumuman,
             user = user
           )
@@ -119,7 +119,8 @@ navController.navigateSingleTop(Screen.UserProfile.route)
         closeSideNavVisible = closeSideNavVisible,
         isActiveRoute = isActiveRoute,
         logout = logout,
-        user = user
+        user = user,
+        getNewAccessToken = getNewAccessToken
       )
     }
   }

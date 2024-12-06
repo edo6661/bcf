@@ -1,4 +1,4 @@
-package com.example.slicingbcf.data.remote.request
+package com.example.slicingbcf.data.remote.request.auth
 
 data class LoginRequest(
   val email: String,

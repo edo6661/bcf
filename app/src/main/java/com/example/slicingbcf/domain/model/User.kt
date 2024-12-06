@@ -5,20 +5,5 @@ data class User(
   val username: String,
   val email: String,
   val role: String,
-
-  val profilePicture: String,
-  val isEmailVerified: Boolean,
-  val isVerified: Boolean,
-  val createdAt: String,
-  val updatedAt: String,
-  val userProfile: UserProfile
-)
-
-data class UserProfile(
-  val id: String,
-  val userId: String,
-  val createdAt: String,
-  val updatedAt: String,
-  val bio: String?,
-  val age: Any?
+  val profilePicture: String = "https://i.pinimg.com/736x/1e/f6/42/1ef642c4c5864a930b260941dff37711.jpg",
 )

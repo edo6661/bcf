@@ -1,6 +1,6 @@
 package com.example.slicingbcf.domain.usecase.auth
 
-import com.example.slicingbcf.data.remote.request.LoginRequest
+import com.example.slicingbcf.data.remote.request.auth.LoginRequest
 import com.example.slicingbcf.data.repo.auth.AuthRemoteRepository
 import javax.inject.Inject
 

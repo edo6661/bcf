@@ -4,7 +4,6 @@ sealed class Screen(val route : String) {
 
   object Home : Screen("home")
   object SplashScreen : Screen("splash-screen")
-  object UserProfile : Screen("user-profile")
 
   sealed class Auth(route : String) : Screen(route) {
     object Login : Auth("login")
