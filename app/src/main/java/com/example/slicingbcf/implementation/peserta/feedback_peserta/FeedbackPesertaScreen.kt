@@ -838,7 +838,8 @@ fun TableCellEvaluasiMentoring(
                     color = textColor,
                     style = StyledText.Mobile2xsRegular,
                     modifier = Modifier
-                        .align(Alignment.Center)
+                        .align(Alignment.Center).padding(2.dp),
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -849,7 +850,7 @@ fun TableCellEvaluasiMentoring(
             color = color,
             modifier = Modifier
                 .width(120.dp * weight)
-                .padding(8.dp)
+                .padding(8.dp),
         )
     }
 }

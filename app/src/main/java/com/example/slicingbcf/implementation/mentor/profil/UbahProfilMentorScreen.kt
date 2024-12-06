@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -39,6 +38,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,46 +54,78 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.common.UiState
+import com.example.slicingbcf.data.common.UiState.Loading
+import com.example.slicingbcf.data.local.Mentor
 import com.example.slicingbcf.data.local.listBatch
 import com.example.slicingbcf.data.local.mentor
 import com.example.slicingbcf.ui.shared.dropdown.DropdownText
+import com.example.slicingbcf.ui.shared.state.ErrorWithReload
+import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
+import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
 
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun UbahProfilMentorScreenPreview() {
-    UbahProfilMentorScreen(
-        modifier = Modifier.fillMaxSize()
-    )
-}
+//@Preview(showSystemUi = true, showBackground = true)
+//@Composable
+//fun UbahProfilMentorScreenPreview() {
+//    UbahProfilMentorScreen(
+//        modifier = Modifier.fillMaxSize()
+//
+//    )
+//}
 
 @Composable
 fun UbahProfilMentorScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    id: String,
+    viewModel: UbahProfilMentorViewModel = hiltViewModel()
 ) {
-    Column(
-        modifier = modifier.padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(40.dp)
-    ) {
-        Text(
-            text = "Ubah Data Mentor",
-            style = StyledText.MobileLargeSemibold
-        )
-        HorizontalDivider(
-            color = Color.LightGray,
-            thickness = 1.dp,
-            modifier = Modifier
-                .fillMaxWidth()
-        )
-        EditImageProfil()
-        EditDataDiriMentor()
-        EditLatarBelakangMentor()
-        EditBatchInformation()
-        SaveCancelButton()
+    val state by viewModel.state.collectAsState()
+
+    when {
+        state.isLoading -> {
+            LoadingCircularProgressIndicator()
+        }
+        state.error != null -> {
+            ErrorWithReload(
+                modifier = modifier,
+                errorMessage = state.error,
+                onRetry = {
+                    viewModel.onEvent(UbahProfilMentorEvent.Reload)
+                }
+            )
+        }
+        else -> {
+            Column(
+                modifier = modifier.padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(40.dp)
+            ) {
+                Text(
+                    text = "Ubah Data Mentor",
+                    style = StyledText.MobileLargeSemibold
+                )
+                HorizontalDivider(
+                    color = Color.LightGray,
+                    thickness = 1.dp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+                EditImageProfil()
+                EditDataDiriMentor(
+                    state = state,
+                    onEvent = { viewModel.onEvent(it) }
+                )
+                EditLatarBelakangMentor()
+                EditBatchInformation()
+                SaveCancelButton()
+            }
+        }
     }
+
 }
 
 @Composable
@@ -115,7 +147,7 @@ private fun EditImageProfil() {
                 contentScale = ContentScale.Crop
             )
             FloatingActionButton(
-                onClick = { /* Handle Edit */ },
+                onClick = { },
                 modifier = Modifier.run {
                     align(Alignment.TopEnd)
                                 .size(40.dp)
@@ -171,9 +203,14 @@ private fun EditImageProfil() {
 
 
 @Composable
-fun EditDataDiriMentor() {
+fun EditDataDiriMentor(
+    state: UbahProfilMentorState,
+    onEvent: (UbahProfilMentorEvent) -> Unit
+) {
     var jenisKelamin by remember { mutableStateOf(mentor.jenisKelamin) }
     var expandedJenisKelamin by remember { mutableStateOf(false) }
+
+//    val mentor = state.mentors
 
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 32.dp),

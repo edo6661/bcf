@@ -41,6 +41,7 @@ import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 fun ProfilMentorScreen(
   modifier : Modifier = Modifier,
   viewModel : ProfilMentorViewModel = hiltViewModel(),
+  onEditIconClick : (String) -> Unit
 ) {
   val state by viewModel.state.collectAsState()
   when {
@@ -66,7 +67,10 @@ fun ProfilMentorScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
       ) {
         item {
-          TopSection(mentor = mentor)
+          TopSection(
+            mentor = mentor,
+            onEditIconClick = onEditIconClick
+          )
         }
         item {
           HorizontalDivider(
@@ -107,13 +111,14 @@ fun ProfilMentorScreen(
 
 @Composable
 fun TopSection(
-  mentor : Mentor
+  mentor : Mentor,
+  onEditIconClick : (String) -> Unit
 ) {
   Column(
     modifier = Modifier.fillMaxWidth()
   ) {
     HeaderScreen(
-      onEditIconClick = {}
+      onEditIconClick = { onEditIconClick(mentor.namaLengkap) }
     )
     Box(
       modifier = Modifier
@@ -213,7 +218,7 @@ fun BatchInformation(
 
 @Composable
 fun HeaderScreen(
-  onEditIconClick : () -> Unit
+  onEditIconClick : (String) -> Unit
 ) {
   Row(
     modifier = Modifier
@@ -227,7 +232,9 @@ fun HeaderScreen(
       style = StyledText.MobileLargeSemibold
     )
     SmallFloatingActionButton(
-      onClick = { onEditIconClick() },
+      onClick = { onEditIconClick(
+        "Dody Supriadi"
+      ) },
       modifier = Modifier.size(56.dp),
       containerColor = ColorPalette.PrimaryColor100,
       elevation = FloatingActionButtonDefaults.elevation(0.dp)
@@ -273,7 +280,7 @@ fun ProfileItem(
 @Preview(showSystemUi = true)
 @Composable
 fun ProfilMentorScreenPreview() {
-  ProfilMentorScreen(
-
-  )
+    ProfilMentorScreen(
+        onEditIconClick = {}
+    )
 }
