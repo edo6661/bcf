@@ -538,10 +538,12 @@ private fun SideNavDropdownMentor(
   )
   SideNavDropdown(
     "Kegiatan",
-    items = dropdownItemsKegiatan_Mentor(
-      navigateAndCloseSideNav
-    ),
-    isActiveRoute = isActiveRoute
+    items = null,
+    isActiveRoute = isActiveRoute,
+    onClickDropdown = {
+      navigateAndCloseSideNav(Screen.Kegiatan.JadwalBulanPeserta.route)
+    },
+    route = Screen.Kegiatan.JadwalBulanPeserta.route
   )
   SideNavDropdown(
     "Forum Diskusi",

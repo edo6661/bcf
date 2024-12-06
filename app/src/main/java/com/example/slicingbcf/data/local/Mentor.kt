@@ -1,5 +1,7 @@
 package com.example.slicingbcf.data.local
 
+import androidx.room.Entity
+
 data class Mentor(
     val namaLengkap: String,
     val tanggalLahir: String,
@@ -19,20 +21,25 @@ data class Batch(
     val kategoriMentor: String,
     val cluster: String,
     val fokusIsu: String,
-    val listLembaga: List<Lembaga>
+    val listLembaga: List<Lembaga>,
+    val tipeMentoring: String? = null,
+    val capaianProgram: String? = null,
 )
 
 data class Lembaga(
     val namaLembaga: String,
     val fokusIsu: String,
-    val provinsi: String
+    val provinsi: String,
+    val namaPeserta: String? = null,
 )
 
 val listOfLembaga = listOf(
     Lembaga(
         "Bakrie Center Foundation",
         "Tuberculosis (TBC)",
-        "DKI Jakarta"
+        "DKI Jakarta",
+        "Sri Maharani Arfiani"
+
     ),
     Lembaga(
         "Inisiatif Lampung",
@@ -91,7 +98,9 @@ val listBatch = listOf(
         "Desain Program",
         "Kesehatan",
         "Tuberculosis (TBC), Stunting, HIV/AIDS",
-        listLembaga = listOfLembaga
+        listLembaga = listOfLembaga,
+        "Cluster",
+        "Mentoring 1 (Februari 2023)"
     ),
     Batch(
         "Batch 3",

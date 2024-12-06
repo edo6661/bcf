@@ -49,3 +49,4 @@ val pitchDeck = listOf(
         link = "https://bit.ly/pitchdeckcapaianTPT",
         submissionDeadline = "Jumat, 15 November 2024 13:55"),
 )
+

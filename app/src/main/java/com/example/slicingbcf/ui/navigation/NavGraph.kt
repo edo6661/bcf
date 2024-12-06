@@ -8,11 +8,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.slicingbcf.data.local.listBatch
 import com.example.slicingbcf.data.local.mentor
 import com.example.slicingbcf.implementation.LandingPageScreen
 import com.example.slicingbcf.implementation.SplashScreen
+import com.example.slicingbcf.implementation.mentor.pitchdeck.MoreDetailPitchdeckScreen
+import com.example.slicingbcf.implementation.mentor.pitchdeck.PitchdeckScreen
 import com.example.slicingbcf.implementation.mentor.profil.ProfilMentorScreen
+import com.example.slicingbcf.implementation.mentor.profil.UbahProfilMentorScreen
 import com.example.slicingbcf.implementation.peserta.pengumuman_peserta.DetailPengumumanPesertaScreen
 import com.example.slicingbcf.implementation.peserta.profil.profil_peserta.ProfilPesertaScreen
 
@@ -90,10 +92,25 @@ fun NavGraph(
 
     composable(
       route = Screen.ProfilMentor.route ) {
+      val onNavigateUbahProfilMentor = { id : String ->
+        navController.navigateSingleTop("ubah-profil-mentor/$id")
+      }
+
       ProfilMentorScreen(
         modifier = modifier,
-        mentor = mentor,
-        batches = listBatch
+        onEditIconClick = onNavigateUbahProfilMentor
+      )
+    }
+
+    composable(
+      route = "ubah-profil-mentor/{id}",
+        arguments = listOf(navArgument("id") { type = NavType.StringType })
+    ){
+      val id = it.arguments?.getString("id") ?: "1"
+
+      UbahProfilMentorScreen(
+        modifier = modifier,
+        id = id
       )
     }
   }

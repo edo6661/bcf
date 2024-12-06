@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -20,7 +19,6 @@ import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.data.local.detailJadwal
 
-//@Preview(showBackground = true)
 @Composable
 fun DetailJadwalScreen(
     modifier: Modifier,
@@ -33,7 +31,7 @@ fun DetailJadwalScreen(
         TopSection(detailJadwal = detail)
     } else {
         Text(
-            text = "Data TIDACK ADA",
+            text = "Data tidak ada",
             style = StyledText.MobileBaseRegular,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxSize().padding(16.dp)

@@ -12,11 +12,12 @@ import com.example.slicingbcf.constant.StyledText
 import com.example.slicingbcf.ui.shared.PrimaryButton
 @Composable
 fun ErrorWithReload(
+  modifier : Modifier = Modifier,
   errorMessage: String?,
   onRetry: () -> Unit
 ) {
   Box(
-    modifier = Modifier
+    modifier = modifier
       .fillMaxWidth()
       .padding(vertical = 20.dp),
     contentAlignment = Alignment.Center

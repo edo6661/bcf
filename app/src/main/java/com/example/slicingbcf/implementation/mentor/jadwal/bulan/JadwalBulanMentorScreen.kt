@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -25,7 +24,6 @@ import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -57,51 +54,57 @@ import java.time.ZoneId
 import java.time.format.TextStyle
 import java.util.Locale
 import androidx.compose.material3.*
-import com.example.slicingbcf.ui.shared.textfield.CustomDate
+import androidx.compose.runtime.collectAsState
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.slicingbcf.data.common.UiState
+import com.example.slicingbcf.implementation.mentor.jadwal.JadwalEvent
+import com.example.slicingbcf.implementation.mentor.jadwal.JadwalViewModel
+import com.example.slicingbcf.ui.shared.state.ErrorWithReload
+import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 
 @Composable
 fun JadwalBulanMentorScreen(
     modifier: Modifier = Modifier,
     onNavigateWeeklyCalendar: (String) -> Unit = {},
     onNavigateDetailScreen: (String) -> Unit = {},
-    onNavigateAddCalendar: (String) -> Unit
+    onNavigateAddCalendar: (String) -> Unit,
+    viewModel: JadwalViewModel = hiltViewModel()
 ) {
-    val userName = profilLembaga.firstOrNull()?.name ?: "Pengguna"
-    val schedule = detailJadwal.groupBy { it.date }.mapValues { entry ->
-        entry.value.map {
-            "${it.beginTime.formatTime()} - ${it.endTime.formatTime()} WIB ${it.type}" to Color(it.color)
+    val state by viewModel.state.collectAsState()
+    when (state) {
+        is UiState.Loading -> {
+            LoadingCircularProgressIndicator()
+        }
+        is UiState.Success -> {
+            TopSection(
+                userName = profilLembaga.firstOrNull()?.name ?: "Pengguna",
+                onNavigateWeeklyCalendar = onNavigateWeeklyCalendar,
+                onNavigateDetailScreen = onNavigateDetailScreen,
+                onNavigateAddCalendar = onNavigateAddCalendar,
+            )
+        }
+        is UiState.Error -> {
+            val errorMessage = (state as UiState.Error).message
+            ErrorWithReload(
+                errorMessage = errorMessage,
+                onRetry = {
+                    viewModel.onEvent(JadwalEvent.ReloadData)
+                }
+            )
         }
     }
-    var expandedDate by remember { mutableStateOf(false) }
-
-    TopSection(
-        userName = profilLembaga.firstOrNull()?.name ?: "Pengguna",
-        schedule = schedule,
-        onNavigateWeeklyCalendar = onNavigateWeeklyCalendar,
-        onNavigateDetailScreen = onNavigateDetailScreen,
-        onNavigateAddCalendar = onNavigateAddCalendar,
-        expandedDate = expandedDate,
-        onExpandedDateChange = { expandedDate = it },
-    )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopSection(
     userName: String,
-    schedule: Map<LocalDate, List<Pair<String, Color>>>,
     onNavigateWeeklyCalendar: (String) -> Unit,
     onNavigateDetailScreen: (String) -> Unit,
     onNavigateAddCalendar: (String) -> Unit,
-    expandedDate : Boolean,
-    onExpandedDateChange : (Boolean) -> Unit,
 ) {
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     val today = LocalDate.now()
-    val currentMonth = YearMonth.of(selectedDate.year, selectedDate.month)
     var isMonthlyView by remember { mutableStateOf(true) }
-    var showDatePicker by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = selectedDate.toEpochDay() * 24 * 60 * 60 * 1000)
     var expanded by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
@@ -153,17 +156,6 @@ fun TopSection(
                     textAlign = TextAlign.Center
                 )
             }
-//            CustomDate(
-//                selectedDate = selectedDate,
-//                onDateSelected = { newDate ->
-//                    selectedDate = newDate
-//                },
-//                datePickerState = datePickerState,
-//                expanded = expandedDate,
-//                onChangeExpanded = {
-//                    onExpandedDateChange(it)
-//                }
-//            )
             DatePicker(
                 selectedDate = selectedDate,
                 onDateSelected = { newDate ->

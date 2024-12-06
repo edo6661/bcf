@@ -1,5 +1,7 @@
 package com.example.slicingbcf.implementation.peserta.feedback_peserta
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -7,26 +9,25 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowRight
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -37,14 +38,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
+import com.example.slicingbcf.data.common.UiState
 import com.example.slicingbcf.data.local.EvaluasiLembaga
 import com.example.slicingbcf.data.local.EvaluasiMentoring
 import com.example.slicingbcf.data.local.JadwalMentoring
@@ -58,101 +62,113 @@ import com.example.slicingbcf.data.local.jawabanMentoring
 import com.example.slicingbcf.data.local.kepuasanMentoring
 import com.example.slicingbcf.data.local.mentoringPeserta
 import com.example.slicingbcf.ui.animations.AnimatedContentSlide
-import com.example.slicingbcf.ui.shared.dropdown.CustomDropdownMenu
-import com.example.slicingbcf.ui.shared.dropdown.CustomDropdownMenuAsterisk
 import com.example.slicingbcf.ui.shared.dropdown.DropdownText
+import com.example.slicingbcf.ui.shared.state.ErrorWithReload
+import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import android.net.Uri
 
 @Composable
 @Preview(showSystemUi = true)
-@OptIn(ExperimentalMaterial3Api::class)
 fun FeedbackPesertaScreen(
     modifier: Modifier = Modifier,
+    viewModel : FeedbackPesertaViewModel = hiltViewModel()
 ) {
-    var currentScreen by rememberSaveable { mutableStateOf(0) }
-    var initialState by remember { mutableStateOf(0) }
-    var currentTabIndex by rememberSaveable { mutableStateOf(0) }
+    val uiState by viewModel.state.collectAsState()
+    var currentScreen by rememberSaveable { mutableIntStateOf(0) }
+    var initialState by remember { mutableIntStateOf(0) }
+    var currentTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding()
-//            .verticalScroll(scrollState)
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
-        Text(
-            text = "Umpan Balik Peserta",
-            style = StyledText.MobileLargeSemibold,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-        // ! punyamu
-//        PrimaryTabRow(
-//            selectedTabIndex = currentTabIndex,
-//            containerColor = Color.Transparent,
-//            contentColor = ColorPalette.PrimaryColor700,
-//        ) {
-        TabRow (
-            selectedTabIndex = currentTabIndex,
-            containerColor = Color.Transparent,
-            contentColor = ColorPalette.PrimaryColor700,
-            indicator = { tabPositions ->
-                SecondaryIndicator(
-                    modifier = Modifier.tabIndicatorOffset(tabPositions[currentTabIndex]),
-                    color = ColorPalette.PrimaryColor700,
-
-                    )
+        when (uiState) {
+            is UiState.Loading -> {
+                LoadingCircularProgressIndicator()
             }
-        ) {
-            Tab(
-                selected = currentTabIndex == 0,
-                onClick = {
-                    if (currentTabIndex != 0) {
-                        currentTabIndex = 0
-                        currentScreen = 0
+
+            is UiState.Success -> {
+                Text(
+                    text = "Umpan Balik Peserta",
+                    style = StyledText.MobileLargeSemibold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                TabRow (
+                    selectedTabIndex = currentTabIndex,
+                    containerColor = Color.Transparent,
+                    contentColor = ColorPalette.PrimaryColor700,
+                    indicator = { tabPositions ->
+                        SecondaryIndicator(
+                            modifier = Modifier.tabIndicatorOffset(tabPositions[currentTabIndex]),
+                            color = ColorPalette.PrimaryColor700,
+
+                            )
                     }
-                },
-                text = { Text(text = "Cluster", maxLines = 2, overflow = TextOverflow.Ellipsis) }
-            )
-            Tab(
-                selected = currentTabIndex == 1,
-                onClick = {
-                    if (currentTabIndex != 1) {
-                        currentTabIndex = 1
-                        currentScreen = 1
-                    }
-                },
-                text = {
-                    Text(
-                        text = "Desain Program",
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
+                ) {
+                    Tab(
+                        selected = currentTabIndex == 0,
+                        onClick = {
+                            if (currentTabIndex != 0) {
+                                currentTabIndex = 0
+                                currentScreen = 0
+                            }
+                        },
+                        text = { Text(text = "Cluster", maxLines = 2, overflow = TextOverflow.Ellipsis) }
+                    )
+                    Tab(
+                        selected = currentTabIndex == 1,
+                        onClick = {
+                            if (currentTabIndex != 1) {
+                                currentTabIndex = 1
+                                currentScreen = 1
+                            }
+                        },
+                        text = {
+                            Text(
+                                text = "Desain Program",
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     )
                 }
-            )
-        }
 
-        AnimatedContentSlide(
-            currentScreen = currentScreen,
-            initialState = initialState,
-            label = "Feedback Peserta Animation Content",
-        ) { targetScreen ->
-            when (targetScreen) {
-                0 -> firstScreen()
-                1 -> secondScreen()
+                AnimatedContentSlide(
+                    currentScreen = currentScreen,
+                    initialState = initialState,
+                    label = "Feedback Peserta Animation Content",
+                ) { targetScreen ->
+                    when (targetScreen) {
+                        0 -> FirstScreen()
+                        1 -> SecondScreen()
+                    }
+                }
+
+                LaunchedEffect(currentScreen) {
+                    initialState = currentScreen
+                }
             }
-        }
-
-        LaunchedEffect(currentScreen) {
-            initialState = currentScreen
+            is UiState.Error   -> {
+                val errorMessage = (uiState as UiState.Error).message
+                ErrorWithReload(
+                    errorMessage = errorMessage,
+                    onRetry = {
+                        viewModel.onEvent(FeedbackPesertaEvent.ReloadData)
+                    }
+                )
+            }
         }
     }
 }
 
 @Composable
-fun firstScreen(
+fun FirstScreen(
     modifier : Modifier = Modifier
 ){
     var capaianMentoring by remember { mutableStateOf("") }
@@ -165,13 +181,12 @@ fun firstScreen(
         TopSectionFirstScreen(
             capaianMentoringOnValueChange = { newValue -> capaianMentoring = newValue },
             capaianMentoring = capaianMentoring
-            )
-        BottomSectionFirstScreen()
+        )
     }
 }
 
 @Composable
-fun secondScreen(
+fun SecondScreen(
     modifier : Modifier = Modifier
 ){
     var capaianMentoring by remember { mutableStateOf("") }
@@ -179,12 +194,10 @@ fun secondScreen(
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(40.dp),
-
         ) {
         TopSectionSecondScreen(
             capaianMentoringOnValueChange = { newValue -> capaianMentoring = newValue },
         )
-        BottomSectionSecondScreen()
     }
 }
 
@@ -193,9 +206,7 @@ fun TopSectionFirstScreen(
     capaianMentoringOnValueChange : (String) -> Unit,
     capaianMentoring: String
 ) {
-//    var capaianMentoring by remember { mutableStateOf("") }
     var expandedCapaianMentoring by remember { mutableStateOf(false) }
-
     var mentorNameCluster = mentoringPeserta.find{it.mentoringType == "Cluster"}?.mentorName
     var mentoringTypeCluster = mentoringPeserta.find{it.mentoringType == "Cluster"}?.mentoringType
     var batchCluster = mentoringPeserta.find{it.mentoringType == "Cluster"}?.batch
@@ -401,14 +412,9 @@ fun TopSectionFirstScreen(
             jawabanMentoring.forEach { pertanyaan ->
                 JawabanPertanyaanRow(pertanyaan)
             }
-
             DokumentasiMentoringSection()
         }
     }
-}
-
-@Composable
-fun BottomSectionFirstScreen() {
 }
 
 @Composable
@@ -417,7 +423,6 @@ fun TopSectionSecondScreen(
 ) {
     var capaianMentoring by remember { mutableStateOf("") }
     var expandedCapaianMentoring by remember { mutableStateOf(false) }
-
     var mentorNameDesain = mentoringPeserta.find{it.mentoringType == "Desain Program"}?.mentorName
     var mentoringTypeDesain = mentoringPeserta.find{it.mentoringType == "Desain Program"}?.mentoringType
     var batchDesain = mentoringPeserta.find{it.mentoringType == "Desain Program"}?.batch
@@ -629,10 +634,6 @@ fun TopSectionSecondScreen(
 }
 
 @Composable
-fun BottomSectionSecondScreen() {
-}
-
-@Composable
 fun HeaderRow(headers : List<Header>) {
     Row(
         modifier = Modifier
@@ -654,7 +655,6 @@ fun HeaderRow(headers : List<Header>) {
         }
     }
 }
-
 
 @Composable
 fun JadwalMentoringRow(jadwalMentoring : JadwalMentoring, index : Int) {
@@ -777,7 +777,6 @@ fun TableCell(
     isHeader : Boolean = false,
     weight : Float,
     color : Color = ColorPalette.Monochrome900,
-    isPenilaian: Boolean = false,
 ) {
     Text(
         text = text,
@@ -798,6 +797,27 @@ fun TableCellEvaluasiMentoring(
     isPenilaian: Boolean = false,
     evaluasiMentoring: EvaluasiMentoring
 ) {
+    val penilaianColor = when (evaluasiMentoring.penilaian) {
+        "Sangat Baik" -> ColorPalette.Success100
+        "Tidak Baik" -> ColorPalette.Warning100
+        "Sangat Tidak Baik" -> ColorPalette.Danger100
+        else -> Color.Transparent
+    }
+
+    val borderColor = when (evaluasiMentoring.penilaian) {
+        "Sangat Baik" -> ColorPalette.Success600
+        "Tidak Baik" -> ColorPalette.Warning700
+        "Sangat Tidak Baik" -> ColorPalette.Danger200
+        else -> Color.Transparent
+    }
+
+    val textColor = when (evaluasiMentoring.penilaian) {
+        "Sangat Baik" -> ColorPalette.Success600
+        "Tidak Baik" -> ColorPalette.Warning700
+        "Sangat Tidak Baik" -> ColorPalette.Danger500
+        else -> ColorPalette.Monochrome900
+    }
+
     if(isPenilaian){
         Box(modifier = Modifier
                 .width(120.dp * weight)
@@ -805,22 +825,21 @@ fun TableCellEvaluasiMentoring(
         ) {
             Box(
                 modifier = Modifier
-                    .background(
-                        color = if (evaluasiMentoring.penilaian == "Sangat Baik") ColorPalette.Success100 else ColorPalette.Warning100,
-                    )
+                    .background(color = penilaianColor)
                     .border(
                         width = 1.dp,
-                        color = if (evaluasiMentoring.penilaian == "Sangat Baik") ColorPalette.Success600 else ColorPalette.Warning700,
+                        color = borderColor,
                     )
                     .width(72.dp)
-                    .height(20.dp)
+                    .wrapContentHeight()
             ){
                 Text(
                     text = evaluasiMentoring.penilaian,
-                    color = if (evaluasiMentoring.penilaian == "Sangat Baik") ColorPalette.Success600 else ColorPalette.Warning700,
+                    color = textColor,
                     style = StyledText.Mobile2xsRegular,
                     modifier = Modifier
-                        .align(Alignment.Center)
+                        .align(Alignment.Center).padding(2.dp),
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -831,7 +850,7 @@ fun TableCellEvaluasiMentoring(
             color = color,
             modifier = Modifier
                 .width(120.dp * weight)
-                .padding(8.dp)
+                .padding(8.dp),
         )
     }
 }
@@ -867,7 +886,8 @@ fun TableCellEvaluasiLembaga(
                     color = if (evaluasiLembaga.penilaian == "Sangat Baik") ColorPalette.Success600 else ColorPalette.Warning700,
                     style = StyledText.Mobile2xsRegular,
                     modifier = Modifier
-                        .align(Alignment.Center)
+                        .align(Alignment.Center).padding(2.dp),
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -963,8 +983,11 @@ fun JawabanPertanyaanRow(pertanyaan: JawabanPertanyaan) {
 
 @Composable
 fun DokumentasiMentoringSection() {
+    val context = LocalContext.current
+
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(bottom = 56.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -975,14 +998,29 @@ fun DokumentasiMentoringSection() {
 
         dokumentasiMentoring.forEach { dokumen ->
             OutlinedButton(
-                onClick = { /* TODO: LOGIC ON CLICK  gaada ga si, kan ga di klik*/ },
+                onClick = {
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW).apply {
+                            setDataAndType(Uri.parse(dokumen.uri), getMimeType(dokumen.namaFile))
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        }
+                        context.startActivity(intent)
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            context,
+                            "Tidak dapat membuka dokumen: ${dokumen.namaFile}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                },
                 modifier = Modifier
                     .width(250.dp)
                     .height(45.dp),
                 shape = MaterialTheme.shapes.small,
                 border = BorderStroke(1.dp, ColorPalette.PrimaryColor400),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = Color.Transparent)
+                    containerColor = Color.Transparent
+                )
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -1002,6 +1040,18 @@ fun DokumentasiMentoringSection() {
                 }
             }
         }
+    }
+}
+
+
+fun getMimeType(fileName: String): String {
+    return when (fileName.substringAfterLast('.', "").lowercase()) {
+        "pdf" -> "application/pdf"
+        "png" -> "image/png"
+        "jpg", "jpeg" -> "image/jpeg"
+        "doc", "docx" -> "application/msword"
+        "xls", "xlsx" -> "application/vnd.ms-excel"
+        else -> "*/*"
     }
 }
 

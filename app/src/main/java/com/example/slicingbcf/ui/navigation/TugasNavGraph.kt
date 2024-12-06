@@ -1,12 +1,8 @@
 package com.example.slicingbcf.ui.navigation
 
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
-import androidx.navigation.NavType
+import androidx.navigation.*
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import androidx.navigation.navigation
 import com.example.slicingbcf.implementation.peserta.pitch_deck.PitchDeckDetailScreen
 import com.example.slicingbcf.implementation.peserta.pitch_deck.PitchDeckPesertaScreen
 
@@ -15,7 +11,7 @@ fun NavGraphBuilder.tugasNavGraph(
     navController : NavHostController
 ) {
     navigation(
-        startDestination = Screen.Tugas.PitchDeck.route, route = "tugas"
+        startDestination = Screen.Tugas.PitchDeckDetail("1").route, route = "tugas"
     ) {
         composable(
             route = Screen.Tugas.PitchDeck.route
