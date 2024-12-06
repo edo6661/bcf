@@ -58,24 +58,21 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.slicingbcf.R
 import com.example.slicingbcf.constant.ColorPalette
 import com.example.slicingbcf.constant.StyledText
-import com.example.slicingbcf.data.common.UiState
-import com.example.slicingbcf.data.common.UiState.Loading
-import com.example.slicingbcf.data.local.Mentor
 import com.example.slicingbcf.data.local.listBatch
 import com.example.slicingbcf.data.local.mentor
 import com.example.slicingbcf.ui.shared.dropdown.DropdownText
 import com.example.slicingbcf.ui.shared.state.ErrorWithReload
 import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextField
+import com.example.slicingbcf.ui.shared.textfield.CustomOutlinedTextFieldDropdown
 
-//@Preview(showSystemUi = true, showBackground = true)
-//@Composable
-//fun UbahProfilMentorScreenPreview() {
-//    UbahProfilMentorScreen(
-//        modifier = Modifier.fillMaxSize()
-//
-//    )
-//}
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun UbahProfilMentorScreenPreview() {
+    UbahProfilMentorScreen(
+        id = "1"
+    )
+}
 
 @Composable
 fun UbahProfilMentorScreen(
@@ -84,6 +81,7 @@ fun UbahProfilMentorScreen(
     viewModel: UbahProfilMentorViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+
 
     when {
         state.isLoading -> {
@@ -119,13 +117,18 @@ fun UbahProfilMentorScreen(
                     state = state,
                     onEvent = { viewModel.onEvent(it) }
                 )
-                EditLatarBelakangMentor()
-                EditBatchInformation()
+                EditLatarBelakangMentor(
+                    state = state,
+                    onEvent = { viewModel.onEvent(it) }
+                )
+                EditBatchInformation(
+                    state = state,
+                    onEvent = { viewModel.onEvent(it) }
+                )
                 SaveCancelButton()
             }
         }
     }
-
 }
 
 @Composable
@@ -210,8 +213,6 @@ fun EditDataDiriMentor(
     var jenisKelamin by remember { mutableStateOf(mentor.jenisKelamin) }
     var expandedJenisKelamin by remember { mutableStateOf(false) }
 
-//    val mentor = state.mentors
-
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 32.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -222,33 +223,59 @@ fun EditDataDiriMentor(
             textAlign = TextAlign.Left,
             color = ColorPalette.PrimaryColor700,
         )
-        DataField(
+        CustomOutlinedTextField(
             label = "Nama Lengkap",
             value = mentor.namaLengkap,
-            onValueChange = { /* Handle Change */ }
+            onValueChange = {
+                onEvent(UbahProfilMentorEvent.NamaLengkapChanged(it))
+            },
+            error = state.namaLengkapError,
+            placeholder = mentor.namaLengkap,
+            asteriskAtEnd = true,
+            modifier = Modifier.fillMaxWidth()
         )
-        DataField(
+        CustomOutlinedTextField(
             label = "Tanggal Lahir",
             value = mentor.tanggalLahir,
-            onValueChange = { /* Handle Change */ }
+            onValueChange = {
+                onEvent(UbahProfilMentorEvent.TanggalLahirChanged(it))
+            },
+            error = state.tanggalLahirError,
+            placeholder = mentor.tanggalLahir,
+            asteriskAtEnd = true,
+            modifier = Modifier.fillMaxWidth()
         )
-        DropdownField(
-            value = jenisKelamin,
-            onValueChange = { },
+        CustomOutlinedTextFieldDropdown(
+            value = mentor.jenisKelamin,
+            onValueChange = {
+                onEvent(UbahProfilMentorEvent.JenisKelaminChanged(it))
+            },
             expanded = expandedJenisKelamin,
             onChangeExpanded = { expandedJenisKelamin = it },
             label = "Jenis Kelamin",
             dropdownItems = listOf("Pria", "Wanita")
         )
-        DataField(
+        CustomOutlinedTextField(
             label = "Email",
             value = mentor.email,
-            onValueChange = { /* Handle Change */ }
+            onValueChange = {
+                onEvent(UbahProfilMentorEvent.EmailChanged(it))
+            },
+            error = state.emailError,
+            placeholder = mentor.email,
+            asteriskAtEnd = true,
+            modifier = Modifier.fillMaxWidth()
         )
-        DataField(
+        CustomOutlinedTextField(
             label = "Nomor HP",
             value = mentor.nomorHP,
-            onValueChange = { /* Handle Change */ }
+            onValueChange = {
+                onEvent(UbahProfilMentorEvent.NomorHPChanged(it))
+            },
+            error = state.nomorHPError,
+            placeholder = mentor.nomorHP,
+            asteriskAtEnd = true,
+            modifier = Modifier.fillMaxWidth()
         )
         HorizontalDivider(
             color = Color.LightGray,
@@ -259,9 +286,11 @@ fun EditDataDiriMentor(
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun EditLatarBelakangMentor(){
+fun EditLatarBelakangMentor(
+    state: UbahProfilMentorState,
+    onEvent: (UbahProfilMentorEvent) -> Unit
+){
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -272,26 +301,51 @@ fun EditLatarBelakangMentor(){
             textAlign = TextAlign.Left,
             color = ColorPalette.PrimaryColor700,
         )
-        DataField(
+        CustomOutlinedTextField(
             label = "Pendidikan Terakhir",
             value = mentor.pendidikanTerakhir,
-            onValueChange = { /* Handle Change */ }
+            onValueChange = {
+                onEvent(UbahProfilMentorEvent.PendidikanTerakhirChanged(it))
+            },
+            error = state.pendidikanTerakhirError,
+            placeholder = mentor.pendidikanTerakhir,
+            asteriskAtEnd = true,
+            modifier = Modifier.fillMaxWidth()
         )
-        DataField(
+        CustomOutlinedTextField(
             label = "Jurusan",
             value = mentor.jurusan,
-            onValueChange = { /* Handle Change */ }
+            onValueChange = {
+                onEvent(UbahProfilMentorEvent.JurusanChanged(it))
+            },
+            error = state.jurusanError,
+            placeholder = mentor.jurusan,
+            asteriskAtEnd = true,
+            modifier = Modifier.fillMaxWidth()
         )
-        DataField(
+        CustomOutlinedTextField(
             label = "Pekerjaan",
             value = mentor.pekerjaan,
-            onValueChange = { /* Handle Change */ }
+            onValueChange = {
+                onEvent(UbahProfilMentorEvent.PekerjaanChanged(it))
+            },
+            error = state.pekerjaanError,
+            placeholder = mentor.pekerjaan,
+            asteriskAtEnd = true,
+            modifier = Modifier.fillMaxWidth()
         )
-        DataField(
+        CustomOutlinedTextField(
             label = "Instansi",
             value = mentor.instansi,
-            onValueChange = { /* Handle Change */ }
+            onValueChange = {
+                onEvent(UbahProfilMentorEvent.InstansiChanged(it))
+            },
+            error = state.instansiError,
+            placeholder = mentor.instansi,
+            asteriskAtEnd = true,
+            modifier = Modifier.fillMaxWidth()
         )
+
         var expanded by remember { mutableStateOf(false) }
         var selectedItems by remember { mutableStateOf(listOf("Batch 3", "Batch 4")) }
         val availableItems = listOf("Batch 1", "Batch 2", "Batch 5")
@@ -317,7 +371,10 @@ fun EditLatarBelakangMentor(){
 }
 
 @Composable
-fun EditBatchInformation(){
+fun EditBatchInformation(
+    state: UbahProfilMentorState,
+    onEvent: (UbahProfilMentorEvent) -> Unit
+){
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -333,23 +390,37 @@ fun EditBatchInformation(){
                 textAlign = TextAlign.Left,
                 color = ColorPalette.PrimaryColor700,
             )
-            DropdownField(
-                value = kategoriMentor,
-                onValueChange = { },
+            CustomOutlinedTextFieldDropdown(
+                value = batch.kategoriMentor,
+                onValueChange = {
+                    kategoriMentor = it
+                },
                 expanded = expandedKategoriMentor,
                 onChangeExpanded = { expandedKategoriMentor = it },
                 label = "Kategori Mentor",
                 dropdownItems = listOf("Desain Program", "Lainnya")
             )
-            DataField(
+            CustomOutlinedTextField(
                 label = "Cluster Mentor",
                 value = batch.cluster,
-                onValueChange = { /* Handle Change */ }
+                onValueChange = {
+                    onEvent(UbahProfilMentorEvent.ClusterChanged(it))
+                },
+                error = state.clusterError,
+                placeholder = batch.cluster,
+                asteriskAtEnd = true,
+                modifier = Modifier.fillMaxWidth()
             )
-            DataField(
+            CustomOutlinedTextField(
                 label = "Fokus Isu",
                 value = batch.fokusIsu,
-                onValueChange = { /* Handle Change */ }
+                onValueChange = {
+                    onEvent(UbahProfilMentorEvent.FokusIsuChanged(it))
+                },
+                error = state.fokusIsuError,
+                placeholder = batch.fokusIsu,
+                asteriskAtEnd = true,
+                modifier = Modifier.fillMaxWidth()
             )
             HorizontalDivider(
                 color = Color.LightGray,
@@ -436,72 +507,6 @@ fun DataField(
         ),
         singleLine = true
     )
-}
-
-@Composable
-fun DropdownField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    expanded: Boolean,
-    onChangeExpanded: (Boolean) -> Unit,
-    label: String,
-    dropdownItems: List<String>
-) {
-    var isFocused by remember { mutableStateOf(false) }
-
-    Column {
-        OutlinedTextField(
-            value = value,
-            onValueChange = {  },
-            label = {
-                Text(
-                    text = label,
-                    style = StyledText.MobileSmallSemibold,
-                    color = ColorPalette.PrimaryColor700,
-                    modifier = Modifier.padding(top = 0.dp)
-                )
-            },
-            trailingIcon = {
-                Icon(
-                    imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = "Arrow Drop Down",
-                    tint = ColorPalette.PrimaryColor700,
-                    modifier = Modifier.clickable {
-                        onChangeExpanded(!expanded)
-                    }
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .onFocusChanged { isFocused = expanded },
-            shape = MaterialTheme.shapes.extraLarge,
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                unfocusedIndicatorColor = ColorPalette.Outline,
-                focusedIndicatorColor = ColorPalette.Outline
-            ),
-            textStyle = TextStyle(
-                color = if (isFocused) ColorPalette.Monochrome800 else ColorPalette.Monochrome300
-            ),
-            singleLine = true,
-            readOnly = true
-        )
-
-        DropdownText(
-            expanded = expanded,
-            onExpandedChange = {
-                onChangeExpanded(it)
-            },
-            onItemSelected = { item ->
-                onValueChange(item)
-                onChangeExpanded(false)
-            },
-            items = dropdownItems,
-            currentItem = value
-        )
-    }
 }
 
 @Composable

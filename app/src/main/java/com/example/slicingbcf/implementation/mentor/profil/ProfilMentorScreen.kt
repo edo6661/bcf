@@ -41,7 +41,7 @@ import com.example.slicingbcf.ui.shared.state.LoadingCircularProgressIndicator
 fun ProfilMentorScreen(
   modifier : Modifier = Modifier,
   viewModel : ProfilMentorViewModel = hiltViewModel(),
-  onEditIconClick : (String) -> Unit
+  onEditIconClick : () -> Unit
 ) {
   val state by viewModel.state.collectAsState()
   when {
@@ -69,7 +69,7 @@ fun ProfilMentorScreen(
         item {
           TopSection(
             mentor = mentor,
-            onEditIconClick = onEditIconClick
+            onEditIconClick = { onEditIconClick() }
           )
         }
         item {
@@ -112,13 +112,13 @@ fun ProfilMentorScreen(
 @Composable
 fun TopSection(
   mentor : Mentor,
-  onEditIconClick : (String) -> Unit
+  onEditIconClick : () -> Unit
 ) {
   Column(
     modifier = Modifier.fillMaxWidth()
   ) {
     HeaderScreen(
-      onEditIconClick = { onEditIconClick(mentor.namaLengkap) }
+      onEditIconClick = { onEditIconClick() }
     )
     Box(
       modifier = Modifier
@@ -218,7 +218,7 @@ fun BatchInformation(
 
 @Composable
 fun HeaderScreen(
-  onEditIconClick : (String) -> Unit
+  onEditIconClick : () -> Unit
 ) {
   Row(
     modifier = Modifier
@@ -232,9 +232,7 @@ fun HeaderScreen(
       style = StyledText.MobileLargeSemibold
     )
     SmallFloatingActionButton(
-      onClick = { onEditIconClick(
-        "Dody Supriadi"
-      ) },
+      onClick = { onEditIconClick() },
       modifier = Modifier.size(56.dp),
       containerColor = ColorPalette.PrimaryColor100,
       elevation = FloatingActionButtonDefaults.elevation(0.dp)

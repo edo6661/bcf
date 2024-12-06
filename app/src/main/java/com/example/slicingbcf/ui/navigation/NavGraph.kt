@@ -91,13 +91,13 @@ fun NavGraph(
 
     composable(
       route = Screen.ProfilMentor.route ) {
-      val onNavigateUbahProfilMentor = { id : String ->
-        navController.navigateSingleTop("ubah-profil-mentor/$id")
-      }
+//      val onNavigateUbahProfilMentor = { id : String ->
+//        navController.navigateSingleTop("ubah-profil-mentor/$id")
+//      }
 
       ProfilMentorScreen(
         modifier = modifier,
-        onEditIconClick = onNavigateUbahProfilMentor
+        onEditIconClick = { navController.navigateSingleTop("ubah-profil-mentor/1") }
       )
     }
 
@@ -109,7 +109,7 @@ fun NavGraph(
 
       UbahProfilMentorScreen(
         modifier = modifier,
-        id = id
+        id = id,
       )
     }
   }
