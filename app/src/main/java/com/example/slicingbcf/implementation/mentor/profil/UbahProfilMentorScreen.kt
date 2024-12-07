@@ -26,7 +26,6 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -81,7 +80,6 @@ fun UbahProfilMentorScreen(
     viewModel: UbahProfilMentorViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-
 
     when {
         state.isLoading -> {
@@ -210,7 +208,6 @@ fun EditDataDiriMentor(
     state: UbahProfilMentorState,
     onEvent: (UbahProfilMentorEvent) -> Unit
 ) {
-    var jenisKelamin by remember { mutableStateOf(mentor.jenisKelamin) }
     var expandedJenisKelamin by remember { mutableStateOf(false) }
 
     Column(
@@ -225,57 +222,72 @@ fun EditDataDiriMentor(
         )
         CustomOutlinedTextField(
             label = "Nama Lengkap",
-            value = mentor.namaLengkap,
+            value = state.namaLengkap,
             onValueChange = {
                 onEvent(UbahProfilMentorEvent.NamaLengkapChanged(it))
             },
             error = state.namaLengkapError,
-            placeholder = mentor.namaLengkap,
-            asteriskAtEnd = true,
-            modifier = Modifier.fillMaxWidth()
+            placeholder = state.namaLengkap,
+            modifier = Modifier.fillMaxWidth(),
+            labelDefaultColor = ColorPalette.Monochrome400,
+            labelFocusedColor = ColorPalette.PrimaryColor700,
+            borderColor = ColorPalette.Outline,
+            rounded = 40,
         )
         CustomOutlinedTextField(
             label = "Tanggal Lahir",
-            value = mentor.tanggalLahir,
+            value = state.tanggalLahir,
             onValueChange = {
                 onEvent(UbahProfilMentorEvent.TanggalLahirChanged(it))
             },
             error = state.tanggalLahirError,
-            placeholder = mentor.tanggalLahir,
-            asteriskAtEnd = true,
-            modifier = Modifier.fillMaxWidth()
+            placeholder = state.tanggalLahir,
+            modifier = Modifier.fillMaxWidth(),
+            labelDefaultColor = ColorPalette.Monochrome400,
+            labelFocusedColor = ColorPalette.PrimaryColor700,
+            borderColor = ColorPalette.Outline,
+            rounded = 40,
         )
         CustomOutlinedTextFieldDropdown(
-            value = mentor.jenisKelamin,
+            value = state.jenisKelamin,
             onValueChange = {
                 onEvent(UbahProfilMentorEvent.JenisKelaminChanged(it))
             },
             expanded = expandedJenisKelamin,
+            error = state.jenisKelaminError,
             onChangeExpanded = { expandedJenisKelamin = it },
             label = "Jenis Kelamin",
-            dropdownItems = listOf("Pria", "Wanita")
+            dropdownItems = listOf("Pria", "Wanita"),
+            labelDefaultColor = ColorPalette.Monochrome400,
+            labelFocusedColor = ColorPalette.PrimaryColor700,
         )
         CustomOutlinedTextField(
             label = "Email",
-            value = mentor.email,
+            value = state.email,
             onValueChange = {
                 onEvent(UbahProfilMentorEvent.EmailChanged(it))
             },
             error = state.emailError,
-            placeholder = mentor.email,
-            asteriskAtEnd = true,
-            modifier = Modifier.fillMaxWidth()
+            placeholder = state.email,
+            modifier = Modifier.fillMaxWidth(),
+            labelDefaultColor = ColorPalette.Monochrome400,
+            labelFocusedColor = ColorPalette.PrimaryColor700,
+            borderColor = ColorPalette.Outline,
+            rounded = 40,
         )
         CustomOutlinedTextField(
             label = "Nomor HP",
-            value = mentor.nomorHP,
+            value = state.nomorHP,
             onValueChange = {
                 onEvent(UbahProfilMentorEvent.NomorHPChanged(it))
             },
             error = state.nomorHPError,
-            placeholder = mentor.nomorHP,
-            asteriskAtEnd = true,
-            modifier = Modifier.fillMaxWidth()
+            placeholder = state.nomorHP,
+            modifier = Modifier.fillMaxWidth(),
+            labelDefaultColor = ColorPalette.Monochrome400,
+            labelFocusedColor = ColorPalette.PrimaryColor700,
+            borderColor = ColorPalette.Outline,
+            rounded = 40,
         )
         HorizontalDivider(
             color = Color.LightGray,
@@ -303,52 +315,64 @@ fun EditLatarBelakangMentor(
         )
         CustomOutlinedTextField(
             label = "Pendidikan Terakhir",
-            value = mentor.pendidikanTerakhir,
+            value = state.pendidikanTerakhir,
             onValueChange = {
                 onEvent(UbahProfilMentorEvent.PendidikanTerakhirChanged(it))
             },
             error = state.pendidikanTerakhirError,
-            placeholder = mentor.pendidikanTerakhir,
-            asteriskAtEnd = true,
-            modifier = Modifier.fillMaxWidth()
+            placeholder = state.pendidikanTerakhir,
+            modifier = Modifier.fillMaxWidth(),
+            labelDefaultColor = ColorPalette.Monochrome400,
+            labelFocusedColor = ColorPalette.PrimaryColor700,
+            borderColor = ColorPalette.Outline,
+            rounded = 40,
         )
         CustomOutlinedTextField(
             label = "Jurusan",
-            value = mentor.jurusan,
+            value = state.jurusan,
             onValueChange = {
                 onEvent(UbahProfilMentorEvent.JurusanChanged(it))
             },
             error = state.jurusanError,
             placeholder = mentor.jurusan,
-            asteriskAtEnd = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            labelDefaultColor = ColorPalette.Monochrome400,
+            labelFocusedColor = ColorPalette.PrimaryColor700,
+            borderColor = ColorPalette.Outline,
+            rounded = 40,
         )
         CustomOutlinedTextField(
             label = "Pekerjaan",
-            value = mentor.pekerjaan,
+            value = state.pekerjaan,
             onValueChange = {
                 onEvent(UbahProfilMentorEvent.PekerjaanChanged(it))
             },
             error = state.pekerjaanError,
-            placeholder = mentor.pekerjaan,
-            asteriskAtEnd = true,
-            modifier = Modifier.fillMaxWidth()
+            placeholder = state.pekerjaan,
+            modifier = Modifier.fillMaxWidth(),
+            labelDefaultColor = ColorPalette.Monochrome400,
+            labelFocusedColor = ColorPalette.PrimaryColor700,
+            borderColor = ColorPalette.Outline,
+            rounded = 40,
         )
         CustomOutlinedTextField(
             label = "Instansi",
-            value = mentor.instansi,
+            value = state.instansi,
             onValueChange = {
                 onEvent(UbahProfilMentorEvent.InstansiChanged(it))
             },
             error = state.instansiError,
-            placeholder = mentor.instansi,
-            asteriskAtEnd = true,
-            modifier = Modifier.fillMaxWidth()
+            placeholder = state.instansi,
+            modifier = Modifier.fillMaxWidth(),
+            labelDefaultColor = ColorPalette.Monochrome400,
+            labelFocusedColor = ColorPalette.PrimaryColor700,
+            borderColor = ColorPalette.Outline,
+            rounded = 40,
         )
 
         var expanded by remember { mutableStateOf(false) }
         var selectedItems by remember { mutableStateOf(listOf("Batch 3", "Batch 4")) }
-        val availableItems = listOf("Batch 1", "Batch 2", "Batch 5")
+        val availableItems = listOf("Batch 1", "Batch 2", "Batch 5", "Batch 3", "Batch 4")
 
         DropdownWithChips(
             selectedItems = selectedItems,
@@ -391,36 +415,48 @@ fun EditBatchInformation(
                 color = ColorPalette.PrimaryColor700,
             )
             CustomOutlinedTextFieldDropdown(
-                value = batch.kategoriMentor,
+                value = state.kategoriMentor,
                 onValueChange = {
                     kategoriMentor = it
                 },
                 expanded = expandedKategoriMentor,
                 onChangeExpanded = { expandedKategoriMentor = it },
+                error = state.kategoriMentorError,
                 label = "Kategori Mentor",
-                dropdownItems = listOf("Desain Program", "Lainnya")
+                dropdownItems = listOf("Desain Program", "Lainnya"),
+                labelDefaultColor = ColorPalette.Monochrome400,
+                labelFocusedColor = ColorPalette.PrimaryColor700,
             )
             CustomOutlinedTextField(
                 label = "Cluster Mentor",
-                value = batch.cluster,
+                value = state.cluster,
                 onValueChange = {
                     onEvent(UbahProfilMentorEvent.ClusterChanged(it))
                 },
                 error = state.clusterError,
                 placeholder = batch.cluster,
-                asteriskAtEnd = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                labelDefaultColor = ColorPalette.Monochrome400,
+                labelFocusedColor = ColorPalette.PrimaryColor700,
+                borderColor = ColorPalette.Outline,
+                rounded = 40,
             )
-            CustomOutlinedTextField(
-                label = "Fokus Isu",
-                value = batch.fokusIsu,
-                onValueChange = {
-                    onEvent(UbahProfilMentorEvent.FokusIsuChanged(it))
-                },
-                error = state.fokusIsuError,
-                placeholder = batch.fokusIsu,
-                asteriskAtEnd = true,
-                modifier = Modifier.fillMaxWidth()
+//            CustomOutlinedTextField(
+//                label = "Fokus Isu",
+//                value = batch.fokusIsu,
+//                onValueChange = {
+//                    onEvent(UbahProfilMentorEvent.FokusIsuChanged(it))
+//                },
+//                error = state.fokusIsuError,
+//                placeholder = batch.fokusIsu,
+//                modifier = Modifier.fillMaxWidth(),
+//                labelDefaultColor = ColorPalette.Monochrome400,
+//                labelFocusedColor = ColorPalette.PrimaryColor700,
+//                borderColor = ColorPalette.Outline,
+//                rounded = 40,
+//            )
+            FokusIsuChips(
+                initialText = state.fokusIsu
             )
             HorizontalDivider(
                 color = Color.LightGray,
@@ -440,7 +476,7 @@ fun SaveCancelButton() {
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         OutlinedButton(
-            onClick = { /* Handle Save */ },
+            onClick = { TODO() },
             modifier = Modifier
                 .height(40.dp),
             border = BorderStroke(1.dp, ColorPalette.PrimaryColor700),
@@ -455,7 +491,7 @@ fun SaveCancelButton() {
             )
         }
         OutlinedButton(
-            onClick = { /* Handle Cancel */ },
+            onClick = { TODO() },
             modifier = Modifier
                 .height(40.dp),
             border = BorderStroke(1.dp, ColorPalette.PrimaryColor700),
@@ -470,43 +506,6 @@ fun SaveCancelButton() {
             )
         }
     }
-}
-
-@Composable
-fun DataField(
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    var isFocused by remember { mutableStateOf(false) }
-
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        label = {
-            Text(
-                text = label,
-                style = StyledText.MobileSmallSemibold,
-                color = ColorPalette.PrimaryColor700,
-                modifier = Modifier.padding(top = 0.dp)
-            )
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(60.dp)
-            .onFocusChanged { isFocused = it.isFocused },
-        shape = MaterialTheme.shapes.extraLarge,
-        colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color.Transparent,
-            focusedContainerColor = Color.Transparent,
-            unfocusedIndicatorColor = ColorPalette.Outline,
-            focusedIndicatorColor = ColorPalette.Outline
-        ),
-        textStyle = TextStyle(
-            color = if (isFocused) ColorPalette.Monochrome800 else ColorPalette.Monochrome300
-        ),
-        singleLine = true
-    )
 }
 
 @Composable
@@ -527,12 +526,7 @@ fun DropdownWithChips(
             value = text,
             onValueChange = { text = it },
             label = {
-                Text(
-                    text = label,
-                    style = StyledText.MobileSmallSemibold,
-                    color = ColorPalette.PrimaryColor700,
-                    modifier = Modifier.padding(top = 0.dp)
-                )
+                Text(label)
             },
             trailingIcon = {
                 Icon(
@@ -580,29 +574,60 @@ fun DropdownWithChips(
         )
 
         if (expanded) {
-            Column(
-                Modifier
-                    .background(Color.White)
-                    .padding(8.dp)
-            ) {
-                availableItems.forEach { item ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                item,
-                                color = if (selectedItems.contains(item)) ColorPalette.PrimaryColor600 else Color.Black
-                            )
-                        },
-                        onClick = {
-                            onItemSelected(item)
-                            onChangeExpanded(false)
-                            text = ""
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+            DropdownText(
+                expanded = expanded,
+                onExpandedChange = {
+                    onChangeExpanded(it)
+                },
+                onItemSelected = { item ->
+                    onItemSelected(item)
+                    onChangeExpanded(false)
+                    text = ""
+                },
+                items = availableItems,
+                currentItem = text
+            )
+        }
+    }
+}
+
+@Composable
+fun FokusIsuChips(
+    initialText: String,
+) {
+    var selectedItems by remember { mutableStateOf(initialText.split(", ").filter { it.isNotBlank() }) }
+
+    Column {
+        OutlinedTextField(
+            value = "",
+            onValueChange = { },
+            label = { Text("Fokus Isu") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
+            shape = MaterialTheme.shapes.extraLarge,
+            colors = TextFieldDefaults.colors(
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Transparent,
+            ),
+            readOnly = true,
+            leadingIcon = {
+                Row(
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .height(IntrinsicSize.Min),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    selectedItems.forEach { item ->
+                        Chip(
+                            text = item,
+                            onRemove = { selectedItems = selectedItems - item }
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                    }
                 }
             }
-        }
+        )
     }
 }
 

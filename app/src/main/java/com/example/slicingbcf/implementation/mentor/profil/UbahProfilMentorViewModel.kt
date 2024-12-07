@@ -4,11 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.slicingbcf.data.local.Batch
-import com.example.slicingbcf.data.repo.user.UserRepository
+import com.example.slicingbcf.data.local.mentor
 import com.example.slicingbcf.di.IODispatcher
 import com.example.slicingbcf.di.MainDispatcher
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@HiltViewModel
 class UbahProfilMentorViewModel @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher,
     @MainDispatcher private val mainDispatcher: CoroutineDispatcher
@@ -26,6 +27,30 @@ class UbahProfilMentorViewModel @Inject constructor(
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading
+
+    init {
+        loadMentorData()
+    }
+
+    private fun loadMentorData() {
+        _state.update {
+            it.copy(
+                namaLengkap = mentor.namaLengkap,
+                tanggalLahir = mentor.tanggalLahir,
+                jenisKelamin = mentor.jenisKelamin,
+                email = mentor.email,
+                nomorHP = mentor.nomorHP,
+                pendidikanTerakhir = mentor.pendidikanTerakhir,
+                jurusan = mentor.jurusan,
+                pekerjaan = mentor.pekerjaan,
+                instansi = mentor.instansi,
+                kategoriMentor = mentor.kategoriMentor,
+                batches = mentor.batch,
+                cluster = mentor.batch.firstOrNull()?.cluster ?: "",
+                fokusIsu = mentor.batch.firstOrNull()?.fokusIsu ?: ""
+            )
+        }
+    }
 
     fun onEvent(event: UbahProfilMentorEvent) {
         when (event) {
